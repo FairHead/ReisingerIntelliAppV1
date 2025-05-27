@@ -30,7 +30,7 @@ public partial class AppShell
         Routing.RegisterRoute("DeviceBasisPage", typeof(DeviceBasisPage));
         Routing.RegisterRoute("NewPage1", typeof(NewPage1));
         Routing.RegisterRoute("FloorPlanManagerPage", typeof(FloorPlanManagerPage));
-        Routing.RegisterRoute("AddBuildingPage", typeof(AddBuildingPage));
+        Routing.RegisterRoute("BuildingEditorPage", typeof(BuildingEditorPage));
 
 
         //Test-Pages

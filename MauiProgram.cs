@@ -68,7 +68,7 @@ public static class MauiProgram
             return new FloorPlanManagerPage(vm);
         });
 
-        builder.Services.AddTransient<AddBuildingPage>();
+        builder.Services.AddTransient<BuildingEditorPage>();
 
         builder.Services.AddTransient<DeviceSettingsTabbedPage>();
         builder.Services.AddTransient<ScanListPage>(provider =>

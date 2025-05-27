@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ReisingerIntelliAppV1.Views.FloorManager.BuildingEditorPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:ReisingerIntelliAppV1.Converters"
+    xmlns:viewModels="clr-namespace:ReisingerIntelliAppV1.Model.ViewModels"
+    x:Name="RootPage"
+    Title="{Binding PageTitle}">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
+            <Label FontAttributes="Bold" Text="Gebäudename" />
+            <Entry Placeholder="Name des Gebäudes" Text="{Binding BuildingName}" />
+
+            <Label FontAttributes="Bold" Text="Stockwerke" />
+            <CollectionView ItemsSource="{Binding Floors}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Margin="0,5" Padding="10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <Entry
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    HorizontalOptions="FillAndExpand"
+                                    Placeholder="Stockwerksname"
+                                    Text="{Binding Name}" />
+
+                                <ImageButton
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="5"
+                                    Padding="10"
+                                    Aspect="AspectFill"
+                                    BackgroundColor="#F44336"
+                                    Command="{Binding BindingContext.RemoveFloorCommand, Source={x:Reference RootPage}}"
+                                    CommandParameter="{Binding .}"
+                                    CornerRadius="20"
+                                    HeightRequest="30"
+                                    Source="recyclingbin.png"
+                                    WidthRequest="30" />
+
+
+                                <Grid
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Button
+                                        Grid.Column="0"
+                                        BackgroundColor="#2196F3"
+                                        Command="{Binding BindingContext.UploadPdfCommand, Source={x:Reference RootPage}}"
+                                        CommandParameter="{Binding .}"
+                                        HeightRequest="40"
+                                        Text="Bauplan Hochladen"
+                                        TextColor="White"
+                                        WidthRequest="180" />
+
+
+                                </Grid>
+
+                                <Label
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="1"
+                                    FontSize="12"
+                                    IsVisible="{Binding PdfPath, Converter={StaticResource StringNotEmptyConverter}}"
+                                    Text="{Binding PdfPath}"
+                                    TextColor="Gray" />
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <Button
+                BackgroundColor="#9C27B0"
+                Command="{Binding AddFloorCommand}"
+                Text="Stockwerk hinzufügen"
+                TextColor="White" />
+
+            <Grid ColumnSpacing="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button
+                    Grid.Column="0"
+                    BackgroundColor="#757575"
+                    Clicked="CancelButton_Clicked"
+                    Text="Abbrechen"
+                    TextColor="White" />
+
+                <Button
+                    x:Name="SaveButton"
+                    Grid.Column="1"
+                    BackgroundColor="#4CAF50"
+                    Clicked="SaveButton_Clicked"
+                    Text="Speichern"
+                    TextColor="White" />
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:StringNotEmptyConverter x:Key="StringNotEmptyConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+</ContentPage>

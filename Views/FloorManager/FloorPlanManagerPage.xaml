@@ -4,17 +4,44 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:pdfView="clr-namespace:Maui.PDFView;assembly=Maui.PDFView"
     xmlns:viewModels="clr-namespace:ReisingerIntelliAppV1.Model.ViewModels"
-    Title="Floor Plan Manager">
+    xmlns:converters="clr-namespace:ReisingerIntelliAppV1.Converters"
+    Title="Floor Plan Manager"
+    x:Name="FloorManagerPage">
+
+    <ContentPage.Resources>
+        <converters:PdfPathConverter x:Key="PdfPathConverter" />
+    </ContentPage.Resources>
 
     <Grid>
+        <!-- Blank placeholder when no PDF is available or floor is selected -->
+        <Grid 
+            BackgroundColor="White"
+            IsVisible="{Binding SelectedFloor, Converter={StaticResource PdfPathConverter}, ConverterParameter=IsEmpty}">
+            <VerticalStackLayout 
+                HorizontalOptions="Center" 
+                VerticalOptions="Center"
+                Spacing="20">
+                <Label 
+                    Text="Kein PDF-Bauplan verfügbar" 
+                    FontSize="24" 
+                    TextColor="Gray" 
+                    HorizontalOptions="Center"/>
+                <Label 
+                    Text="Bitte laden Sie einen Bauplan für dieses Stockwerk hoch" 
+                    FontSize="16" 
+                    TextColor="Gray" 
+                    HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </Grid>
 
-        <!--  Ebene 0: PDF  -->
+        <!--  PDF Viewer - only visible when a valid PDF exists  -->
         <pdfView:PdfView
+            IsVisible="{Binding SelectedFloor, Converter={StaticResource PdfPathConverter}, ConverterParameter=HasValue}"
             HandlerProperties.DisconnectPolicy="Manual"
             HorizontalOptions="FillAndExpand"
             IsHorizontal="True"
             MaxZoom="4"
-            Uri="{Binding SelectedFloor.PdfPath}"
+            Uri="{Binding SelectedFloor, Converter={StaticResource PdfPathConverter}}"
             VerticalOptions="FillAndExpand" />
 
         <!--  Ebene 1: Menüleiste  -->
@@ -52,7 +79,6 @@
                     Text="Gebäude auswählen"
                     TextColor="White" />
 
-
                 <Border
                     x:Name="BuildingDropdown"
                     Grid.Row="1"
@@ -67,10 +93,35 @@
                             SelectionMode="Single">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Label
-                                        Padding="10"
-                                        Text="{Binding Name}"
-                                        TextColor="White" />
+                                    <SwipeView>
+                                        <SwipeView.LeftItems>
+                                            <SwipeItems>
+                                                <SwipeItem 
+                                                    Text="Bearbeiten" 
+                                                    BackgroundColor="#2196F3" 
+                                                    Command="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.EditBuildingCommand}" 
+                                                    CommandParameter="{Binding}" />
+                                            </SwipeItems>
+                                        </SwipeView.LeftItems>
+                                        <SwipeView.RightItems>
+                                            <SwipeItems>
+                                                <SwipeItem 
+                                                    Text="Löschen" 
+                                                    BackgroundColor="#F44336" 
+                                                    Command="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.DeleteBuildingCommand}" 
+                                                    CommandParameter="{Binding}" />
+                                            </SwipeItems>
+                                        </SwipeView.RightItems>
+                                        <Grid Padding="0" BackgroundColor="Transparent">
+                                            <Label
+                                                Padding="10"
+                                                Text="{Binding Name}"
+                                                TextColor="White" />
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="OnBuildingTapped" />
+                                            </Grid.GestureRecognizers>
+                                        </Grid>
+                                    </SwipeView>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
@@ -109,10 +160,35 @@
                             SelectionMode="Single">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Label
-                                        Padding="10"
-                                        Text="{Binding Name}"
-                                        TextColor="White" />
+                                    <SwipeView>
+                                        <SwipeView.LeftItems>
+                                            <SwipeItems>
+                                                <SwipeItem 
+                                                    Text="Bearbeiten" 
+                                                    BackgroundColor="#2196F3" 
+                                                    Command="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.EditFloorCommand}" 
+                                                    CommandParameter="{Binding}" />
+                                            </SwipeItems>
+                                        </SwipeView.LeftItems>
+                                        <SwipeView.RightItems>
+                                            <SwipeItems>
+                                                <SwipeItem 
+                                                    Text="Löschen" 
+                                                    BackgroundColor="#F44336" 
+                                                    Command="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.DeleteFloorCommand}" 
+                                                    CommandParameter="{Binding}" />
+                                            </SwipeItems>
+                                        </SwipeView.RightItems>
+                                        <Grid Padding="0" BackgroundColor="Transparent">
+                                            <Label
+                                                Padding="10"
+                                                Text="{Binding Name}"
+                                                TextColor="White" />
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="OnFloorTapped" />
+                                            </Grid.GestureRecognizers>
+                                        </Grid>
+                                    </SwipeView>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
@@ -204,7 +280,6 @@
                 </Border>
             </Grid>
         </Grid>
-        <!--  ❗️schließt Menü-Grid  -->
 
         <!--  Ebene 2: Add-Button  -->
         <AbsoluteLayout>
@@ -223,6 +298,4 @@
         </AbsoluteLayout>
 
     </Grid>
-    <!-- ❗️schließt äußeres <Grid> -->
-
 </ContentPage>
