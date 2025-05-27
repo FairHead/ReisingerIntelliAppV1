@@ -1,0 +1,17 @@
+<toolkit:Popup
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="ReisingerIntelliAppV1.Views.PopUp.KeyInputPopup">
+
+    <VerticalStackLayout Padding="20" Spacing="10">
+        <Label Text="Benutzername" />
+        <Entry x:Name="UsernameEntry" Placeholder="Benutzername" />
+
+        <Label Text="Passwort" />
+        <Entry x:Name="PasswordEntry" Placeholder="Passwort" IsPassword="True" />
+
+        <Button Text="OK" Clicked="OnOkClicked" />
+        <Button Text="Cancel" Clicked="OnCancelClicked" />
+    </VerticalStackLayout>
+</toolkit:Popup>

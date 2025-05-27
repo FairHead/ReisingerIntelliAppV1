@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ReisingerIntelliAppV1.Views.ViewTestings.DeviceInformationsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:staticViews="using:ReisingerIntelliAppV1.Views.StaticViews"
+    Title="Device Informations">
+    <Grid BackgroundColor="{StaticResource MainBackgroundColor}">
+        <!--  DEINE SEITENINHALTE - nur sichtbar wenn NICHT busy  -->
+        <VerticalStackLayout IsVisible="{Binding IsBusy}">
+            <!--  dein ganzer bestehender Inhalt von oben kommt hier rein  -->
+        </VerticalStackLayout>
+        <VerticalStackLayout>
+            <staticViews:DevicePagesHeader Device="{Binding SelectedDevice}" />
+
+
+
+
+            <Border
+                Margin="5,0,5,0"
+                Background="{StaticResource BtnBorderColor}"
+                Stroke="Black"
+                StrokeThickness="1">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                    <!--  Abrundung der Ecken  -->
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Margin="15,0,15,0" Padding="5,0,5,5">
+
+
+                    <Label
+                        Margin="10"
+                        FontSize="25"
+                        HorizontalOptions="Center"
+                        Style="{StaticResource HeaderStyle}"
+                        Text="Device Informations"
+                        TextColor="{StaticResource White}"
+                        VerticalTextAlignment="Center" />
+
+                    <ScrollView>
+                        <VerticalStackLayout Padding="5">
+                            <Label
+                                Margin="0,10,0,5"
+                                HorizontalOptions="Start"
+                                Style="{StaticResource HeaderStyle}"
+                                Text="Name"
+                                TextColor="{StaticResource White}"
+                                VerticalTextAlignment="Center" />
+
+
+
+                            <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                <Border
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="4"
+                                    Margin="2,0,2,0"
+                                    BackgroundColor="White">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="10,10,10,10 " />
+                                        <!--  Ecken abrunden  -->
+                                    </Border.StrokeShape>
+                                    <Label
+                                        x:Name="SelectedDeviceName"
+                                        Padding="5"
+                                        BackgroundColor="Black"
+                                        FontSize="16"
+                                        HorizontalTextAlignment="Start"
+                                        Text="{Binding SelectedDevice.Name}"
+                                        TextColor="White"
+                                        VerticalTextAlignment="Center" />
+
+                                </Border>
+                            </Grid>
+
+
+
+                            <Label
+                                Margin="0,10,0,5"
+                                HorizontalOptions="Start"
+                                Style="{StaticResource HeaderStyle}"
+                                Text="Device database entry"
+                                TextColor="{StaticResource White}"
+                                VerticalTextAlignment="Center" />
+
+
+
+                            <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                <Border
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="4"
+                                    Margin="2,0,2,0"
+                                    BackgroundColor="White">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="10,10,10,10 " />
+                                        <!--  Ecken abrunden  -->
+                                    </Border.StrokeShape>
+                                    <Label
+                                        x:Name="SelectedDeviceDbId"
+                                        Padding="5"
+                                        BackgroundColor="Black"
+                                        FontSize="16"
+                                        HorizontalTextAlignment="Start"
+                                        Text="{Binding SelectedDevice.Id}"
+                                        TextColor="White"
+                                        VerticalTextAlignment="Center" />
+
+                                </Border>
+                            </Grid>
+
+
+
+                            <Label
+                                Margin="0,10,0,5"
+                                HorizontalOptions="Start"
+                                Style="{StaticResource HeaderStyle}"
+                                Text="Device ssid"
+                                TextColor="{StaticResource White}"
+                                VerticalTextAlignment="Center" />
+
+
+
+                            <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                <Border
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="4"
+                                    Margin="2,0,2,0"
+                                    BackgroundColor="White">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="10,10,10,10 " />
+                                        <!--  Ecken abrunden  -->
+                                    </Border.StrokeShape>
+                                    <Label
+                                        x:Name="SelectedDeviceSsid"
+                                        Padding="5"
+                                        BackgroundColor="Black"
+                                        FontSize="16"
+                                        HorizontalTextAlignment="Start"
+                                        Text="{Binding SelectedDevice.Ssid}"
+                                        TextColor="White"
+                                        VerticalTextAlignment="Center" />
+
+                                </Border>
+                            </Grid>
+
+
+
+                            <Label
+                                Margin="0,10,0,5"
+                                HorizontalOptions="Start"
+                                Style="{StaticResource HeaderStyle}"
+                                Text="Device serialnumber"
+                                TextColor="{StaticResource White}"
+                                VerticalTextAlignment="Center" />
+
+
+
+                            <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                <Border
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="4"
+                                    Margin="2,0,2,0"
+                                    BackgroundColor="White">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="10,10,10,10 " />
+                                        <!--  Ecken abrunden  -->
+                                    </Border.StrokeShape>
+                                    <Label
+                                        x:Name="SelectedDeviceSerialNumber"
+                                        Padding="5"
+                                        BackgroundColor="Black"
+                                        FontSize="16"
+                                        HorizontalTextAlignment="Start"
+                                        Text="{Binding SelectedDevice.SerialNumber}"
+                                        TextColor="White"
+                                        VerticalTextAlignment="Center" />
+
+                                </Border>
+                            </Grid>
+
+
+                            <Label
+                                Margin="0,10,0,5"
+                                HorizontalOptions="Start"
+                                Style="{StaticResource HeaderStyle}"
+                                Text="Device firmware version"
+                                TextColor="{StaticResource White}"
+                                VerticalTextAlignment="Center" />
+
+
+
+                            <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                <Border
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="4"
+                                    Margin="2,0,2,0"
+                                    BackgroundColor="White">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="10,10,10,10 " />
+                                        <!--  Ecken abrunden  -->
+                                    </Border.StrokeShape>
+                                    <Label
+                                        x:Name="SelectedDeviceFirmwareVersion"
+                                        Padding="5"
+                                        BackgroundColor="Black"
+                                        FontSize="16"
+                                        HorizontalTextAlignment="Start"
+                                        TextColor="White"
+                                        VerticalTextAlignment="Center"
+                                        Text="{Binding SelectedDevice.FirmwareVersion}"/>
+
+                                </Border>
+                            </Grid>
+
+
+                            <Label
+                                Margin="0,10,0,5"
+                                HorizontalOptions="Start"
+                                Style="{StaticResource HeaderStyle}"
+                                Text="Device software version"
+                                TextColor="{StaticResource White}"
+                                VerticalTextAlignment="Center" />
+
+
+
+                            <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                <Border
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="4"
+                                    Margin="2,0,2,5"
+                                    BackgroundColor="White">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="10,10,10,10 " />
+                                        <!--  Ecken abrunden  -->
+                                    </Border.StrokeShape>
+                                    <Label
+                                        x:Name="SelectedDeviceSoftwareVersion"
+                                        Padding="5"
+                                        BackgroundColor="Black"
+                                        FontSize="16"
+                                        HorizontalTextAlignment="Start"
+                                        TextColor="White"
+                                        VerticalTextAlignment="Center" 
+                                        Text="{Binding SelectedDevice.SoftwareVersion}"/>
+
+                                </Border>
+                            </Grid>
+
+
+
+
+
+
+                        </VerticalStackLayout>
+
+
+                    </ScrollView>
+
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

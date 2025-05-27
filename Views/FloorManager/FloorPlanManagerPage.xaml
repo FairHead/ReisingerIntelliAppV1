@@ -1,0 +1,228 @@
+<ContentPage
+    x:Class="ReisingerIntelliAppV1.Views.FloorManager.FloorPlanManagerPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pdfView="clr-namespace:Maui.PDFView;assembly=Maui.PDFView"
+    xmlns:viewModels="clr-namespace:ReisingerIntelliAppV1.Model.ViewModels"
+    Title="Floor Plan Manager">
+
+    <Grid>
+
+        <!--  Ebene 0: PDF  -->
+        <pdfView:PdfView
+            HandlerProperties.DisconnectPolicy="Manual"
+            HorizontalOptions="FillAndExpand"
+            IsHorizontal="True"
+            MaxZoom="4"
+            Uri="{Binding SelectedFloor.PdfPath}"
+            VerticalOptions="FillAndExpand" />
+
+        <!--  Ebene 1: Menüleiste  -->
+        <Grid Padding="10" VerticalOptions="Start">
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0,1">
+                    <GradientStop Offset="0.0" Color="#80000000" />
+                    <GradientStop Offset="1.0" Color="Transparent" />
+                </LinearGradientBrush>
+            </Grid.Background>
+
+            <!--  Vier Spalten  -->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!--  Spalte 0: Gebäude  -->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Button
+                    x:Name="BuildingButton"
+                    Grid.Row="0"
+                    BackgroundColor="#673AB7"
+                    Command="{Binding ToggleBuildingDropdownCommand}"
+                    CornerRadius="10"
+                    FontSize="10"
+                    HeightRequest="40"
+                    Text="Gebäude auswählen"
+                    TextColor="White" />
+
+
+                <Border
+                    x:Name="BuildingDropdown"
+                    Grid.Row="1"
+                    BackgroundColor="#80000000"
+                    HeightRequest="200"
+                    IsVisible="{Binding IsBuildingDropdownVisible}">
+                    <ScrollView>
+                        <CollectionView
+                            x:Name="BuildingsCollection"
+                            ItemsSource="{Binding Buildings}"
+                            SelectionChanged="OnBuildingSelected"
+                            SelectionMode="Single">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Label
+                                        Padding="10"
+                                        Text="{Binding Name}"
+                                        TextColor="White" />
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </ScrollView>
+                </Border>
+            </Grid>
+
+            <!--  Spalte 1: Stockwerk  -->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Button
+                    x:Name="FloorButton"
+                    Grid.Row="0"
+                    BackgroundColor="#9C27B0"
+                    Command="{Binding ToggleFloorDropdownCommand}"
+                    CornerRadius="10"
+                    FontSize="10"
+                    HeightRequest="40"
+                    Text="Stockwerk auswählen"
+                    TextColor="White" />
+                <Border
+                    x:Name="FloorDropdown"
+                    Grid.Row="1"
+                    BackgroundColor="#80000000"
+                    HeightRequest="200"
+                    IsVisible="{Binding IsFloorDropdownVisible}">
+                    <ScrollView>
+                        <CollectionView
+                            x:Name="FloorsCollection"
+                            ItemsSource="{Binding Floors}"
+                            SelectionChanged="OnFloorSelected"
+                            SelectionMode="Single">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Label
+                                        Padding="10"
+                                        Text="{Binding Name}"
+                                        TextColor="White" />
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </ScrollView>
+                </Border>
+            </Grid>
+
+            <!--  Spalte 2: Saved Devices  -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Button
+                    x:Name="SavedDevicesButton"
+                    Grid.Row="0"
+                    BackgroundColor="#2E7D32"
+                    Command="{Binding ToggleSavedDevicesDropdownCommand}"
+                    CornerRadius="10"
+                    FontSize="10"
+                    HeightRequest="40"
+                    Text="Saved Devices"
+                    TextColor="White" />
+                <Border
+                    x:Name="SavedDevicesDropdown"
+                    Grid.Row="1"
+                    BackgroundColor="#80000000"
+                    HeightRequest="200"
+                    IsVisible="{Binding IsSavedDevicesDropdownVisible}">
+                    <ScrollView>
+                        <CollectionView
+                            x:Name="SavedDevicesCollection"
+                            ItemsSource="{Binding SavedDevices}"
+                            SelectionChanged="OnSavedDeviceSelected"
+                            SelectionMode="Single">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Label
+                                        Padding="10"
+                                        Text="{Binding Name}"
+                                        TextColor="White" />
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </ScrollView>
+                </Border>
+            </Grid>
+
+            <!--  Spalte 3: Local Devices  -->
+            <Grid Grid.Column="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Button
+                    x:Name="LocalDevicesButton"
+                    Grid.Row="0"
+                    BackgroundColor="#0277BD"
+                    Command="{Binding ToggleLocalDevicesDropdownCommand}"
+                    CornerRadius="10"
+                    FontSize="10"
+                    HeightRequest="40"
+                    Text="Local Devices"
+                    TextColor="White" />
+                <Border
+                    x:Name="LocalDevicesDropdown"
+                    Grid.Row="1"
+                    BackgroundColor="#80000000"
+                    HeightRequest="200"
+                    IsVisible="{Binding IsLocalDevicesDropdownVisible}">
+                    <ScrollView>
+                        <CollectionView
+                            x:Name="LocalDevicesCollection"
+                            ItemsSource="{Binding LocalDevices}"
+                            SelectionChanged="OnLocalDeviceSelected"
+                            SelectionMode="Single">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Label
+                                        Padding="10"
+                                        Text="{Binding Name}"
+                                        TextColor="White" />
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </ScrollView>
+                </Border>
+            </Grid>
+        </Grid>
+        <!--  ❗️schließt Menü-Grid  -->
+
+        <!--  Ebene 2: Add-Button  -->
+        <AbsoluteLayout>
+            <Button
+                Margin="0,0,0,10"
+                AbsoluteLayout.LayoutBounds="0.5,1,AutoSize,AutoSize"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                BackgroundColor="#304FFE"
+                Clicked="OnAddBuildingClicked"
+                CornerRadius="100"
+                FontSize="36"
+                HeightRequest="80"
+                Text="+"
+                TextColor="White"
+                WidthRequest="80" />
+        </AbsoluteLayout>
+
+    </Grid>
+    <!-- ❗️schließt äußeres <Grid> -->
+
+</ContentPage>

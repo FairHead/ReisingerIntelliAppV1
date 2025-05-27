@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BasePage
+    x:Class="ReisingerIntelliAppV1.Views.DeviceControlViews.DeviceStatusPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:base="clr-namespace:ReisingerIntelliAppV1.Base"
+   
+    xmlns:staticViews1="clr-namespace:ReisingerIntelliAppV1.Views.StaticViews"
+    Title="DeviceStatusPage"
+    BackgroundColor="{StaticResource MainBackgroundColor}">
+
+    <Grid>
+        <VerticalStackLayout IsVisible="{Binding IsBusy}" />
+        <VerticalStackLayout>
+            <staticViews1:DevicePagesHeader Device="{Binding SelectedDevice}" />
+
+
+            <!--  Bereich unterhalb der Überschrift "Weiten" wird scrollbar  -->
+            <Border
+                Margin="15,0,15,0"
+                Padding="5"
+                Background="{StaticResource BtnBorderColor}"
+                Stroke="Black"
+                StrokeThickness="1">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+
+
+                <VerticalStackLayout
+                    Margin="5,0,5,0"
+                    Padding="5,0,5,5"
+                    BackgroundColor="{StaticResource BtnBorderColor}">
+
+                    <Label
+                        BackgroundColor="{StaticResource BtnBorderColor}"
+                        HorizontalOptions="Center"
+                        Style="{StaticResource PropertyHeaderStyle}"
+                        Text="Status"
+                        TextColor="{StaticResource White}"
+                        VerticalTextAlignment="Center" />
+                    <Border
+                        Margin="10"
+                        Background="{StaticResource MainBackgroundColor}"
+                        Stroke="Black"
+                        StrokeThickness="1">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            Text="{Binding IsDoorOpen, Converter={StaticResource DoorStatusTextConverter}}"
+                            TextColor="{Binding IsDoorOpen, Converter={StaticResource DoorStatusColorConverter}}"
+                            VerticalOptions="Center" />
+                    </Border>
+                    <ScrollView HeightRequest="{OnPlatform Default=300, Android=300, iOS=300}">
+
+                        <Grid Grid.ColumnDefinitions="*,*,*" Grid.RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+
+                            <!--  ..1.Zeile  -->
+
+                            <Border
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Margin="0,10,10,10"
+                                Padding="10"
+                                Background="{StaticResource BtnBorderColor}"
+                                Stroke="Black"
+                                StrokeThickness="1">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="0" />
+                                </Border.StrokeShape>
+                                <Label
+                                    FontSize="15"
+                                    HorizontalTextAlignment="Center"
+                                    Text="Test"
+                                    TextColor="White "
+                                    VerticalTextAlignment="Center" />
+                            </Border>
+
+
+                            <Border
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="0,10,10,10"
+                                Padding="10"
+                                Background="{StaticResource BtnBorderColor}"
+                                Stroke="Black"
+                                StrokeThickness="1">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="0" />
+                                </Border.StrokeShape>
+                                <Label
+                                    FontSize="15"
+                                    HorizontalTextAlignment="Center"
+                                    Text="Test"
+                                    TextColor="White "
+                                    VerticalTextAlignment="Center" />
+                            </Border>
+
+                            <Border
+                                Grid.Row="0"
+                                Grid.Column="2"
+                                Margin="0,10,10,10"
+                                Padding="10"
+                                Background="{StaticResource BtnBorderColor}"
+                                Stroke="Black"
+                                StrokeThickness="1">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="0" />
+                                </Border.StrokeShape>
+                                <Label
+                                    FontSize="15"
+                                    HorizontalTextAlignment="Center"
+                                    Text="Test"
+                                    TextColor="White "
+                                    VerticalTextAlignment="Center" />
+                            </Border>
+
+
+
+                            <!--  ..2.Zeile  -->
+
+
+
+                            <Border
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Margin="0,10,10,10"
+                                Padding="10"
+                                Background="{StaticResource BtnBorderColor}"
+                                Stroke="Black"
+                                StrokeThickness="1">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="0" />
+                                </Border.StrokeShape>
+                                <Label
+                                    FontSize="15"
+                                    HorizontalTextAlignment="Center"
+                                    Text="Test"
+                                    TextColor="White "
+                                    VerticalTextAlignment="Center" />
+                            </Border>
+
+
+                            <Border
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="0,10,10,10"
+                                Padding="10"
+                                Background="{StaticResource BtnBorderColor}"
+                                Stroke="Black"
+                                StrokeThickness="1">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="0" />
+                                </Border.StrokeShape>
+                                <Label
+                                    FontSize="15"
+                                    HorizontalTextAlignment="Center"
+                                    Text="Test"
+                                    TextColor="White "
+                                    VerticalTextAlignment="Center" />
+                            </Border>
+
+                            <Border
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                Margin="0,10,10,10"
+                                Padding="10"
+                                Background="{StaticResource BtnBorderColor}"
+                                Stroke="Black"
+                                StrokeThickness="1">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="0" />
+                                </Border.StrokeShape>
+                                <Label
+                                    FontSize="15"
+                                    HorizontalTextAlignment="Center"
+                                    Text="Test"
+                                    TextColor="White "
+                                    VerticalTextAlignment="Center" />
+                            </Border>
+
+
+
+                            <!--  ..3.Zeile  -->
+
+                            <Border
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Margin="0,10,10,10"
+                                Padding="10"
+                                Background="{StaticResource BtnBorderColor}"
+                                Stroke="Black"
+                                StrokeThickness="1">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="0" />
+                                </Border.StrokeShape>
+                                <Label
+                                    FontSize="15"
+                                    HorizontalTextAlignment="Center"
+                                    Text="Test"
+                                    TextColor="White "
+                                    VerticalTextAlignment="Center" />
+                            </Border>
+
+
+                            <Border
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Margin="0,10,10,10"
+                                Padding="10"
+                                Background="{StaticResource BtnBorderColor}"
+                                Stroke="Black"
+                                StrokeThickness="1">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="0" />
+                                </Border.StrokeShape>
+                                <Label
+                                    FontSize="15"
+                                    HorizontalTextAlignment="Center"
+                                    Text="Test"
+                                    TextColor="White "
+                                    VerticalTextAlignment="Center" />
+                            </Border>
+
+                            <Border
+                                Grid.Row="2"
+                                Grid.Column="2"
+                                Margin="0,10,10,10"
+                                Padding="10"
+                                Background="{StaticResource BtnBorderColor}"
+                                Stroke="Black"
+                                StrokeThickness="1">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="0" />
+                                </Border.StrokeShape>
+                                <Label
+                                    FontSize="15"
+                                    HorizontalTextAlignment="Center"
+                                    Text="Test"
+                                    TextColor="White "
+                                    VerticalTextAlignment="Center" />
+                            </Border>
+
+
+                            <!--  ..4.Zeile  -->
+
+                            <Border
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Margin="0,10,10,10"
+                                Padding="10"
+                                Background="{StaticResource BtnBorderColor}"
+                                Stroke="Black"
+                                StrokeThickness="1">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="0" />
+                                </Border.StrokeShape>
+                                <Label
+                                    FontSize="15"
+                                    HorizontalTextAlignment="Center"
+                                    Text="Test"
+                                    TextColor="White "
+                                    VerticalTextAlignment="Center" />
+                            </Border>
+
+
+                            <Border
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Margin="0,10,10,10"
+                                Padding="10"
+                                Background="{StaticResource BtnBorderColor}"
+                                Stroke="Black"
+                                StrokeThickness="1">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="0" />
+                                </Border.StrokeShape>
+                                <Label
+                                    FontSize="15"
+                                    HorizontalTextAlignment="Center"
+                                    Text="Test"
+                                    TextColor="White "
+                                    VerticalTextAlignment="Center" />
+                            </Border>
+
+                            <Border
+                                Grid.Row="3"
+                                Grid.Column="2"
+                                Margin="0,10,10,10"
+                                Padding="10"
+                                Background="{StaticResource BtnBorderColor}"
+                                Stroke="Black"
+                                StrokeThickness="1">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="0" />
+                                </Border.StrokeShape>
+                                <Label
+                                    FontSize="15"
+                                    HorizontalTextAlignment="Center"
+                                    Text="Test"
+                                    TextColor="White "
+                                    VerticalTextAlignment="Center" />
+                            </Border>
+
+
+                            <!--  ..5.Zeile  -->
+
+
+
+                            <Border
+                                Grid.Row="4"
+                                Grid.Column="1"
+                                Margin="0,10,10,10"
+                                Padding="10"
+                                Background="{StaticResource BtnBorderColor}"
+                                Stroke="Black"
+                                StrokeThickness="1">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="0" />
+                                </Border.StrokeShape>
+                                <Label
+                                    FontSize="15"
+                                    HorizontalTextAlignment="Center"
+                                    Text="Test"
+                                    TextColor="White "
+                                    VerticalTextAlignment="Center" />
+                            </Border>
+
+                            <Border
+                                Grid.Row="4"
+                                Grid.Column="2"
+                                Margin="0,10,10,10"
+                                Padding="10"
+                                Background="{StaticResource BtnBorderColor}"
+                                Stroke="Black"
+                                StrokeThickness="1">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="0" />
+                                </Border.StrokeShape>
+                                <Label
+                                    FontSize="15"
+                                    HorizontalTextAlignment="Center"
+                                    Text="Test"
+                                    TextColor="White "
+                                    VerticalTextAlignment="Center" />
+                            </Border>
+
+
+
+                            <!--  ..6.Zeile  -->
+
+
+
+                            <Border
+                                Grid.Row="5"
+                                Grid.Column="1"
+                                Margin="0,10,10,10"
+                                Padding="10"
+                                Background="{StaticResource BtnBorderColor}"
+                                Stroke="Black"
+                                StrokeThickness="1">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="0" />
+                                </Border.StrokeShape>
+                                <Label
+                                    FontSize="15"
+                                    HorizontalTextAlignment="Center"
+                                    Text="Test"
+                                    TextColor="White "
+                                    VerticalTextAlignment="Center" />
+                            </Border>
+
+                            <Border
+                                Grid.Row="5"
+                                Grid.Column="2"
+                                Margin="0,10,10,10"
+                                Padding="10"
+                                Background="{StaticResource BtnBorderColor}"
+                                Stroke="Black"
+                                StrokeThickness="1">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="0" />
+                                </Border.StrokeShape>
+                                <Label
+                                    FontSize="15"
+                                    HorizontalTextAlignment="Center"
+                                    Text="Test"
+                                    TextColor="White "
+                                    VerticalTextAlignment="Center" />
+                            </Border>
+
+
+                            <!--  ..7.Zeile  -->
+
+
+
+                            <Border
+                                Grid.Row="6"
+                                Grid.Column="1"
+                                Margin="0,10,10,10"
+                                Padding="10"
+                                Background="{StaticResource BtnBorderColor}"
+                                Stroke="Black"
+                                StrokeThickness="1">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="0" />
+                                </Border.StrokeShape>
+                                <Label
+                                    FontSize="15"
+                                    HorizontalTextAlignment="Center"
+                                    Text="Test"
+                                    TextColor="White "
+                                    VerticalTextAlignment="Center" />
+                            </Border>
+
+
+                            <!--  ..8.Zeile  -->
+
+
+
+                            <Border
+                                Grid.Row="7"
+                                Grid.Column="1"
+                                Margin="0,10,10,10"
+                                Padding="10"
+                                Background="{StaticResource BtnBorderColor}"
+                                Stroke="Black"
+                                StrokeThickness="1">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="0" />
+                                </Border.StrokeShape>
+                                <Label
+                                    FontSize="15"
+                                    HorizontalTextAlignment="Center"
+                                    Text="Test"
+                                    TextColor="White "
+                                    VerticalTextAlignment="Center" />
+                            </Border>
+
+
+
+
+
+
+
+
+
+
+                        </Grid>
+
+                    </ScrollView>
+
+                </VerticalStackLayout>
+
+
+            </Border>
+
+        </VerticalStackLayout>
+
+
+      
+    </Grid>
+
+</base:BasePage>

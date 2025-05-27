@@ -1,0 +1,926 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BasePage
+    x:Class="ReisingerIntelliAppV1.Views.DeviceControlViews.DeviceBasisPage"    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:base="clr-namespace:ReisingerIntelliAppV1.Base"
+    xmlns:staticViews1="clr-namespace:ReisingerIntelliAppV1.Views.StaticViews"
+    Title="DeviceBasisPage"
+    BackgroundColor="{StaticResource MainBackgroundColor}">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- Parameter Loading Indicator -->
+        <staticViews1:ParameterLoadingBar Grid.Row="0" IsVisible="{Binding IsLoading}" />
+        
+        <!--  INHALT  -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout>                <staticViews1:DevicePagesHeader Device="{Binding SelectedDevice}" />                <!-- Error Message for Parameter Loading Failures -->
+                <VerticalStackLayout Margin="10,10,10,10" HorizontalOptions="Center">
+                    <Label x:Name="ErrorMessage" 
+                           Text="Parameter konnten nicht geladen werden" 
+                           TextColor="Red" 
+                           FontSize="14" 
+                           HorizontalOptions="Center"
+                           IsVisible="False" />
+                    
+                    <Button x:Name="RetryLoadButton"
+                            Text="Retry Loading Parameters"
+                            Clicked="OnRetryLoadClicked"
+                            IsVisible="False"
+                            Margin="0,5,0,0"
+                            BackgroundColor="{StaticResource Primary}"
+                            TextColor="White"
+                            CornerRadius="5"
+                            HeightRequest="40"
+                            WidthRequest="200"/>
+                </VerticalStackLayout>
+
+                <Border
+                    Margin="5,0,5,0"
+                    Background="{StaticResource BtnBorderColor}"
+                    Stroke="Black"
+                    StrokeThickness="1">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout
+                        Margin="15,0,15,0"
+                        Padding="5,0,5,5"
+                        BackgroundColor="{StaticResource BtnBorderColor}">
+
+                        <Label
+                            BackgroundColor="{StaticResource BtnBorderColor}"
+                            HorizontalOptions="Center"
+                            Style="{StaticResource PropertyHeaderStyle}"
+                            Text="Basis"
+                            TextColor="{StaticResource White}"
+                            VerticalTextAlignment="Center" />
+                        <Border
+                            Margin="10"
+                            Background="{StaticResource MainBackgroundColor}"
+                            Stroke="Black"
+                            StrokeThickness="1">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                HorizontalOptions="Center"
+                                Text="{Binding IsDoorOpen, Converter={StaticResource DoorStatusTextConverter}}"
+                                TextColor="{Binding IsDoorOpen, Converter={StaticResource DoorStatusColorConverter}}"
+                                VerticalOptions="Center" />
+                        </Border>
+
+                        <ScrollView>
+
+                            <VerticalStackLayout Padding="5" BackgroundColor="{StaticResource BtnBorderColor}">
+
+
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="8. autom. Start -- "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam8"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="2/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="0 - 3"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="9. Passwort mm"
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam9"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="0/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="0 - 99999"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="36. REV Zyklen -- "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam36"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="5/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="1 - 9999"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="39. Stop und Zu -- "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam39"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="0/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="0 - 2"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="40. Sprache -- "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam40"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="1/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="1 - 2"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="46. D LOC rt -- "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam46"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="64/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="1 - 64"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="47. D LOC gn -- "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam47"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="1/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="1 - 64"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="48. D AUX -- "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam48"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="64/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="1 - 64"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="51. Sonderfunktion -- "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam51"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="0/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="0 - 10"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="54. Oeffnungsweite So/Wi -- "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam54"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="80/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="40 - 100"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="61. Programmwahlschalter -- "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam61"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="0/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="0 - 2"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="65. akustische Signale -- "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam65"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="1/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="0 - 1"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="67. OSS3 aktiv ab mm "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam67"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="0/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="0 - 1010"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="68. ext. CSS mm "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam68"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="0/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="0 - 1010"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="69. ext. OSS Ge2 "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam69"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="0/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="0 - 1010"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="91. Aufrichtung (R-0/L-1) -- "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam91"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="0/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="0 - 1"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="95. Module freischalten -- "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam95"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="0/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10 " />
+                                            <!--  Ecken abrunden  -->
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="0 - 99999"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+                            </VerticalStackLayout>
+
+                        </ScrollView>                </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+            </ScrollView>
+
+
+
+        <!--  SPEICHERN BUTTON IMMER UNTEN  -->
+        <Button
+            Grid.Row="1"
+            Margin="5"
+            Text="Speichern"
+            VerticalOptions="End" />
+
+        <!--  LOADING OVERLAY  -->
+
+        </Grid>
+  
+</base:BasePage>

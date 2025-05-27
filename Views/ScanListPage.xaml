@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ReisingerIntelliAppV1.Views.ScanListPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Connect Devices"
+    BackgroundColor="{StaticResource MainBackgroundColor}">
+    <StackLayout Padding="10">
+        <Image
+            Margin="10"
+            HorizontalOptions="Center"
+            MaximumHeightRequest="75"
+            MaximumWidthRequest="75"
+            Source="reisingerlogo.png"
+            VerticalOptions="Center" />
+        <Label
+            HorizontalOptions="Center"
+            Style="{StaticResource HeaderStyle}"
+            Text="IntelliDrive Mobile App"
+            TextColor="{StaticResource White}"
+            VerticalTextAlignment="Center" />
+        <Border
+            Background="{StaticResource BtnBorderColor}"
+            Stroke="Black"
+            StrokeThickness="1">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="10" />
+            </Border.StrokeShape>
+            <VerticalStackLayout BackgroundColor="{StaticResource BtnBorderColor}">
+                <Border
+                    Margin="-2"
+                    Background="{StaticResource BtnBorderColor}"
+                    Stroke="Black"
+                    StrokeThickness="1">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10,10,0,0" />
+                    </Border.StrokeShape>
+                    <Label
+                        BackgroundColor="{StaticResource BtnBorderColor}"
+                        HorizontalOptions="Center"
+                        Style="{StaticResource PropertyHeaderStyle}"
+                        Text="Netzgeräte"
+                        TextColor="{StaticResource White}"
+                        VerticalTextAlignment="Center" />
+                </Border>
+
+                <Grid
+                    Padding="10,5,10,0"
+                    ColumnSpacing="5"
+                    Grid.ColumnDefinitions="*,*,*"
+                    Grid.RowDefinitions="Auto, Auto"
+                    RowSpacing="2">
+
+                    <!--  SSID  -->
+                    <Label
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        FontAttributes="Bold"
+                        FontSize="12"
+                        Text="SsidName:"
+                        TextColor="White" />
+
+
+
+                    <!--  BSSID  -->
+                    <Label
+                        Grid.Row="0"
+                        Grid.RowSpan="2"
+                        Grid.Column="1"
+                        FontAttributes="Bold"
+                        FontSize="12"
+                        Text="Bssid:"
+                        TextColor="White" />
+
+
+                </Grid>
+                <ScrollView HeightRequest="{OnPlatform Default=450, Android=450, iOS=450}">
+                    <StackLayout>
+                        <ActivityIndicator
+                            x:Name="loading"
+                            IsRunning="{Binding IsBusy}"
+                            IsVisible="{Binding IsBusy}" />
+                        <CollectionView
+                            x:Name="scanCollectionView"
+                            IsVisible="{Binding IsNotBusy}"
+                            ItemsSource="{Binding WifiNetworks}"
+                            SelectionMode="None">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border
+                                        Background="{StaticResource BtnBorderColor}"
+                                        Stroke="Black"
+                                        StrokeThickness="-1">
+
+                                        <Grid
+                                            Padding="10"
+                                            ColumnSpacing="5"
+                                            Grid.ColumnDefinitions="*,*,*"
+                                            Grid.RowDefinitions="Auto, Auto"
+                                            RowSpacing="2">
+
+                                            <!--  SSID  -->
+                                            <Label
+                                                Grid.Row="0"
+                                                Grid.Column="0"
+                                                FontAttributes="Bold"
+                                                FontSize="12"
+                                                Text="{Binding SsidName}"
+                                                TextColor="White"
+                                                VerticalOptions="Center" />
+
+                                            <!--  Hinweis "Gespeichert"  -->
+                                            <Label
+                                                Grid.Row="1"
+                                                Grid.Column="0"
+                                                Padding="2"
+                                                FontSize="10"
+                                                IsVisible="{Binding IsAlreadySaved}"
+                                                Text="already safed "
+                                                TextColor="SaddleBrown" />
+
+                                            <!--  BSSID  -->
+                                            <Label
+                                                Grid.Row="0"
+                                                Grid.RowSpan="2"
+                                                Grid.Column="1"
+                                                FontAttributes="Bold"
+                                                FontSize="12"
+                                                Text="{Binding Bssid}"
+                                                TextColor="White"
+                                                VerticalOptions="Center" />
+
+                                            <!--  Button  -->
+                                            <Button
+                                                Grid.Row="0"
+                                                Grid.RowSpan="2"
+                                                Grid.Column="2"
+                                                BackgroundColor="LightBlue"
+                                                Clicked="OnClick"
+                                                CommandParameter="{Binding .}"
+                                                Text="Verbinden"
+                                                VerticalOptions="Center" />
+
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </ScrollView>
+            </VerticalStackLayout>
+        </Border>
+        <Button
+            Command="{Binding LoadWifiNetworksCommand}"
+            HorizontalOptions="Fill"
+            Text="Scannen"
+            VerticalOptions="End" />
+    </StackLayout>
+</ContentPage>

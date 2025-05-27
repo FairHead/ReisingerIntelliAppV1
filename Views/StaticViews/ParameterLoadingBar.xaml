@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ReisingerIntelliAppV1.Views.StaticViews.ParameterLoadingBar">
+    <Grid HeightRequest="30" VerticalOptions="Start" IsVisible="{Binding IsLoading}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+        <BoxView BackgroundColor="#FF3700B3" Opacity="0.7" CornerRadius="0,0,5,5" />
+        <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
+            <ActivityIndicator IsRunning="True" Color="White" HeightRequest="20" WidthRequest="20" />
+            <Label Text="{Binding LoadingMessage}" TextColor="White" Margin="10,0,0,0" FontSize="14" VerticalOptions="Center" />
+        </StackLayout>
+    </Grid>
+</ContentView>

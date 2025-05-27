@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ReisingerIntelliAppV1.Views.LocalNetworkScanPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:ReisingerIntelliAppV1.Converters"
+    Title="Local Network Devices"
+    BackgroundColor="{StaticResource MainBackgroundColor}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+                <!--  DataTemplate für die Geräteliste  -->
+            <DataTemplate x:Key="DeviceItemTemplate">
+                <Border Margin="5" Background="{StaticResource BtnBorderColor}">
+                    <Grid Padding="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--  Geräteinformationen  -->
+                        <VerticalStackLayout Grid.Row="0" Grid.Column="0" 
+                            Opacity="{Binding IsAlreadySaved, Converter={StaticResource BoolToOpacityConverter}}">
+                            <Label
+                                FontAttributes="Bold"
+                                Text="{Binding SerialNumber}"
+                                TextColor="White" />
+                            <Label Text="{Binding IpAddress, StringFormat='IP: {0}'}" TextColor="White" />
+                            <Label Text="{Binding FirmwareVersion, StringFormat='Firmware: {0}'}" TextColor="White" />
+                        </VerticalStackLayout>
+
+                        <!--  Speichern-Button  -->
+                        <Button
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Clicked="OnSaveLocalDeviceClicked"
+                            CommandParameter="{Binding .}"
+                            IsEnabled="{Binding IsAlreadySaved, Converter={StaticResource InverseBoolConverter}}"
+                            Text="Speichern" />
+                    </Grid>
+                </Border>
+            </DataTemplate>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <StackLayout Padding="10" Spacing="10">
+        <Label
+            FontAttributes="Bold"
+            FontSize="16"
+            HorizontalOptions="Center"
+            Text="{Binding SsidName}"
+            TextColor="{StaticResource White}" />
+        <CollectionView
+            IsVisible="{Binding IsNotBusy}"
+            ItemTemplate="{StaticResource DeviceItemTemplate}"
+            ItemsSource="{Binding LocalDevices}" />
+        <!--  Scan-Button öffnet das Popup  -->
+        <ActivityIndicator
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Center" />
+        <Button
+            Clicked="OnShowIpRangePopupClicked"
+            HorizontalOptions="Fill"
+            Text="Scan" />
+
+        <!--  Lade-Indikator während des Scans  -->
+
+        <!--  Liste der gefundenen Geräte  -->
+
+    </StackLayout>
+</ContentPage>

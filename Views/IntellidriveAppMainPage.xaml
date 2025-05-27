@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ReisingerIntelliAppV1.Views.IntellidriveAppMainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:staticViews1="clr-namespace:ReisingerIntelliAppV1.Views.StaticViews"
+    Title="Main Menu"
+    BackgroundColor="{StaticResource MainBackgroundColor}">
+    <VerticalStackLayout>
+        <staticViews1:DevicePagesHeader />
+
+        <Grid Grid.ColumnDefinitions="*,*" Grid.RowDefinitions="*,*,*">
+            <Button
+                Grid.Row="0"
+                Grid.Column="0"
+                Margin="10"
+                Clicked="GoToScanListPage"
+                HeightRequest="150"
+                Text="Scan For Devices" />
+            <Button
+                Grid.Row="0"
+                Grid.Column="1"
+                Margin="10"
+                Clicked="GoToSavedDeviceListPage"
+                HeightRequest="150"
+                Text="Your Devices" />
+
+            <Button
+                Grid.Row="1"
+                Grid.Column="0"
+                Margin="10"
+                Clicked="GoToLocalNetworkScanPage"
+                HeightRequest="150"
+                Text="Local Network Devices" />
+            <Button
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="10"
+                Clicked="GoToLocalSavedNetworkScanPage"
+                HeightRequest="150"
+                Text="saved Local Network Devices" />
+
+            <Button
+                Grid.Row="2"
+                Grid.Column="0"
+                Margin="10"
+                Clicked="GoToLocalFloorPlanManagerPage"
+                HeightRequest="150"
+                Text="Go to Floor Plan Page" />
+
+
+        </Grid>
+
+    </VerticalStackLayout>
+</ContentPage>

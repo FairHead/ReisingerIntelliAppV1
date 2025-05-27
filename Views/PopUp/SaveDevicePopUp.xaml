@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="ReisingerIntelliAppV1.Views.PopUp.SaveDevicePopUp"
+             >
+
+    <VerticalStackLayout Padding="20" Spacing="10">
+        <Label Text="Gerätename:" />
+        <Entry Text="{Binding Name}" Placeholder="Name des Geräts eingeben" />
+
+
+        <Label Text="SSID Name:" FontAttributes="Bold" />
+        <Entry x:Name="SsidNameEntry" Text="{Binding Ssid}" Placeholder="Enter SSID Name" />
+        <!-- Device ID -->
+        <Label Text="Device ID:" FontAttributes="Bold" />
+        <Label x:Name="DeviceIdLabel" Text="{Binding DeviceId}" />
+
+        <!-- Bearer Token -->
+        <Label Text="Bearer Token:" FontAttributes="Bold" />
+        <Label x:Name="BearerTokenLabel" Text="{Binding BearerToken}" />
+
+        <Label Text="Username:" FontAttributes="Bold" />
+        <Label x:Name="Username" Text="{Binding Username}" />
+        <!-- SSID Name -->
+        <Label Text="Seriennummer:" FontAttributes="Bold" />
+        <Label Text="{Binding SerialNumber}" />
+
+        <Label Text="SoftwareVersion:" FontAttributes="Bold" />
+        <Label Text="{Binding SoftwareVersion}" />
+
+
+
+        <!-- Buttons -->
+        <Button Text="Save" Clicked="OnSaveClicked" />
+        <Button Text="Cancel" Clicked="OnCancelClicked" />
+        </VerticalStackLayout>
+</toolkit:Popup>

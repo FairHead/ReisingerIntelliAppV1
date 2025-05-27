@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ReisingerIntelliAppV1.Views.SavedDeviceListPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:ReisingerIntelliAppV1.Converters"
+    Title="Saved Devices"
+    BackgroundColor="{StaticResource MainBackgroundColor}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <!--  DEINE SEITENINHALTE - nur sichtbar wenn NICHT busy  -->
+        <VerticalStackLayout IsVisible="{Binding IsBusy}">
+            <!--  dein ganzer bestehender Inhalt von oben kommt hier rein  -->
+        </VerticalStackLayout>
+
+        <StackLayout Padding="10">
+
+            <Image
+                Margin="10"
+                HorizontalOptions="Center"
+                MaximumHeightRequest="75"
+                MaximumWidthRequest="75"
+                Source="reisingerlogo.png"
+                VerticalOptions="Center" />
+
+            <Label
+                HorizontalOptions="Center"
+                Style="{StaticResource HeaderStyle}"
+                Text="IntelliDrive Mobile App"
+                TextColor="{StaticResource White}"
+                VerticalTextAlignment="Center" />
+
+            <Border
+                Background="{StaticResource BtnBorderColor}"
+                Stroke="Black"
+                StrokeThickness="1">
+                <Border.StrokeShape>
+                    <RoundRectangle Background="{StaticResource BtnBorderColor}" CornerRadius="10" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout>
+                    <Border
+                        Margin="-2"
+                        Background="{StaticResource BtnBorderColor}"
+                        Stroke="Black"
+                        StrokeThickness="2">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10,10,0,0" />
+                        </Border.StrokeShape>
+                        <Label
+                            Background="{StaticResource BtnBorderColor}"
+                            HorizontalOptions="Center"
+                            Style="{StaticResource PropertyHeaderStyle}"
+                            Text="Drives"
+                            TextColor="{StaticResource White}"
+                            VerticalTextAlignment="Center" />
+                    </Border>
+
+
+                    <ScrollView HeightRequest="{OnPlatform Default=300, Android=300, iOS=300}">
+                        <StackLayout>
+                            <ActivityIndicator
+                                x:Name="loading"
+                                IsRunning="False"
+                                IsVisible="False" />
+
+                            <CollectionView
+                                x:Name="deviceCollectionView"
+                                ItemsSource="{Binding Devices}"
+                                SelectionMode="None">
+                                <CollectionView.Header>
+                                    <Grid Padding="10" ColumnDefinitions="Auto,Auto,Auto">
+                                        <Label
+                                            Grid.Column="0"
+                                            FontSize="7"
+                                            HorizontalTextAlignment="Center"
+                                            Text="Status"
+                                            TextColor="White"
+                                            WidthRequest="20" />
+                                        <Label
+                                            Grid.Column="1"
+                                            Margin="10,0,0,0"
+                                            FontSize="7"
+                                            Text="Name"
+                                            TextColor="White" />
+                                        <Label
+                                            Grid.Column="2"
+                                            Margin="10,0,0,0"
+                                            FontSize="7"
+                                            Text="SerialNumber"
+                                            TextColor="White" />
+
+                                    </Grid>
+                                </CollectionView.Header>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Background="{StaticResource BtnBorderColor}"
+                                            Stroke="Black"
+                                            StrokeThickness="-1">
+                                            <Grid Padding="10">
+                                                <!--  Statischer Teil (Kreis und Label)  -->
+                                                <Grid HorizontalOptions="Start" ZIndex="1">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <!--  für den Status-Kreis  -->
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <!--  für den Namen  -->
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <!--  für die Seriennummer  -->
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <!--  Live-Status-Farbkreis  -->
+                                                    <BoxView
+                                                        Grid.Column="0"
+                                                        BackgroundColor="Transparent"
+                                                        CornerRadius="10"
+                                                        HeightRequest="20"
+                                                        VerticalOptions="Center"
+                                                        WidthRequest="20"
+                                                        Color="{Binding IsOnline, Converter={StaticResource BoolToColorConverter}}" />
+
+                                                    <!--  Gerätename  -->
+                                                    <Label
+                                                        Grid.Column="1"
+                                                        Margin="10,0,0,0"
+                                                        FontSize="16"
+                                                        Text="{Binding Name}"
+                                                        TextColor="White"
+                                                        VerticalOptions="Center" />
+
+                                                    <Label
+                                                        Grid.Column="2"
+                                                        Margin="10,0,0,0"
+                                                        FontSize="16"
+                                                        Text="{Binding SerialNumber}"
+                                                        TextColor="White"
+                                                        VerticalOptions="Center" />
+
+                                                </Grid>
+
+                                                <!--  Swipeable Teil mit CustomView  -->
+                                                <SwipeView>
+                                                    <SwipeView.RightItems>
+                                                        <SwipeItems Mode="Reveal">
+                                                            <SwipeItemView BackgroundColor="LightBlue">
+                                                                <Grid WidthRequest="100">
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="*" />
+                                                                        <ColumnDefinition Width="*" />
+                                                                    </Grid.ColumnDefinitions>
+
+                                                                    <!--  Settings Icon  -->
+                                                                    <Border
+                                                                        Grid.Column="0"
+                                                                        Padding="2"
+                                                                        BackgroundColor="Transparent"
+                                                                        StrokeThickness="0">
+                                                                        <Border.StrokeShape>
+                                                                            <RoundRectangle CornerRadius="100" />
+                                                                        </Border.StrokeShape>
+                                                                        <ImageButton
+                                                                            Clicked="GoToDeviceInformationsPage"
+                                                                            CommandParameter="{Binding .}"
+                                                                            HeightRequest="65"
+                                                                            Source="setting.png"
+                                                                            WidthRequest="65" />
+                                                                    </Border>
+
+                                                                    <!--  Delete Icon  -->
+                                                                    <Border
+                                                                        Grid.Column="1"
+                                                                        Padding="2"
+                                                                        StrokeThickness="0">
+                                                                        <Border.StrokeShape>
+                                                                            <RoundRectangle CornerRadius="100" />
+                                                                        </Border.StrokeShape>
+                                                                        <ImageButton
+                                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCommand}"
+                                                                            CommandParameter="{Binding .}"
+                                                                            HeightRequest="65"
+                                                                            Source="eject.png"
+                                                                            WidthRequest="65" />
+                                                                    </Border>
+                                                                </Grid>
+                                                            </SwipeItemView>
+                                                        </SwipeItems>
+                                                    </SwipeView.RightItems>
+
+                                                    <Grid>
+                                                        <Button
+                                                            BackgroundColor="LightBlue"
+                                                            Clicked="OnConfigureButtonClicked"
+                                                            CommandParameter="{Binding .}"
+                                                            HorizontalOptions="End"
+                                                            Text="Configure"
+                                                            WidthRequest="100" />
+                                                    </Grid>
+                                                </SwipeView>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </StackLayout>
+                    </ScrollView>
+                </VerticalStackLayout>
+            </Border>
+        </StackLayout>
+        <Grid
+            BackgroundColor="#80000000"
+            InputTransparent="False"
+            IsVisible="{Binding IsBusy}"
+            ZIndex="10">
+            <ActivityIndicator
+                HeightRequest="50"
+                HorizontalOptions="Center"
+                IsRunning="{Binding IsBusy}"
+                VerticalOptions="Center"
+                WidthRequest="50"
+                Color="White" />
+        </Grid>
+    </Grid>
+</ContentPage>

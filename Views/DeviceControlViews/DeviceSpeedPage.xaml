@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BasePage
+    x:Class="ReisingerIntelliAppV1.Views.DeviceControlViews.DeviceSpeedPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:base="clr-namespace:ReisingerIntelliAppV1.Base"
+
+    xmlns:staticViews1="clr-namespace:ReisingerIntelliAppV1.Views.StaticViews"
+    Title="Tempo"
+    BackgroundColor="{StaticResource MainBackgroundColor}">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!--  Seiteninhalt mit Header und Scrollbereich  -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout>
+
+                <!--  Seiten-Header  -->
+                <staticViews1:DevicePagesHeader Device="{Binding SelectedDevice}" />
+
+                <!--  Scrollbarer Parameterbereich  -->
+                <Border
+                    Margin="5,0,5,0"
+                    Background="{StaticResource BtnBorderColor}"
+                    Stroke="Black"
+                    StrokeThickness="1">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout
+                        Margin="15,0,15,0"
+                        Padding="5,0,5,5"
+                        BackgroundColor="{StaticResource BtnBorderColor}">
+
+                        <Label
+                            BackgroundColor="{StaticResource BtnBorderColor}"
+                            HorizontalOptions="Center"
+                            Style="{StaticResource PropertyHeaderStyle}"
+                            Text="Tempo"
+                            TextColor="{StaticResource White}"
+                            VerticalTextAlignment="Center" />
+                        <Border
+                            Margin="10"
+                            Background="{StaticResource MainBackgroundColor}"
+                            Stroke="Black"
+                            StrokeThickness="1">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                HorizontalOptions="Center"
+                                Text="{Binding IsDoorOpen, Converter={StaticResource DoorStatusTextConverter}}"
+                                TextColor="{Binding IsDoorOpen, Converter={StaticResource DoorStatusColorConverter}}"
+                                VerticalOptions="Center" />
+                        </Border>
+
+
+                        <ScrollView>
+
+                            <!--  Inhalte unterhalb der Überschrift "Weiten"  -->
+                            <VerticalStackLayout Padding="5" BackgroundColor="{StaticResource BtnBorderColor}">
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="21. Geschwindigkeit AUF mm/s "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam21"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="301/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="1 - 500"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="22. Geschwindigkeit ZU mm/s "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam22"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="200/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="1 - 500"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="23. Geschwindigkeit EINLAUF mm/s "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam23"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="27/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="1 - 50"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="24. Geschwindigkeit REF -- "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam24"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="41/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="1 - 50"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="31. REV Empfindlichkeit AUF -- "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam31"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="700/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="100 - 1100"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="32. REV Empfindlichkeit ZU --  "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam32"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="500/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="100 - 500"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="33. Beschleunigung AUF -- "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam33"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="1000/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="0 - 3000"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="34. Bremsrampe AUF --  "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam34"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="400/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="0 - 2000"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="35. Bremsrampe ZU --  "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam35"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="400/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="0 - 2000"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="38. Beschleunigung ZU --  "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam38"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="800/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="0 - 3000"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+                                <!--  Weitere Inhalte können hier hinzugefügt werden  -->
+                            </VerticalStackLayout>
+                        </ScrollView>
+
+
+
+
+                        <!--  Deine Einträge (z. B. EntryParam21 bis EntryParam38) wurden beibehalten  -->
+
+                        <VerticalStackLayout Padding="5" BackgroundColor="{StaticResource BtnBorderColor}">
+                            <!--  ALLE bisherigen Grid-Einträge mit Label und Entry hier einfügen (wie im Original)  -->
+                            <!--  Um Platz zu sparen im Editor nicht wiederholt eingefügt  -->
+                        </VerticalStackLayout>
+
+                        <!--  END PARAMETER BLOCK  -->
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!--  Speichern-Button unten fixiert  -->
+        <Button
+            Grid.Row="2"
+            Margin="5"
+            Text="Speichern"
+            VerticalOptions="End" />
+
+      
+
+    </Grid>
+</base:BasePage>  

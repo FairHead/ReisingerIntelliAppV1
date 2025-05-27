@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ReisingerIntelliAppV1.Views.LocalSavedDeviceListPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:ReisingerIntelliAppV1.Converters"
+    Title="Saved Local Devices"
+    BackgroundColor="{StaticResource MainBackgroundColor}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <!-- Overlay während busy -->
+        <Grid
+            BackgroundColor="#80000000"
+            InputTransparent="False"
+            IsVisible="{Binding IsBusy}"
+            ZIndex="10">
+            <ActivityIndicator
+                IsRunning="{Binding IsBusy}"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                Color="White"
+                WidthRequest="50"
+                HeightRequest="50" />
+        </Grid>
+
+        <!-- Hauptinhalt -->
+        <StackLayout Padding="10">
+
+            <Image
+                Margin="10"
+                HorizontalOptions="Center"
+                MaximumHeightRequest="75"
+                MaximumWidthRequest="75"
+                Source="reisingerlogo.png"
+                VerticalOptions="Center" />
+
+            <Label
+                HorizontalOptions="Center"
+                Style="{StaticResource HeaderStyle}"
+                Text="IntelliDrive Mobile App"
+                TextColor="{StaticResource White}"
+                VerticalTextAlignment="Center" />
+
+            <Border
+                Background="{StaticResource BtnBorderColor}"
+                Stroke="Black"
+                StrokeThickness="1">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout>
+                    <Border
+                        Margin="-2"
+                        Background="{StaticResource BtnBorderColor}"
+                        Stroke="Black"
+                        StrokeThickness="1">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10,10,0,0" />
+                        </Border.StrokeShape>
+                        <Label
+                            Background="{StaticResource BtnBorderColor}"
+                            HorizontalOptions="Center"
+                            Style="{StaticResource PropertyHeaderStyle}"
+                            Text="Local Devices"
+                            TextColor="{StaticResource White}"
+                            VerticalTextAlignment="Center" />
+                    </Border>
+
+                    <!-- Gruppierte Liste -->
+                    <CollectionView
+                        IsGrouped="True"
+                        ItemsSource="{Binding Groups}"
+                        Margin="0,5"
+                        SelectionMode="None">
+
+                        <CollectionView.GroupHeaderTemplate>
+                            <DataTemplate>
+                                <Label
+                                    Text="{Binding Key}"
+                                    FontAttributes="Bold"
+                                    BackgroundColor="{StaticResource BtnBorderColor}"
+                                    TextColor="White"
+                                    Padding="5" />
+                            </DataTemplate>
+                        </CollectionView.GroupHeaderTemplate>
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    Background="{StaticResource BtnBorderColor}"
+                                    Stroke="Black"
+                                    StrokeThickness="-1"
+                                    Padding="10"
+                                    Margin="4">
+                                    <Grid Padding="0" RowSpacing="5">
+                                        <!-- Geräteinfo -->
+                                        <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
+                                            <BoxView
+                                                Grid.Row="0"
+                                                Grid.RowSpan="2"
+                                                Grid.Column="0"
+                                                WidthRequest="20"
+                                                HeightRequest="20"
+                                                CornerRadius="10"
+                                                VerticalOptions="Center"
+                                                Color="{Binding IsOnline, Converter={StaticResource BoolToColorConverter}}" />
+                                            <Label
+                                                Grid.Row="0"
+                                                Grid.Column="1"
+                                                Text="{Binding Name}"
+                                                TextColor="White"
+                                                FontAttributes="Bold" />
+                                            <Label
+                                                Grid.Row="1"
+                                                Grid.Column="1"
+                                                Text="{Binding Ip}"
+                                                TextColor="White"
+                                                FontSize="12" />
+
+                                            <!-- Configure-Button direkt im Item -->
+                                            <Button
+                                                Grid.Row="0"
+                                                Grid.RowSpan="2"
+                                                Grid.Column="2"
+                                                Text="Configure"
+                                                BackgroundColor="LightBlue"
+                                                Clicked="OnConfigureButtonClicked"
+                                                CommandParameter="{Binding .}"
+                                                VerticalOptions="Center" />
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Border>
+        </StackLayout>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BasePage
+    x:Class="ReisingerIntelliAppV1.Views.DeviceControlViews.DeviceDistancesPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:base="clr-namespace:ReisingerIntelliAppV1.Base"
+    xmlns:staticViews1="clr-namespace:ReisingerIntelliAppV1.Views.StaticViews"
+    Title="Weiten"
+    BackgroundColor="{StaticResource MainBackgroundColor}">
+
+    <Grid RowDefinitions="*,Auto">
+        <!--  Seiteninhalt mit Scrollbereich  -->
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout>
+                <staticViews1:DevicePagesHeader Device="{Binding SelectedDevice}" />
+
+                <Border
+                    Margin="5,0,5,0"
+                    Background="{StaticResource BtnBorderColor}"
+                    Stroke="Black"
+                    StrokeThickness="1">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout
+                        Margin="15,0,15,0"
+                        Padding="5,0,5,5"
+                        BackgroundColor="{StaticResource BtnBorderColor}">
+
+                        <Label
+                            BackgroundColor="{StaticResource BtnBorderColor}"
+                            HorizontalOptions="Center"
+                            Style="{StaticResource PropertyHeaderStyle}"
+                            Text="Weiten"
+                            TextColor="{StaticResource White}"
+                            VerticalTextAlignment="Center" />
+
+                        <Border
+                            Margin="10"
+                            Background="{StaticResource MainBackgroundColor}"
+                            Stroke="Black"
+                            StrokeThickness="1">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                HorizontalOptions="Center"
+                                Text="{Binding IsDoorOpen, Converter={StaticResource DoorStatusTextConverter}}"
+                                TextColor="{Binding IsDoorOpen, Converter={StaticResource DoorStatusColorConverter}}"
+                                VerticalOptions="Center" />
+                        </Border>
+
+
+                        <ScrollView>
+                            <!--  Inhalte unterhalb der Überschrift "Weiten"  -->
+                            <VerticalStackLayout Padding="5" BackgroundColor="{StaticResource BtnBorderColor}">
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="10. Weite DAUERAUF mm"
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam10"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="1000/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="50 - 1010"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+                                <!--  Wiederholung für weitere Inhalte  -->
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="11. Weite TEILAUF mm"
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam11"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="1000/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="50 - 1010"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="12. Weite VOLLAUF 1 mm "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam12"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="1000/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="50 - 1010"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="13. Weite BM I mm "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam13"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="1000/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="50 - 1010"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="14. Weite BM A mm "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam14"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="1000/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="50 - 1010"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="15. Weite DTA mm "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam15"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="1000/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="50 - 1010"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="16. Weite VOLLAUF 2 mm  "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam16"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="1000/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="50 - 1010"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="17. Einlaufbereich AUF mm "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam17"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="40/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="5 - 200"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+
+
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="18. Einlaufbereich ZU mm "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam18"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="50/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="5 - 200"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="19. Sicherheitsabstand AUF mm "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam19"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="10/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="0 - 30"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="20. Nullpunkttoleranz mm/s "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam20"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="7/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="0 - 15"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+                                <Label
+                                    Margin="0,10,0,5"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource HeaderStyle}"
+                                    Text="59. autom. ZU nach REV -- "
+                                    TextColor="{StaticResource White}"
+                                    VerticalTextAlignment="Center" />
+
+                                <Grid Grid.ColumnDefinitions="*,*,*,*">
+                                    <Border
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Margin="2,0,2,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="10,0,10,0" />
+                                        </Border.StrokeShape>
+                                        <Entry
+                                            x:Name="EntryParam59"
+                                            BackgroundColor="Black"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Placeholder="1/"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="3"
+                                        Margin="0,0,5,0"
+                                        BackgroundColor="White">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,10,0,10" />
+                                        </Border.StrokeShape>
+                                        <Label
+                                            BackgroundColor="{StaticResource ButtonColor}"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Center"
+                                            Text="0 - 2"
+                                            TextColor="White"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+
+
+                                <!--  Weitere Inhalte können hier hinzugefügt werden  -->
+                            </VerticalStackLayout>
+                        </ScrollView>
+
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!--  Speichern-Button bleibt immer sichtbar am unteren Rand  -->
+        <Button
+            Grid.Row="1"
+            Margin="5"
+            Text="Speichern"
+            VerticalOptions="End" />
+
+    </Grid>
+</base:BasePage>

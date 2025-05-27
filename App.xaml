@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Application
+    x:Class="ReisingerIntelliAppV1.App"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:ReisingerIntelliAppV1.Converters"
+    xmlns:behaviors="clr-namespace:ReisingerIntelliAppV1.Behaviors">
+    <Application.Resources>
+        <ResourceDictionary>
+            <behaviors:OctetValidationBehavior x:Key="OctetValidation"/>
+            <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+            <converters:DoorStatusTextConverter x:Key="DoorStatusTextConverter" />
+            <converters:DoorStatusColorConverter x:Key="DoorStatusColorConverter" />
+            <converters:DoorStatusToggleTextConverter x:Key="DoorStatusToggleTextConverter" />
+            <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
+            <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
+
+
+
+            <Color x:Key="MainBackgroundColor">#282d30</Color>
+            <Color x:Key="MainTextColor">White</Color>
+            <Color x:Key="ButtonColor">#3E4145</Color>
+            <Color x:Key="BtnBorderColor">#555555</Color>
+            <Color x:Key="BtnMainColor">#0D6EFD</Color>
+            <Color x:Key="TabBarBackgroundColor">#282d30</Color>
+
+            <Style TargetType="TabbedPage">
+                <Setter Property="BackgroundColor" Value="{StaticResource MainBackgroundColor}" />
+                <Setter Property="SelectedTabColor" Value="DarkGrey" />
+                <Setter Property="UnselectedTabColor" Value="{StaticResource BtnBorderColor}" />
+            </Style>
+
+            <!--  NavigationsTopBarSettings  -->
+            <Style TargetType="NavigationPage">
+                <Setter Property="BarBackgroundColor" Value="{StaticResource BtnBorderColor}" />
+                <Setter Property="BarTextColor" Value="White" />
+            </Style>
+
+
+            <Style x:Key="HeaderStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="TextColor" Value="{StaticResource MainTextColor}" />
+                <Setter Property="FontAttributes" />
+
+
+            </Style>
+            <Style x:Key="SubHeaderStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="10" />
+                <Setter Property="TextColor" Value="{StaticResource MainTextColor}" />
+                <Setter Property="FontAttributes" />
+                <Setter Property="Margin" Value="10" />
+                <Setter Property="BackgroundColor" Value="{StaticResource MainBackgroundColor}" />
+
+            </Style>
+            <Style x:Key="PropertyHeaderStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="40" />
+                <Setter Property="TextColor" Value="{StaticResource MainTextColor}" />
+                <Setter Property="FontAttributes" />
+                <Setter Property="Margin" Value="10" />
+                <Setter Property="BackgroundColor" Value="{StaticResource MainBackgroundColor}" />
+            </Style>
+
+
+            <Style TargetType="Button">
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <!--  Zustand, wenn der Button gedrückt wird  -->
+                            <VisualState x:Name="Pressed">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="#005f87" />
+                                    <!--  Dunkleres Blau  -->
+                                    <Setter Property="TextColor" Value="LightGray" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <!--  Zustand, wenn der Button nicht gedrückt wird  -->
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="{StaticResource BtnMainColor}" />
+                                    <Setter Property="TextColor" Value="White" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+
+
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

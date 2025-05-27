@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BasePage
+    x:Class="ReisingerIntelliAppV1.Views.DeviceControlViews.DeviceDoorFunctionPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:base="clr-namespace:ReisingerIntelliAppV1.Base"
+    xmlns:staticViews1="clr-namespace:ReisingerIntelliAppV1.Views.StaticViews"
+    Title="DeviceDoorFunctionPage"
+    BackgroundColor="{StaticResource MainBackgroundColor}">
+    <Grid>
+        <VerticalStackLayout IsVisible="{Binding IsBUsy}" />
+
+
+
+        <VerticalStackLayout>
+            <staticViews1:DevicePagesHeader Device="{Binding SelectedDevice}" />
+
+
+
+            <!--  Bereich unterhalb der Überschrift "Weiten" wird scrollbar  -->
+            <Border
+                Margin="15,0,15,0"
+                Padding="5"
+                Background="{StaticResource BtnBorderColor}"
+                Stroke="Black"
+                StrokeThickness="1">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+
+
+                <VerticalStackLayout
+                    Margin="5,0,5,0"
+                    Padding="5,0,5,5"
+                    BackgroundColor="{StaticResource BtnBorderColor}">
+
+                    <Label
+                        BackgroundColor="{StaticResource BtnBorderColor}"
+                        HorizontalOptions="Center"
+                        Style="{StaticResource PropertyHeaderStyle}"
+                        Text="Türfunktionen"
+                        TextColor="{StaticResource White}"
+                        VerticalTextAlignment="Center" />
+                    <Border
+                        Margin="10"
+                        Background="{StaticResource MainBackgroundColor}"
+                        Stroke="Black"
+                        StrokeThickness="1">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            Text="{Binding IsDoorOpen, Converter={StaticResource DoorStatusTextConverter}}"
+                            TextColor="{Binding IsDoorOpen, Converter={StaticResource DoorStatusColorConverter}}"
+                            VerticalOptions="Center" />
+                    </Border>
+
+
+                    <Grid Grid.ColumnDefinitions="*,*,*" Grid.RowDefinitions="*,*,*">
+                        <Button
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="5,3,5,3"
+                            BackgroundColor="{StaticResource BtnMainColor}"
+                            Clicked="Identify"
+                            Text="Identifizieren" />
+
+                        <Button
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="5,3,5,3"
+                            BackgroundColor="{StaticResource BtnMainColor}"
+                            Clicked="DoorFullOpen"
+                            FontSize="10"
+                            Text="Tür vollöffnen" />
+
+
+                        <Button
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            Margin="5,3,5,3"
+                            BackgroundColor="{StaticResource BtnMainColor}"
+                            Clicked="DoorForceClose"
+                            FontSize="10"
+                            Text="Tür schließen" />
+
+
+                        <Button
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="5,3,5,3"
+                            Clicked="DoorPartialOpen"
+                            FontSize="10"
+                            Text="Tür teilöffnen" />
+
+
+                        <Button
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="5,3,5,3"
+                            Clicked="OnOpenCloseCheckStatus"
+                            FontSize="10"
+                            Text="Tür dauerauf" />
+
+
+                        <Button
+                            x:Name="LockUnlockButton"
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            Margin="5,3,5,3"
+                            BackgroundColor="Green"
+                            Clicked="OnLockUnlockClicked"
+                            FontSize="10"
+                            Text="Lock" />
+
+                        <Button
+                            x:Name="SummerModeButton"
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Margin="5,3,5,3"
+                            BackgroundColor="Green"
+                            Clicked="OnSummerModeClicked"
+                            FontSize="10"
+                            Text="Enable Summer Mode"
+                            TextColor="White" />
+
+
+
+
+
+
+
+                    </Grid>
+
+                    <Border
+                        Margin="0,20"
+                        Padding="0"
+                        BackgroundColor="{Binding IsDoorOpen, Converter={StaticResource DoorStatusColorConverter}}"
+                        HeightRequest="70"
+                        HorizontalOptions="Center"
+                        Stroke="Black"
+                        StrokeThickness="2"
+                        VerticalOptions="Start"
+                        WidthRequest="70">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="50" />
+                        </Border.StrokeShape>
+                        <Button
+                            BackgroundColor="Transparent"
+                            Clicked="OnOpenCloseCheckStatus"
+                            FontAttributes="Bold"
+                            Text="{Binding IsDoorOpen, Converter={StaticResource DoorStatusToggleTextConverter}}"
+                            TextColor="White" />
+                    </Border>
+
+
+
+                </VerticalStackLayout>
+
+
+            </Border>
+
+        </VerticalStackLayout>
+       
+    </Grid>
+</base:BasePage>  

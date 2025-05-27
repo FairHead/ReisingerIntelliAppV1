@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup
+    x:Class="ReisingerIntelliAppV1.Views.PopUp.IpRangePopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    Size="300,250">
+    <Frame Padding="20" CornerRadius="12" BackgroundColor="White" HasShadow="True">
+        <VerticalStackLayout Spacing="20">
+
+            <!-- Start-IP -->
+            <HorizontalStackLayout Spacing="5" VerticalOptions="Center">
+                <Entry x:Name="S1" MaxLength="3" WidthRequest="50" Keyboard="Numeric"
+               Placeholder="0"
+               Behaviors="{StaticResource OctetValidation}" />
+                <Label Text="." VerticalTextAlignment="Center"/>
+                <Entry x:Name="S2" MaxLength="3" WidthRequest="50" Keyboard="Numeric"
+               Placeholder="0"
+               Behaviors="{StaticResource OctetValidation}" />
+                <Label Text="." VerticalTextAlignment="Center"/>
+                <Entry x:Name="S3" MaxLength="3" WidthRequest="50" Keyboard="Numeric"
+               Placeholder="0"
+               Behaviors="{StaticResource OctetValidation}" />
+                <Label Text="." VerticalTextAlignment="Center"/>
+                <Entry x:Name="S4" MaxLength="3" WidthRequest="50" Keyboard="Numeric"
+               Placeholder="0"
+               Behaviors="{StaticResource OctetValidation}" />
+            </HorizontalStackLayout>
+
+            <!-- End-IP -->
+            <HorizontalStackLayout Spacing="5" VerticalOptions="Center">
+                <Entry x:Name="E1" MaxLength="3" WidthRequest="50" Keyboard="Numeric"
+               Placeholder="255"
+               Behaviors="{StaticResource OctetValidation}" />
+                <Label Text="." VerticalTextAlignment="Center"/>
+                <Entry x:Name="E2" MaxLength="3" WidthRequest="50" Keyboard="Numeric"
+               Placeholder="255"
+               Behaviors="{StaticResource OctetValidation}" />
+                <Label Text="." VerticalTextAlignment="Center"/>
+                <Entry x:Name="E3" MaxLength="3" WidthRequest="50" Keyboard="Numeric"
+               Placeholder="255"
+               Behaviors="{StaticResource OctetValidation}" />
+                <Label Text="." VerticalTextAlignment="Center"/>
+                <Entry x:Name="E4" MaxLength="3" WidthRequest="50" Keyboard="Numeric"
+               Placeholder="255"
+               Behaviors="{StaticResource OctetValidation}" />
+            </HorizontalStackLayout>
+
+            <!-- Buttons -->
+            <HorizontalStackLayout Spacing="20" HorizontalOptions="Center">
+                <Button Text="Abbruch" Clicked="OnCancelClicked"/>
+                <Button Text="OK"      Clicked="OnOkClicked"/>
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </Frame>
+</toolkit:Popup>

@@ -1,0 +1,47 @@
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ReisingerIntelliAppV1.StaticViews.DevicePagesHeader">
+    <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Start" BackgroundColor="{StaticResource MainBackgroundColor}">
+        <Image
+            Margin="10"
+            HorizontalOptions="Center"
+            MaximumHeightRequest="35"
+            MaximumWidthRequest="35"
+            Source="reisingerlogo.png"
+            VerticalOptions="Center" />
+        <Label
+            HorizontalOptions="Center"
+            Style="{StaticResource HeaderStyle}"
+            Text="IntelliDrive Mobile App"
+            TextColor="{StaticResource White}"
+            VerticalTextAlignment="Center" />
+        <Label
+            x:Name="DeviceSerianNumber"
+            HorizontalOptions="Center"
+            Style="{StaticResource SubHeaderStyle}"
+            Text="S/N: 2024330 V4.0.8.0 R MTyp: STDN5 Modul: 12345"
+            VerticalTextAlignment="Center"
+            Margin="3"/>
+        <Label
+            HorizontalOptions="Center"
+            Style="{StaticResource SubHeaderStyle}"
+            Text="Reisinger 5000"
+            VerticalTextAlignment="Center"
+            Margin="3"/>
+
+        <StackLayout
+            Margin="5"
+            Padding="5"
+            BackgroundColor="{Binding Device.IsDoorClosed, Converter={StaticResource BoolToColorConverter}}"
+            HorizontalOptions="Fill"
+            VerticalOptions="Start">
+            <Label
+                Text="{Binding Device.IsDoorClosed, Converter={StaticResource DoorStatusMessageConverter}}"
+                FontAttributes="Bold"
+                TextColor="White"
+                FontSize="14"
+                HorizontalOptions="Center" />
+        </StackLayout>
+
+    </VerticalStackLayout>
+</ContentView>
