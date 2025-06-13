@@ -11,7 +11,7 @@ namespace ReisingerIntelliAppV1.Converters
             // Handle the case where we're bound to a Floor object
             if (value is ReisingerIntelliAppV1.Model.Models.Floor floor)
             {
-                System.Diagnostics.Debug.WriteLine($"[PdfPathConverter] Floor object: {floor.Name}, PdfPath: {floor.PdfPath ?? "null"}");
+                System.Diagnostics.Debug.WriteLine($"[PdfPathConverter] Floor object: {floor.FloorName}, PdfPath: {floor.PdfPath ?? "null"}");
                 return HandlePath(floor.PdfPath, parameter);
             }
             

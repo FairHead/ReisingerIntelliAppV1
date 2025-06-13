@@ -9,13 +9,8 @@ namespace ReisingerIntelliAppV1.Model.Models
 {
     public class Building
     {
-        public string Name { get; set; } = string.Empty;
+        public string BuildingName { get; set; } = string.Empty;
         public ObservableCollection<Floor> Floors { get; set; } = new();
     }
 
-    public class Floor
-    {
-        public string Name { get; set; } = string.Empty;
-        public string? PdfPath { get; set; } = string.Empty;
-    }
 }

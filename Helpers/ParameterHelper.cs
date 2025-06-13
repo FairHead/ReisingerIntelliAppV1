@@ -26,7 +26,7 @@ namespace ReisingerIntelliAppV1.Helpers
                 // Extrahiere die ID aus dem Key (z. B. "id1" -> 1)
                 if (int.TryParse(param.Key.Replace("id", ""), out int id))
                 {
-                    // Finde das entsprechende Entry-Feld anhand des x:Name (z. B. "EntryParam1")
+                    // Finde das entsprechende Entry-Feld anhand des x:FloorName (z. B. "EntryParam1")
                     var entryField = FindEntryFieldByName(pageContent, $"EntryParam{id}");
 
                     if (entryField != null)
@@ -55,7 +55,7 @@ namespace ReisingerIntelliAppV1.Helpers
                 return null;
             }
 
-            // Suche das Element mit dem Namen (x:Name)
+            // Suche das Element mit dem Namen (x:FloorName)
             return layout.FindByName<Entry>(name);
         }
     }

@@ -2,7 +2,7 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ReisingerIntelliAppV1.Views.StaticViews.ParameterLoadingBar">
-    <Grid HeightRequest="30" VerticalOptions="Start" IsVisible="{Binding IsLoading}">
+    <Grid HeightRequest="30" VerticalOptions="Start" IsVisible="{Binding IsLoadingParameters}">
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
         </Grid.RowDefinitions>

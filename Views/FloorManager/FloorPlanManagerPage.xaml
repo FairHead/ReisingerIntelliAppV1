@@ -2,50 +2,83 @@
     x:Class="ReisingerIntelliAppV1.Views.FloorManager.FloorPlanManagerPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:pdfView="clr-namespace:Maui.PDFView;assembly=Maui.PDFView"
-    xmlns:viewModels="clr-namespace:ReisingerIntelliAppV1.Model.ViewModels"
+    xmlns:controls="clr-namespace:ReisingerIntelliAppV1.Controls"
     xmlns:converters="clr-namespace:ReisingerIntelliAppV1.Converters"
-    Title="Floor Plan Manager"
-    x:Name="FloorManagerPage">
+    xmlns:floorManager="clr-namespace:ReisingerIntelliAppV1.Views.FloorManager"
+    x:Name="FloorManagerPage"
+    Title="Floor Plan Manager">
 
     <ContentPage.Resources>
-        <converters:PdfPathConverter x:Key="PdfPathConverter" />
+        <ResourceDictionary>
+            <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+            <converters:AnyTrueConverter x:Key="AnyTrueConverter" />
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <converters:RelativePositionToLayoutBoundsConverter x:Key="RelativePositionToLayoutBoundsConverter" />
+
+        </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid>
-        <!-- Blank placeholder when no PDF is available or floor is selected -->
-        <Grid 
-            BackgroundColor="White"
-            IsVisible="{Binding SelectedFloor, Converter={StaticResource PdfPathConverter}, ConverterParameter=IsEmpty}">
-            <VerticalStackLayout 
-                HorizontalOptions="Center" 
-                VerticalOptions="Center"
-                Spacing="20">
-                <Label 
-                    Text="Kein PDF-Bauplan verfügbar" 
-                    FontSize="24" 
-                    TextColor="Gray" 
-                    HorizontalOptions="Center"/>
-                <Label 
-                    Text="Bitte laden Sie einen Bauplan für dieses Stockwerk hoch" 
-                    FontSize="16" 
-                    TextColor="Gray" 
-                    HorizontalOptions="Center"/>
+    <Grid x:Name="MainGrid">
+        <Grid.GestureRecognizers>
+            <TapGestureRecognizer Tapped="OnPageTapped" />
+        </Grid.GestureRecognizers>
+        <!--  Blank placeholder wenn kein Bauplan vorhanden ist  -->
+        <Grid BackgroundColor="White" IsVisible="{Binding IsNoFloorPlanAvailable}">
+            <VerticalStackLayout
+                HorizontalOptions="Center"
+                Spacing="20"
+                VerticalOptions="Center">
+                <Label
+                    FontSize="24"
+                    HorizontalOptions="Center"
+                    Text="Kein PDF-Bauplan verfügbar"
+                    TextColor="Gray" />
+                <Label
+                    FontSize="16"
+                    HorizontalOptions="Center"
+                    Text="Bitte laden Sie einen Bauplan für dieses Stockwerk hoch"
+                    TextColor="Gray" />
             </VerticalStackLayout>
         </Grid>
 
-        <!--  PDF Viewer - only visible when a valid PDF exists  -->
-        <pdfView:PdfView
-            IsVisible="{Binding SelectedFloor, Converter={StaticResource PdfPathConverter}, ConverterParameter=HasValue}"
-            HandlerProperties.DisconnectPolicy="Manual"
-            HorizontalOptions="FillAndExpand"
-            IsHorizontal="True"
-            MaxZoom="4"
-            Uri="{Binding SelectedFloor, Converter={StaticResource PdfPathConverter}}"
-            VerticalOptions="FillAndExpand" />
+        <controls:PanPinchContainer x:Name="ZoomContainer" IsVisible="{Binding IsFloorPlanAvailable}">
+            <Grid>
+                <!--  Das PDF als Bild  -->
+                <Image Aspect="AspectFit" Source="{Binding FloorPlanImageSource}" />
+
+                <!--  Changed InputTransparent to false so devices can receive input  -->
+                <AbsoluteLayout BindableLayout.ItemsSource="{Binding SelectedFloor.PlacedDevices}" InputTransparent="False">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <floorManager:PlacedDeviceControl
+                                DeleteDeviceCommand="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.RemovePlacedDeviceCommand}"
+                                HeightRequest="60"
+                                OpenSettingsCommand="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.OpenDeviceSettingsCommand}"
+                                Scale="{Binding Scale}"
+                                ToggleDoorCommand="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.ToggleDoorCommand}"
+                                WidthRequest="260"
+                                ZIndex="100">
+                                <AbsoluteLayout.LayoutBounds>
+                                    <MultiBinding Converter="{StaticResource RelativePositionToLayoutBoundsConverter}">
+                                        <Binding Path="RelativeX" />
+                                        <Binding Path="RelativeY" />
+                                    </MultiBinding>
+                                </AbsoluteLayout.LayoutBounds>
+                                <AbsoluteLayout.LayoutFlags>PositionProportional</AbsoluteLayout.LayoutFlags>
+                            </floorManager:PlacedDeviceControl>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </AbsoluteLayout>
+
+            </Grid>
+        </controls:PanPinchContainer>
+
 
         <!--  Ebene 1: Menüleiste  -->
-        <Grid Padding="10" VerticalOptions="Start">
+        <Grid
+            Padding="10"
+            VerticalOptions="Start"
+            ZIndex="1">
             <Grid.Background>
                 <LinearGradientBrush EndPoint="0,1">
                     <GradientStop Offset="0.0" Color="#80000000" />
@@ -84,7 +117,8 @@
                     Grid.Row="1"
                     BackgroundColor="#80000000"
                     HeightRequest="200"
-                    IsVisible="{Binding IsBuildingDropdownVisible}">
+                    IsVisible="{Binding IsBuildingDropdownVisible}"
+                    ZIndex="10">
                     <ScrollView>
                         <CollectionView
                             x:Name="BuildingsCollection"
@@ -96,26 +130,26 @@
                                     <SwipeView>
                                         <SwipeView.LeftItems>
                                             <SwipeItems>
-                                                <SwipeItem 
-                                                    Text="Bearbeiten" 
-                                                    BackgroundColor="#2196F3" 
-                                                    Command="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.EditBuildingCommand}" 
-                                                    CommandParameter="{Binding}" />
+                                                <SwipeItem
+                                                    BackgroundColor="#2196F3"
+                                                    Command="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.EditBuildingCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Text="Bearbeiten" />
                                             </SwipeItems>
                                         </SwipeView.LeftItems>
                                         <SwipeView.RightItems>
                                             <SwipeItems>
-                                                <SwipeItem 
-                                                    Text="Löschen" 
-                                                    BackgroundColor="#F44336" 
-                                                    Command="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.DeleteBuildingCommand}" 
-                                                    CommandParameter="{Binding}" />
+                                                <SwipeItem
+                                                    BackgroundColor="#F44336"
+                                                    Command="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.DeleteBuildingCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Text="Löschen" />
                                             </SwipeItems>
                                         </SwipeView.RightItems>
                                         <Grid Padding="0" BackgroundColor="Transparent">
                                             <Label
                                                 Padding="10"
-                                                Text="{Binding Name}"
+                                                Text="{Binding BuildingName}"
                                                 TextColor="White" />
                                             <Grid.GestureRecognizers>
                                                 <TapGestureRecognizer Tapped="OnBuildingTapped" />
@@ -151,7 +185,8 @@
                     Grid.Row="1"
                     BackgroundColor="#80000000"
                     HeightRequest="200"
-                    IsVisible="{Binding IsFloorDropdownVisible}">
+                    IsVisible="{Binding IsFloorDropdownVisible}"
+                    ZIndex="10">
                     <ScrollView>
                         <CollectionView
                             x:Name="FloorsCollection"
@@ -163,26 +198,26 @@
                                     <SwipeView>
                                         <SwipeView.LeftItems>
                                             <SwipeItems>
-                                                <SwipeItem 
-                                                    Text="Bearbeiten" 
-                                                    BackgroundColor="#2196F3" 
-                                                    Command="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.EditFloorCommand}" 
-                                                    CommandParameter="{Binding}" />
+                                                <SwipeItem
+                                                    BackgroundColor="#2196F3"
+                                                    Command="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.EditFloorCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Text="Bearbeiten" />
                                             </SwipeItems>
                                         </SwipeView.LeftItems>
                                         <SwipeView.RightItems>
                                             <SwipeItems>
-                                                <SwipeItem 
-                                                    Text="Löschen" 
-                                                    BackgroundColor="#F44336" 
-                                                    Command="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.DeleteFloorCommand}" 
-                                                    CommandParameter="{Binding}" />
+                                                <SwipeItem
+                                                    BackgroundColor="#F44336"
+                                                    Command="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.DeleteFloorCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Text="Löschen" />
                                             </SwipeItems>
                                         </SwipeView.RightItems>
                                         <Grid Padding="0" BackgroundColor="Transparent">
                                             <Label
                                                 Padding="10"
-                                                Text="{Binding Name}"
+                                                Text="{Binding FloorName}"
                                                 TextColor="White" />
                                             <Grid.GestureRecognizers>
                                                 <TapGestureRecognizer Tapped="OnFloorTapped" />
@@ -218,19 +253,49 @@
                     Grid.Row="1"
                     BackgroundColor="#80000000"
                     HeightRequest="200"
-                    IsVisible="{Binding IsSavedDevicesDropdownVisible}">
+                    IsVisible="{Binding IsSavedDevicesDropdownVisible}"
+                    ZIndex="10">
                     <ScrollView>
                         <CollectionView
                             x:Name="SavedDevicesCollection"
                             ItemsSource="{Binding SavedDevices}"
-                            SelectionChanged="OnSavedDeviceSelected"
                             SelectionMode="Single">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Label
-                                        Padding="10"
-                                        Text="{Binding Name}"
-                                        TextColor="White" />
+                                    <Grid
+                                        Padding="5"
+                                        BackgroundColor="Transparent"
+                                        ColumnDefinitions="Auto,*,Auto">
+
+                                        <!--  Online status indicator  -->
+                                        <BoxView
+                                            Grid.Column="0"
+                                            Margin="5,0,10,0"
+                                            CornerRadius="7.5"
+                                            HeightRequest="15"
+                                            VerticalOptions="Center"
+                                            WidthRequest="15"
+                                            Color="{Binding IsOnline, Converter={StaticResource BoolToColorConverter}}" />
+                                        <!--  Device name  -->
+                                        <Label
+                                            Grid.Column="1"
+                                            Padding="0"
+                                            FontSize="10"
+                                            Text="{Binding Name}"
+                                            TextColor="White"
+                                            VerticalOptions="Center" />
+                                        <Button
+                                            Grid.Column="2"
+                                            Padding="0"
+                                            Command="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.AddDeviceToCenterCommand}"
+                                            CommandParameter="{Binding}"
+                                            CornerRadius="25"
+                                            FontSize="10"
+                                            HeightRequest="30"
+                                            Text="+"
+                                            TextColor="White"
+                                            WidthRequest="30" />
+                                    </Grid>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
@@ -259,20 +324,49 @@
                     x:Name="LocalDevicesDropdown"
                     Grid.Row="1"
                     BackgroundColor="#80000000"
-                    HeightRequest="200"
-                    IsVisible="{Binding IsLocalDevicesDropdownVisible}">
+                    HeightRequest="Infinity"
+                    IsVisible="{Binding IsLocalDevicesDropdownVisible}"
+                    ZIndex="10">
                     <ScrollView>
                         <CollectionView
                             x:Name="LocalDevicesCollection"
                             ItemsSource="{Binding LocalDevices}"
-                            SelectionChanged="OnLocalDeviceSelected"
                             SelectionMode="Single">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
-                                    <Label
-                                        Padding="10"
-                                        Text="{Binding Name}"
-                                        TextColor="White" />
+                                    <Grid BackgroundColor="Transparent" ColumnDefinitions="Auto,*,Auto">
+
+                                        <!--  Online status indicator  -->
+                                        <BoxView
+                                            Grid.Column="0"
+                                            Margin="5,0,10,0"
+                                            BackgroundColor="Transparent"
+                                            CornerRadius="7.5"
+                                            HeightRequest="10"
+                                            HorizontalOptions="Center"
+                                            VerticalOptions="Center"
+                                            WidthRequest="10"
+                                            Color="{Binding IsOnline, Converter={StaticResource BoolToColorConverter}}" />
+                                        <!--  Device name  -->
+                                        <Label
+                                            Grid.Column="1"
+                                            Padding="0"
+                                            FontSize="10"
+                                            Text="{Binding Name}"
+                                            TextColor="White" />
+                                        <Button
+                                            Grid.Column="2"
+                                            Padding="0"
+                                            Command="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.AddDeviceToCenterCommand}"
+                                            CommandParameter="{Binding}"
+                                            CornerRadius="25"
+                                            FontSize="10"
+                                            HeightRequest="30"
+                                            Text="+"
+                                            TextColor="White"
+                                            WidthRequest="30" />
+
+                                    </Grid>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
@@ -282,7 +376,7 @@
         </Grid>
 
         <!--  Ebene 2: Add-Button  -->
-        <AbsoluteLayout>
+        <AbsoluteLayout ZIndex="1">
             <Button
                 Margin="0,0,0,10"
                 AbsoluteLayout.LayoutBounds="0.5,1,AutoSize,AutoSize"
@@ -297,5 +391,14 @@
                 WidthRequest="80" />
         </AbsoluteLayout>
 
+        <!--  Overlay Grid zum Erkennen von Taps außerhalb der Dropdowns  -->
+        <Grid
+            x:Name="OverlayGrid"
+            BackgroundColor="Transparent"
+            InputTransparent="True">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnPageTapped" />
+            </Grid.GestureRecognizers>
+        </Grid>
     </Grid>
 </ContentPage>

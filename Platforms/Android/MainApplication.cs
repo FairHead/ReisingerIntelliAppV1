@@ -2,7 +2,7 @@
 using Android.Runtime;
 using Plugin.MauiWifiManager;
 
-namespace ReisingerIntelliAppV1
+namespace ReisingerIntelliAppV1.Platforms.Android
 {
     [Application(UsesCleartextTraffic = true)]
     public class MainApplication : MauiApplication

@@ -1,11 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Storage;
-using System.Collections.ObjectModel;
-using System.Linq;
 using ReisingerIntelliAppV1.Model.Models;
 using ReisingerIntelliAppV1.Services;
+using ReisingerIntelliAppV1.Views.DeviceControlViews;
+
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
+using System.Text.Json;
+using System.Windows.Input;
 
 namespace ReisingerIntelliAppV1.Model.ViewModels;
 public partial class FloorPlanViewModel : ObservableObject
@@ -19,18 +22,24 @@ public partial class FloorPlanViewModel : ObservableObject
     [ObservableProperty]
     private Floor? selectedFloor;
 
-    [ObservableProperty]
-    private FloorPlan? selectedFloorPlan;
 
     [ObservableProperty]
-    private ObservableCollection<Floor> floors = new();
+    private DeviceModel? selectedDevice;
+
+    [ObservableProperty]
+    private PlacedDeviceModel? selectedPlacedDevice;
+
     private readonly DeviceService _deviceService;
+    private readonly WifiService _wifiService;
+    private readonly BuildingStorageService _buildingStorageService;
+    private System.Timers.Timer? _statusUpdateTimer;
+    private readonly IntellidriveApiService _apiService;
 
     public ObservableCollection<object> DisplayItems { get; } = new();
     public ObservableCollection<DeviceModel> SavedDevices { get; set; } = new();
     public ObservableCollection<DeviceModel> LocalDevices { get; set; } = new();
 
-    public ObservableCollection<FloorPlan> FloorPlans { get; } = new();
+    public ObservableCollection<Floor> Floors { get; } = new();
 
     [ObservableProperty]
     private bool isBuildingDropdownVisible = false;
@@ -44,8 +53,80 @@ public partial class FloorPlanViewModel : ObservableObject
     [ObservableProperty]
     private bool isLocalDevicesDropdownVisible = false;
 
+    public ICommand AddDeviceToCenterCommand { get; }
+
+    // Property für die Anzeige des Bauplans (PNG) des ausgewählten Stockwerks
+    public string? FloorPlanImageSource => SelectedFloor?.PngPath;
+
+    // Property für die Sichtbarkeit, ob ein Bauplan vorhanden ist
+    public bool IsFloorPlanAvailable => !string.IsNullOrEmpty(SelectedFloor?.PngPath);
+    public bool IsNoFloorPlanAvailable => string.IsNullOrEmpty(SelectedFloor?.PngPath);
+
+
     // Flag to track if any dropdown is currently open
     private bool _isAnyDropdownOpen = false;
+
+
+    public FloorPlanViewModel(DeviceService deviceService, WifiService wifiService, BuildingStorageService buildingStorageService, IntellidriveApiService apiService)
+    {
+        _deviceService = deviceService;
+        _wifiService = wifiService;
+        _buildingStorageService = buildingStorageService;
+        Debug.WriteLine("[FloorPlanViewModel] Constructor called");
+
+        // Lade die Gebäude beim Start asynchron
+        _ = LoadBuildingsAsync();
+        _apiService = apiService;
+        AddDeviceToCenterCommand = new Command<DeviceModel>(AddDeviceToCenter);
+    }
+
+    // Füge einen RelayCommand für RemovePlacedDevice hinzu
+    [RelayCommand]
+    private void RemovePlacedDevice(PlacedDeviceModel device)
+    {
+        if (SelectedFloor?.PlacedDevices != null && device != null)
+        {
+            Debug.WriteLine($"[FloorPlanViewModel] Removing placed device: {device.Name}");
+            SelectedFloor.PlacedDevices.Remove(device);
+            _ = SaveBuildingsAsync();
+        }
+    }
+
+    private void AddDeviceToCenter(DeviceModel device)
+    {
+        if (SelectedFloor == null || device == null)
+        {
+            Debug.WriteLine("[FloorPlanViewModel] AddDeviceToCenter: SelectedFloor or device is null");
+            return;
+        }
+
+        Debug.WriteLine($"[FloorPlanViewModel] AddDeviceToCenter: Adding device {device.Name} to center of floor plan");
+        
+        var placed = new PlacedDeviceModel
+        {
+            DeviceInfo = device,  // Important: Set the DeviceInfo reference
+            Name = device.Name,
+            IsOnline = device.IsOnline,
+            DeviceId = device.DeviceId,
+
+            // Standardmäßig in die Mitte setzen
+            RelativeX = 0.5,
+            RelativeY = 0.5,
+            Scale = 0.5
+        };
+
+        if (SelectedFloor.PlacedDevices == null)
+            SelectedFloor.PlacedDevices = new ObservableCollection<PlacedDeviceModel>();
+
+        SelectedFloor.PlacedDevices.Add(placed);
+        Debug.WriteLine($"[FloorPlanViewModel] Device added. PlacedDevices count: {SelectedFloor.PlacedDevices.Count}");
+        
+        // Notify UI that the collection has changed
+        OnPropertyChanged(nameof(SelectedFloor));
+        
+        // Save changes
+        _ = SaveBuildingsAsync();
+    }
 
     [RelayCommand]
     public void ToggleBuildingDropdown()
@@ -153,17 +234,20 @@ public partial class FloorPlanViewModel : ObservableObject
         IsLocalDevicesDropdownVisible = false;
     }
 
-    public FloorPlanViewModel(DeviceService deviceService)
-    {
-        _deviceService = deviceService;
-        Debug.WriteLine("[FloorPlanViewModel] Constructor called");
-    }
+
 
     partial void OnSelectedBuildingChanged(Building? value)
     {
         UpdateFloors();
         SelectedFloor = null;
-        Debug.WriteLine($"[FloorPlanViewModel] OnSelectedBuildingChanged: {value?.Name ?? "null"}");
+        Debug.WriteLine($"[FloorPlanViewModel] OnSelectedBuildingChanged: {value?.BuildingName ?? "null"}");
+    }
+
+    partial void OnSelectedFloorChanged(Floor? value)
+    {
+        OnPropertyChanged(nameof(FloorPlanImageSource));
+        OnPropertyChanged(nameof(IsFloorPlanAvailable));
+        OnPropertyChanged(nameof(IsNoFloorPlanAvailable));
     }
 
     private void UpdateFloors()
@@ -203,13 +287,16 @@ public partial class FloorPlanViewModel : ObservableObject
     {
         Buildings.Add(building);
         SelectedBuilding = building;
-        Debug.WriteLine($"[FloorPlanViewModel] AddBuilding: {building.Name}, now {Buildings.Count} buildings");
+        Debug.WriteLine($"[FloorPlanViewModel] AddBuilding: {building.BuildingName}, now {Buildings.Count} buildings");
+
+        // Speichere die Änderungen
+        SaveBuildingsAsync().ConfigureAwait(false);
     }
 
     // Method to notify that a building was changed externally (from editor page)
     public void NotifyBuildingChanged(Building building)
     {
-        Debug.WriteLine($"[FloorPlanViewModel] NotifyBuildingChanged: {building.Name}");
+        Debug.WriteLine($"[FloorPlanViewModel] NotifyBuildingChanged: {building.BuildingName}");
 
         // Trigger UI refresh
         OnPropertyChanged(nameof(Buildings));
@@ -221,48 +308,51 @@ public partial class FloorPlanViewModel : ObservableObject
             SelectedBuilding = null;
             SelectedBuilding = temp;
         }
+
+        // Speichere die Änderungen
+        SaveBuildingsAsync().ConfigureAwait(false);
     }
 
-    [RelayCommand]
-    public async Task UploadPdfAsync()
+    // Speichere alle Gebäude und Stockwerke in den SecureStorage
+    public async Task SaveBuildingsAsync()
     {
-        Debug.WriteLine("[FloorPlanViewModel] UploadPdfAsync called");
-        var result = await FilePicker.PickAsync(new PickOptions
+        Debug.WriteLine("[FloorPlanViewModel] SaveBuildingsAsync called");
+        try
         {
-            PickerTitle = "PDF auswaehlen",
-            FileTypes = FilePickerFileType.Pdf
-        });
-
-        if (result != null)
+            await _buildingStorageService.SaveBuildingsAsync(Buildings);
+            Debug.WriteLine($"[FloorPlanViewModel] {Buildings.Count} Gebäude gespeichert");
+        }
+        catch (Exception ex)
         {
-            var fileName = Path.GetFileName(result.FullPath);
-            var targetPath = Path.Combine(FileSystem.AppDataDirectory, fileName);
+            Debug.WriteLine($"[FloorPlanViewModel] Fehler beim Speichern der Gebäude: {ex.Message}");
+        }
+    }
 
-            using var sourceStream = await result.OpenReadAsync();
-            using var targetStream = File.Create(targetPath);
-            await sourceStream.CopyToAsync(targetStream);
+    // Lade alle Gebäude und Stockwerke aus dem SecureStorage
+    public async Task LoadBuildingsAsync()
+    {
+        Debug.WriteLine("[FloorPlanViewModel] LoadBuildingsAsync called");
+        try
+        {
+            var loadedBuildings = await _buildingStorageService.LoadBuildingsAsync();
 
-            // Update the selected floor's PDF path
-            if (SelectedFloor != null)
+            Buildings.Clear();
+            foreach (var building in loadedBuildings)
             {
-                SelectedFloor.PdfPath = targetPath;
-                Debug.WriteLine($"[FloorPlanViewModel] PDF path updated for floor {SelectedFloor.Name}: {targetPath}");
-
-                // Force a refresh of SelectedFloor to trigger UI updates
-                var currentFloor = SelectedFloor;
-                SelectedFloor = null;
-                SelectedFloor = currentFloor;
+                Buildings.Add(building);
             }
 
-            // Also keep the FloorPlans collection updated (for backward compatibility)
-            FloorPlans.Add(new FloorPlan
-            {
-                FloorName = SelectedFloor?.Name ?? $"Stockwerk {FloorPlans.Count + 1}",
-                PdfPath = targetPath
-            });
+            Debug.WriteLine($"[FloorPlanViewModel] {Buildings.Count} Gebäude geladen");
 
-            SelectedFloorPlan = FloorPlans.Last();
-            Debug.WriteLine($"[FloorPlanViewModel] PDF uploaded: {fileName}");
+            // Aktualisiere die UI entsprechend
+            if (Buildings.Count > 0)
+            {
+                SelectedBuilding = Buildings.FirstOrDefault();
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[FloorPlanViewModel] Fehler beim Laden der Gebäude: {ex.Message}");
         }
     }
 
@@ -281,6 +371,196 @@ public partial class FloorPlanViewModel : ObservableObject
             LocalDevices.Add(device);
 
         Debug.WriteLine($"[FloorPlanViewModel] Loaded devices: {SavedDevices.Count} saved, {LocalDevices.Count} local");
+
+        // Update the online status immediately after loading
+        await UpdateDevicesOnlineStatusAsync();
+    }
+
+    // Start online status checker
+    public void StartOnlineStatusUpdater()
+    {
+        Debug.WriteLine("[FloorPlanViewModel] StartOnlineStatusUpdater");
+        MainThread.InvokeOnMainThreadAsync(UpdateDevicesOnlineStatusAsync);
+
+        if (_statusUpdateTimer != null) return;
+
+        _statusUpdateTimer = new System.Timers.Timer(5000);
+        _statusUpdateTimer.Elapsed += async (_, _) => await MainThread.InvokeOnMainThreadAsync(UpdateDevicesOnlineStatusAsync);
+        _statusUpdateTimer.AutoReset = true;
+        _statusUpdateTimer.Start();
+    }
+
+    // Stop online status checker
+    public void StopOnlineStatusUpdater()
+    {
+        Debug.WriteLine("[FloorPlanViewModel] StopOnlineStatusUpdater");
+        _statusUpdateTimer?.Stop();
+        _statusUpdateTimer?.Dispose();
+        _statusUpdateTimer = null;
+    }
+
+    // Update online status of all devices
+    private async Task UpdateDevicesOnlineStatusAsync()
+    {
+        Debug.WriteLine("[FloorPlanViewModel] UpdateDevicesOnlineStatusAsync");
+
+        // Update saved devices status
+        if (SavedDevices.Count > 0)
+        {
+            var updatedSaved = await _wifiService.CheckDeviceNetworkStatusAsync(SavedDevices.ToList());
+            for (int i = 0; i < updatedSaved.Count && i < SavedDevices.Count; i++)
+            {
+                SavedDevices[i].IsOnline = updatedSaved[i].IsOnline;
+            }
+        }
+
+        // Update local devices status
+        if (LocalDevices.Count > 0)
+        {
+            var updatedLocal = await _wifiService.CheckDeviceNetworkStatusAsync(LocalDevices.ToList());
+            for (int i = 0; i < updatedLocal.Count && i < LocalDevices.Count; i++)
+            {
+                LocalDevices[i].IsOnline = updatedLocal[i].IsOnline;
+            }
+        }
+
+        // Aktualisiere auch den Status der platzierten Geräte
+        if (SelectedFloor?.PlacedDevices != null)
+        {
+            foreach (var placedDevice in SelectedFloor.PlacedDevices)
+            {
+                // Guard against null DeviceInfo to prevent crashes
+                if (placedDevice.DeviceInfo == null)
+                    continue;
+
+                // Finde das entsprechende Gerät in den Listen und kopiere den Status
+                var savedDevice = SavedDevices.FirstOrDefault(d => d.DeviceId == placedDevice.DeviceId);
+                if (savedDevice != null)
+                {
+                    placedDevice.IsOnline = savedDevice.IsOnline;
+                    // Update the nested DeviceInfo if it exists
+                    if (placedDevice.DeviceInfo != null)
+                        placedDevice.DeviceInfo.IsOnline = savedDevice.IsOnline;
+                }
+                else
+                {
+                    var localDevice = LocalDevices.FirstOrDefault(d => d.DeviceId == placedDevice.DeviceId);
+                    if (localDevice != null)
+                    {
+                        placedDevice.IsOnline = localDevice.IsOnline;
+                        // Update the nested DeviceInfo if it exists
+                        if (placedDevice.DeviceInfo != null)
+                            placedDevice.DeviceInfo.IsOnline = localDevice.IsOnline;
+                    }
+                }
+            }
+        }
+    }
+
+    // Öffne/Schließe die Tür eines Geräts
+    [RelayCommand]
+    public async Task ToggleDoorAsync(PlacedDeviceModel device)
+    {
+        if (device?.DeviceInfo == null)
+            return;
+
+        try
+        {
+            Debug.WriteLine($"[PlacedDeviceControl] Attempting to toggle door for device: {device.DeviceInfo.Name}");
+
+            // Ensure we're connected to the device's WiFi
+            var connected = await _wifiService.EnsureConnectedToSsidAsync(device.DeviceInfo.Ssid);
+            if (!connected)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Verbindungsproblem",
+                    $"Die Verbindung zum Gerät '{device.DeviceInfo.Name}' konnte nicht hergestellt werden.",
+                    "OK");
+                return;
+            }
+
+            // Check current door state
+            var initialJson = await _apiService.GetDoorStateAsync(device.DeviceInfo);
+            var initialResult = JsonSerializer.Deserialize<DoorStateResponse>(initialJson);
+            bool wasClosed = initialResult?.Content?.DOOR_STATE.Equals("Closed", StringComparison.OrdinalIgnoreCase) == true;
+
+            // Toggle the door state - the API automatically opens if closed, closes if open
+            await _apiService.OpenDoorAsync(device.DeviceInfo);
+
+            // Wait and check if the door state changed
+            const int maxAttempts = 10;
+            for (int i = 0; i < maxAttempts; i++)
+            {
+                await Task.Delay(1000);
+                var status = await _apiService.GetDoorStateAsync(device.DeviceInfo);
+                var newState = JsonSerializer.Deserialize<DoorStateResponse>(status);
+
+                bool isClosedNow = newState?.Content?.DOOR_STATE.Equals("Closed", StringComparison.OrdinalIgnoreCase) == true;
+                if (isClosedNow != wasClosed)
+                {
+                    // Update the UI state
+                    device.IsDoorOpen = !isClosedNow;
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Status",
+                        isClosedNow ? "Tür geschlossen." : "Tür geöffnet.",
+                        "OK");
+                    return;
+                }
+            }
+
+            await Application.Current.MainPage.DisplayAlert(
+                "Hinweis",
+                "Türstatus hat sich nicht geändert.",
+                "OK");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[PlacedDeviceControl] Error toggling door: {ex.Message}");
+            await Application.Current.MainPage.DisplayAlert(
+                "Fehler",
+                $"Ein Fehler ist aufgetreten: {ex.Message}",
+                "OK");
+        }
+    }
+
+    // Öffne die Gerätesettings eines platzierten Geräts
+    [RelayCommand]
+    public async Task OpenDeviceSettingsAsync(PlacedDeviceModel device)
+    {
+        if (device == null || device.DeviceInfo == null)
+            return;
+
+        Debug.WriteLine($"[FloorPlanViewModel] Opening settings for device: {device.DeviceInfo.Name}");
+
+        try
+        {
+            // Verbindung zum Gerät herstellen
+            var connected = await _wifiService.EnsureConnectedToSsidAsync(device.DeviceInfo.Ssid);
+            if (!connected)
+            {
+                // Benachrichtigung, dass keine Verbindung hergestellt werden konnte
+                await Application.Current.MainPage.DisplayAlert(
+                    "Verbindungsproblem",
+                    $"Die Verbindung zum Gerät '{device.DeviceInfo.Name}' konnte nicht hergestellt werden.",
+                    "OK");
+                return;
+            }
+
+            // Navigiere zur DeviceSettingsTabbedPage
+            var settingsPage = App.Current.Handler.MauiContext.Services
+                .GetRequiredService<DeviceSettingsTabbedPage>();
+
+            await settingsPage.InitializeWithAsync(device.DeviceInfo);
+            await Application.Current.MainPage.Navigation.PushAsync(settingsPage);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[FloorPlanViewModel] Error opening device settings: {ex.Message}");
+            await Application.Current.MainPage.DisplayAlert(
+                "Fehler",
+                $"Die Geräteeinstellungen konnten nicht geöffnet werden: {ex.Message}",
+                "OK");
+        }
     }
 
     // New methods for handling building and floor context actions
@@ -290,7 +570,7 @@ public partial class FloorPlanViewModel : ObservableObject
     {
         if (building == null) return;
 
-        Debug.WriteLine($"[FloorPlanViewModel] EditBuildingAsync called for building: {building.Name}");
+        Debug.WriteLine($"[FloorPlanViewModel] EditBuildingAsync called for building: {building.BuildingName}");
 
         try
         {
@@ -312,11 +592,11 @@ public partial class FloorPlanViewModel : ObservableObject
     {
         if (building == null) return;
 
-        Debug.WriteLine($"[FloorPlanViewModel] DeleteBuildingAsync called for building: {building.Name}");
+        Debug.WriteLine($"[FloorPlanViewModel] DeleteBuildingAsync called for building: {building.BuildingName}");
 
         bool confirm = await Application.Current.MainPage.DisplayAlert(
             "Gebäude löschen",
-            $"Sind Sie sicher, dass Sie das Gebäude '{building.Name}' mit allen Stockwerken löschen möchten?",
+            $"Sind Sie sicher, dass Sie das Gebäude '{building.BuildingName}' mit allen Stockwerken löschen möchten?",
             "Ja", "Nein");
 
         if (confirm)
@@ -336,7 +616,10 @@ public partial class FloorPlanViewModel : ObservableObject
 
             // Remove the building from the collection
             Buildings.Remove(building);
-            Debug.WriteLine($"[FloorPlanViewModel] Building deleted: {building.Name}");
+            Debug.WriteLine($"[FloorPlanViewModel] Building deleted: {building.BuildingName}");
+
+            // Speichere die Änderungen
+            await SaveBuildingsAsync();
         }
     }
 
@@ -345,7 +628,7 @@ public partial class FloorPlanViewModel : ObservableObject
     {
         if (floor == null || SelectedBuilding == null) return;
 
-        Debug.WriteLine($"[FloorPlanViewModel] EditFloorAsync called for floor: {floor.Name}");
+        Debug.WriteLine($"[FloorPlanViewModel] EditFloorAsync called for floor: {floor.FloorName}");
 
         try
         {
@@ -367,11 +650,11 @@ public partial class FloorPlanViewModel : ObservableObject
     {
         if (floor == null || SelectedBuilding == null) return;
 
-        Debug.WriteLine($"[FloorPlanViewModel] DeleteFloorAsync called for floor: {floor.Name}");
+        Debug.WriteLine($"[FloorPlanViewModel] DeleteFloorAsync called for floor: {floor.FloorName}");
 
         bool confirm = await Application.Current.MainPage.DisplayAlert(
             "Stockwerk löschen",
-            $"Sind Sie sicher, dass Sie das Stockwerk '{floor.Name}' löschen möchten?",
+            $"Sind Sie sicher, dass Sie das Stockwerk '{floor.FloorName}' löschen möchten?",
             "Ja", "Nein");
 
         if (confirm)
@@ -391,7 +674,10 @@ public partial class FloorPlanViewModel : ObservableObject
             // Also update the Floors collection
             Floors.Remove(floor);
 
-            Debug.WriteLine($"[FloorPlanViewModel] Floor deleted: {floor.Name}");
+            Debug.WriteLine($"[FloorPlanViewModel] Floor deleted: {floor.FloorName}");
+
+            // Speichere die Änderungen
+            await SaveBuildingsAsync();
         }
     }
 
@@ -413,4 +699,19 @@ public partial class FloorPlanViewModel : ObservableObject
             Debug.WriteLine($"[FloorPlanViewModel] Error deleting PDF file: {ex.Message}");
         }
     }
+
+    private void SaveFloorChanges()
+    {
+        try
+        {
+            // Save the changes to persistent storage
+            SaveBuildingsAsync().ConfigureAwait(false);
+            Debug.WriteLine("[FloorPlanViewModel] Floor changes saved");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[FloorPlanViewModel] Error saving floor changes: {ex.Message}");
+        }
+    }
+
 }

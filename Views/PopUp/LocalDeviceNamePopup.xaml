@@ -1,0 +1,70 @@
+<toolkit:Popup
+    x:Class="ReisingerIntelliAppV1.Views.PopUp.LocalDeviceNamePopup"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:ReisingerIntelliAppV1.Model.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
+
+    <VerticalStackLayout
+        Padding="20"
+        Spacing="10"
+        WidthRequest="300">
+        <Label
+            FontAttributes="Bold"
+            HorizontalOptions="Center"
+            Text="Geräteinformationen" />
+
+        <Grid
+            ColumnDefinitions="Auto, *"
+            ColumnSpacing="10"
+            RowDefinitions="Auto, Auto, Auto"
+            RowSpacing="5">
+            <Label
+                Grid.Row="0"
+                Grid.Column="0"
+                Text="Seriennummer:" />
+            <Label
+                x:Name="SerialNumberLabel"
+                Grid.Row="0"
+                Grid.Column="1"
+                Text="{Binding SerialNumber}" />
+
+            <Label
+                Grid.Row="1"
+                Grid.Column="0"
+                Text="IP-Adresse:" />
+            <Label
+                x:Name="IpAddressLabel"
+                Grid.Row="1"
+                Grid.Column="1"
+                Text="{Binding IpAddress}" />
+
+            <Label
+                Grid.Row="2"
+                Grid.Column="0"
+                Text="Gerätename:" />
+            <Entry
+                x:Name="DeviceNameEntry"
+                Grid.Row="2"
+                Grid.Column="1"
+                Placeholder="Bitte Namen eingeben"
+                Text="{Binding CustomName}" />
+        </Grid>
+
+        <Label Margin="0,10,0,0" Text="Geben Sie einen Namen für das Gerät ein:" />
+
+        <HorizontalStackLayout
+            Margin="0,10,0,0"
+            HorizontalOptions="Center"
+            Spacing="10">
+            <Button
+                Clicked="OnSaveClicked"
+                Text="Speichern"
+                WidthRequest="120" />
+            <Button
+                Clicked="OnCancelClicked"
+                Text="Abbrechen"
+                WidthRequest="120" />
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</toolkit:Popup>

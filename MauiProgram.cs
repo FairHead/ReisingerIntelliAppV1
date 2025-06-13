@@ -1,17 +1,19 @@
 ﻿using CommunityToolkit.Maui;
-using Maui.PDFView;
 using Microsoft.Extensions.Logging;
-using ReisingerIntelliAppV1;
+using ReisingerIntelliAppV1.Interface;
 using ReisingerIntelliAppV1.Model.Models;
 using ReisingerIntelliAppV1.Model.ViewModels;
+#if ANDROID
+using ReisingerIntelliAppV1.Platforms.Android;
+#endif
 using ReisingerIntelliAppV1.Services;
-using ReisingerIntelliAppV1.ViewModels;
 using ReisingerIntelliAppV1.Views;
 using ReisingerIntelliAppV1.Views.DeviceControlViews;
 using ReisingerIntelliAppV1.Views.FloorManager;
 using ReisingerIntelliAppV1.Views.PopUp;
 using ReisingerIntelliAppV1.Views.ViewTestings;
 
+namespace ReisingerIntelliAppV1;
 
 public static class MauiProgram
 {
@@ -22,7 +24,6 @@ public static class MauiProgram
         builder
             .UseMauiApp(sp => new App(sp)) // nur diese Zeile!
             .UseMauiCommunityToolkit()
-            .UseMauiPdfView()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -39,10 +40,21 @@ public static class MauiProgram
             client.Timeout = TimeSpan.FromSeconds(10);
         });
         builder.Services.AddSingleton<IntellidriveApiService>();
-        builder.Services.AddSingleton<IPdfUploadService, PdfUploadService>();
         builder.Services.AddSingleton<WifiService>();
         builder.Services.AddSingleton<IntellidriveApiService>();
         builder.Services.AddSingleton<DeviceService>(); 
+        builder.Services.AddSingleton<BuildingStorageService>();
+        builder.Services.AddSingleton<PdfConversionService>();
+
+        // In your service registration section:
+
+#if ANDROID
+builder.Services.AddSingleton<IPdfToPngConverter, PdfToPngConverter_Android>();
+
+#endif
+
+
+        // Neue Zeile für BuildingStorageService
 
         // Seiten
         builder.Services.AddTransient<IntellidriveAppMainPage>();
@@ -62,11 +74,7 @@ public static class MauiProgram
         builder.Services.AddTransient<IpRangePopup>();
         builder.Services.AddTransient<KeyInputPopup>();
 
-        builder.Services.AddTransient<FloorPlanManagerPage>(provider =>
-        {
-            var vm = provider.GetRequiredService<FloorPlanViewModel>();
-            return new FloorPlanManagerPage(vm);
-        });
+        builder.Services.AddTransient<FloorPlanManagerPage>();
 
         builder.Services.AddTransient<BuildingEditorPage>();
 
@@ -85,6 +93,8 @@ public static class MauiProgram
             var wifi = provider.GetRequiredService<WifiService>();
             return new SavedDeviceListPage(vm, api, wifi);
         });
+
+
 
         // ViewModels
         builder.Services.AddTransient<LocalNetworkScanViewModel>(provider => {
@@ -112,9 +122,7 @@ public static class MauiProgram
         builder.Services.AddTransient<VersionResponseDataModel>();
         builder.Services.AddTransient<DeviceSettingsViewModel>();
         builder.Services.AddTransient<DeviceInformationsViewModel>();
-        builder.Services.AddTransient<FloorPlanViewModel>();
-
-
+        builder.Services.AddSingleton<FloorPlanViewModel>(); // Zu Singleton geändert für bessere Persistenz
 
 
 

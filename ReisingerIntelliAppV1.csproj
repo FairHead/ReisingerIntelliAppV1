@@ -71,6 +71,7 @@
   <ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="11.2.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+		<PackageReference Include="Magick.NET-Q16-AnyCPU" Version="14.6.0" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.5" />
 
 		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.70" />
@@ -88,9 +89,9 @@
 
 		<PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.11" />
 
-		<PackageReference Include="Syncfusion.Maui.Expander" Version="29.2.5" />
+		<PackageReference Include="Syncfusion.Maui.Expander" Version="29.2.8" />
 
-		<PackageReference Include="Vitvov.Maui.PDFView" Version="1.4.0" />
+		<PackageReference Include="Syncfusion.Maui.PdfViewer" Version="29.2.8" />
 		<PackageReference Include="WifiManager.Maui" Version="2.0.2" />
 	</ItemGroup>
 
@@ -114,6 +115,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+    <MauiXaml Update="Controls\DeviceMarkerView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
     <MauiXaml Update="Views\ChooseNetworkForLocalScan.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
@@ -153,6 +157,9 @@
 	  <MauiXaml Update="Views\FloorManager\FloorPlanManagerPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\FloorManager\PlacedDeviceControl.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\IntellidriveAppMainPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -163,6 +170,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\PopUp\IpRangePopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\PopUp\LocalDeviceNamePopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\SavedDeviceListPage.xaml">

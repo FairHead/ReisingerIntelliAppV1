@@ -1,12 +1,10 @@
-﻿using CommunityToolkit.Maui.Views;
-using System.Net.Http;
+﻿using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using ReisingerIntelliAppV1.Model.Models;
-using System.Net;
-using System.Diagnostics;
+
+namespace ReisingerIntelliAppV1.Services;
 
 public class IntellidriveApiService
 {
@@ -382,6 +380,31 @@ public class IntellidriveApiService
     public async Task<string> DisableOneWayModeAsync(DeviceModel device)
     {
         return await SendPostRequestWithAuthentication(device, "intellidrive/oneway/disable");
+    }
+
+    public async Task<bool> SendDoorCommandAsync(DeviceModel device, string command)
+    {
+        try
+        {
+            // Validate command
+            if (command != "open" && command != "close")
+            {
+                throw new ArgumentException("Invalid door command. Use 'open' or 'close'.");
+            }
+
+            // Send POST request with authentication
+            var response = await SendPostRequestWithAuthentication(device, $"intellidrive/door/{command}");
+
+            // Log response
+            Debug.WriteLine($"Door command '{command}' sent successfully. Response: {response}");
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error sending door command '{command}': {ex.Message}");
+            return false;
+        }
     }
 
     // Parameter-Befehle

@@ -1,17 +1,21 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Storage;
-using System.Collections.ObjectModel;
-using System.Linq;
 using ReisingerIntelliAppV1.Model.Models;
+using ReisingerIntelliAppV1.Services;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 
 namespace ReisingerIntelliAppV1.Model.ViewModels;
 
 public partial class BuildingEditorViewModel : ObservableObject
 {
+    private readonly PdfConversionService _pdfConversionService;
     [ObservableProperty]
     private string buildingName = string.Empty;
+    [ObservableProperty]
+    private Floor currentFloor;
 
     [ObservableProperty]
     private ObservableCollection<Floor> floors = new();
@@ -19,10 +23,16 @@ public partial class BuildingEditorViewModel : ObservableObject
     [ObservableProperty]
     private string pageTitle = "Gebäude hinzufügen";
 
+    public BuildingEditorViewModel(PdfConversionService pdfConversionService)
+    {
+        _pdfConversionService = pdfConversionService;
+    }
+
+
     [RelayCommand]
     public void AddFloor()
     {
-        Floors.Add(new Floor { Name = $"Stockwerk {Floors.Count + 1}" });
+        Floors.Add(new Floor { FloorName = $"Stockwerk {Floors.Count + 1}" });
     }
 
     [RelayCommand]
@@ -30,7 +40,7 @@ public partial class BuildingEditorViewModel : ObservableObject
     {
         if (floor == null) return;
 
-        Debug.WriteLine($"[BuildingEditorViewModel] Removing floor: {floor.Name}");
+        Debug.WriteLine($"[BuildingEditorViewModel] Removing floor: {floor.FloorName}");
 
         // Delete PDF file if it exists
         DeletePdfFile(floor);
@@ -43,57 +53,59 @@ public partial class BuildingEditorViewModel : ObservableObject
     [RelayCommand]
     public async Task UploadPdfAsync(Floor floor)
     {
-        if (floor == null) return;
-
-        Debug.WriteLine($"[BuildingEditorViewModel] Uploading PDF for floor: {floor.Name}");
-
-        var result = await FilePicker.PickAsync(new PickOptions
+        try
         {
-            PickerTitle = "PDF auswählen",
-            FileTypes = FilePickerFileType.Pdf
-        });
-
-        if (result != null)
-        {
-            var fileName = Path.GetFileName(result.FullPath);
-            var targetPath = Path.Combine(FileSystem.AppDataDirectory, fileName);
-
-            try
+            if (floor == null) return;
+            // Pick PDF file
+            var options = new PickOptions
             {
-                // Delete old PDF file if it exists
-                if (!string.IsNullOrEmpty(floor.PdfPath) && File.Exists(floor.PdfPath))
+                PickerTitle = "Select a PDF file",
+                FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
                 {
-                    File.Delete(floor.PdfPath);
-                    Debug.WriteLine($"[BuildingEditorViewModel] Deleted old PDF: {floor.PdfPath}");
-                }
+                    { DevicePlatform.Android, new[] { "application/pdf" } },
+                    { DevicePlatform.iOS, new[] { "com.adobe.pdf" } },
+                    { DevicePlatform.WinUI, new[] { ".pdf" } },
+                    { DevicePlatform.MacCatalyst, new[] { "pdf" } }
+                })
+            };
 
-                // Copy new PDF file
-                using var sourceStream = await result.OpenReadAsync();
-                using var targetStream = File.Create(targetPath);
-                await sourceStream.CopyToAsync(targetStream);
+            var result = await FilePicker.PickAsync(options);
+            if (result == null) return;
 
-                floor.PdfPath = targetPath;
-                OnPropertyChanged(nameof(Floors));
+            // Create a copy in app storage
+            var pdfDirectory = Path.Combine(FileSystem.AppDataDirectory, "PDFs");
+            if (!Directory.Exists(pdfDirectory))
+                Directory.CreateDirectory(pdfDirectory);
 
-                Debug.WriteLine($"[BuildingEditorViewModel] PDF uploaded: {targetPath}");
-            }
-            catch (Exception ex)
+            var destinationPath = Path.Combine(pdfDirectory, $"{Guid.NewGuid()}.pdf");
+            using (var sourceStream = await result.OpenReadAsync())
+            using (var destinationStream = File.Create(destinationPath))
             {
-                Debug.WriteLine($"[BuildingEditorViewModel] Error uploading PDF: {ex.Message}");
-                await Application.Current.MainPage.DisplayAlert(
-                    "Fehler",
-                    $"PDF konnte nicht hochgeladen werden: {ex.Message}",
-                    "OK");
+                await sourceStream.CopyToAsync(destinationStream);
             }
+
+            // Update floor model with PDF path
+            floor.PdfPath = destinationPath;
+
+            // Convert PDF to PNG
+            await _pdfConversionService.ConvertFloorPdfToPngAsync(floor);
+
+            // Update UI or save floor to database as needed
+            OnPropertyChanged(nameof(Floors));
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Error", $"Failed to upload PDF: {ex.Message}", "OK");
         }
     }
+    
 
     [RelayCommand]
     public async Task DeletePdf(Floor floor)
     {
         if (floor == null) return;
 
-        Debug.WriteLine($"[BuildingEditorViewModel] Deleting PDF for floor: {floor.Name}");
+        Debug.WriteLine($"[BuildingEditorViewModel] Deleting PDF for floor: {floor.FloorName}");
 
         if (string.IsNullOrEmpty(floor.PdfPath))
             return;

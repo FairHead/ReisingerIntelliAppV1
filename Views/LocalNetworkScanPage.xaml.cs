@@ -1,6 +1,6 @@
 using CommunityToolkit.Maui.Views;
 using ReisingerIntelliAppV1.Model.Models;
-using ReisingerIntelliAppV1.ViewModels;
+using ReisingerIntelliAppV1.Model.ViewModels;
 using ReisingerIntelliAppV1.Views.PopUp;
 using ReisingerIntelliAppV1.Services;
 

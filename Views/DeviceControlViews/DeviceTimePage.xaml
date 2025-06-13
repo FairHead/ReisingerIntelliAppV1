@@ -10,7 +10,7 @@
 
     <Grid RowDefinitions="Auto,*,Auto">
         <!--  Parameter Loading Indicator  -->
-        <staticViews1:ParameterLoadingBar Grid.Row="0" IsVisible="{Binding IsLoading}" />
+        <staticViews1:ParameterLoadingBar Grid.Row="0" IsVisible="{Binding IsLoadingParameters}" />
 
         <!--  Seiteninhalt mit Scrollbereich  -->
         <ScrollView Grid.Row="1">

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui.Views;
 using ReisingerIntelliAppV1.Model.Models;
-using ReisingerIntelliAppV1.ViewModels;
+using ReisingerIntelliAppV1.Model.ViewModels;
+using ReisingerIntelliAppV1.Services;
 using KeyInputPopup = ReisingerIntelliAppV1.Views.PopUp.KeyInputPopup;
 
 namespace ReisingerIntelliAppV1.Views;

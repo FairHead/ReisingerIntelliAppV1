@@ -1,6 +1,7 @@
-using ReisingerIntelliAppV1.Model.Models;      // for NetworkDataModel
+using ReisingerIntelliAppV1.Model.Models;
+using ReisingerIntelliAppV1.Model.ViewModels; // for NetworkDataModel
 using ReisingerIntelliAppV1.Services;          // for IntellidriveApiService, DeviceService
-using ReisingerIntelliAppV1.ViewModels;        // for LocalNetworkScanViewModel
+// for LocalNetworkScanViewModel
 using ReisingerIntelliAppV1.Views;             // for LocalNetworkScanPage
 
 namespace ReisingerIntelliAppV1.Views

@@ -1,9 +1,7 @@
 ﻿
-using Microsoft.Extensions.DependencyInjection;
-using ReisingerIntelliAppV1.Services;
+using System.Diagnostics;
 using ReisingerIntelliAppV1.Views;
-using ReisingerIntelliAppV1.Views.DeviceControlViews;
-using ReisingerIntelliAppV1.Views.ViewTestings;
+
 
 namespace ReisingerIntelliAppV1
 {
@@ -12,13 +10,15 @@ namespace ReisingerIntelliAppV1
         public static IServiceProvider ServiceProvider { get; private set; }
         public App(IServiceProvider serviceProvider)
         {
+            
+
             InitializeComponent();
 
 #if DEBUG
         
-         //SecureStorage.Default.RemoveAll(); // Löscht ALLE gespeicherten Keys im SecureStorage
+            //SecureStorage.Default.RemoveAll(); // Löscht ALLE gespeicherten Keys im SecureStorage
           
-         //Preferences.Clear();               // Optional: auch normale App-Settings löschen
+            //Preferences.Clear();               // Optional: auch normale App-Settings löschen
 #endif
 
             ServiceProvider = serviceProvider;

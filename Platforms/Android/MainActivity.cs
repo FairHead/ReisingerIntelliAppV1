@@ -1,14 +1,14 @@
 ﻿using Android.App;
-using Android.Content;
 using Android.Content.PM;
 using Android.OS;
-using Android.Runtime;
 using AndroidX.Core.App;
 using AndroidX.Core.Content;
-using Microsoft.Maui.Controls.PlatformConfiguration;
+using Android;
+
 using Plugin.MauiWifiManager;
 
-namespace ReisingerIntelliAppV1
+
+namespace ReisingerIntelliAppV1.Platforms.Android
 {
     [Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, LaunchMode = LaunchMode.SingleTop,
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode |
@@ -27,10 +27,10 @@ namespace ReisingerIntelliAppV1
         {
             var permissions = new[]
             {
-                Android.Manifest.Permission.AccessFineLocation,
-                Android.Manifest.Permission.AccessCoarseLocation,
-                Android.Manifest.Permission.AccessWifiState,
-                Android.Manifest.Permission.ChangeWifiState
+                Manifest.Permission.AccessFineLocation,
+               Manifest.Permission.AccessCoarseLocation,
+                Manifest.Permission.AccessWifiState,
+                Manifest.Permission.ChangeWifiState
             };
 
             foreach (var permission in permissions)

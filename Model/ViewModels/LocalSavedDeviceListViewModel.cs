@@ -24,6 +24,9 @@ namespace ReisingerIntelliAppV1.Model.ViewModels
         [ObservableProperty] bool isBusy;
         public bool IsNotBusy => !IsBusy;
 
+   
+
+
         public LocalSavedDeviceListViewModel(
             DeviceService deviceService,
             WifiService wifiService)

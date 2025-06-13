@@ -1,16 +1,15 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Net;
+using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ReisingerIntelliAppV1.Model.Models;
 using ReisingerIntelliAppV1.Services;
-using System.Collections.ObjectModel;
-using System.Linq;  // für Select, Reverse
-using System.Net;
-using System.Text.Json;
-using CommunityToolkit.Maui.Views;
 using ReisingerIntelliAppV1.Views.PopUp;
-using System.Diagnostics;
+// für Select, Reverse
 
-namespace ReisingerIntelliAppV1.ViewModels;
+namespace ReisingerIntelliAppV1.Model.ViewModels;
 
 public partial class LocalNetworkScanViewModel : ObservableObject
 {
@@ -43,6 +42,7 @@ public partial class LocalNetworkScanViewModel : ObservableObject
 
     // bleibt so erhalten
     public bool IsNotBusy => !IsBusy;
+
     [RelayCommand]
     public async Task SaveDeviceAsync(LocalNetworkDeviceModel device)
     {
@@ -54,17 +54,17 @@ public partial class LocalNetworkScanViewModel : ObservableObject
 
         try
         {
-            // 1) Credentials abfragen
-            var authRaw = await ShowPopupAsync(new KeyInputPopup());
-            if (authRaw is not AuthDataModel authData)
-                return;
-
             // Ensure all needed properties are not null
             if (string.IsNullOrEmpty(device.IpAddress))
             {
                 await ShowAlert("Fehler", "Keine IP-Adresse für das Gerät vorhanden", "OK");
                 return;
             }
+
+            // 1) ZUERST: Authentifizierungsdaten abfragen
+            var authRaw = await ShowPopupAsync(new KeyInputPopup());
+            if (authRaw is not AuthDataModel authData)
+                return;
 
             if (string.IsNullOrEmpty(authData.Username) || string.IsNullOrEmpty(authData.Password))
             {
@@ -76,7 +76,7 @@ public partial class LocalNetworkScanViewModel : ObservableObject
             Debug.WriteLine($"Attempting to authenticate with local device at IP: {device.IpAddress}");
             Debug.WriteLine($"Using username: {authData.Username}, password length: {authData.Password?.Length ?? 0}");
 
-            // 2) Authentifizieren gegen Gerät
+            // 2) Mit den Daten authentifizieren
             AuthResponseDataModel? authResp = null;
             try
             {
@@ -142,18 +142,30 @@ public partial class LocalNetworkScanViewModel : ObservableObject
                 );
                 return;
             }
+            
+            // 4) DANACH (nach erfolgreicher Authentifizierung): Gerät benennen
+            var namePopupResult = await ShowPopupAsync(new LocalDeviceNamePopup(device));
+            if (namePopupResult is not LocalNetworkDeviceModel namedDevice)
+            {
+                Debug.WriteLine("Device naming canceled by user");
+                return;
+            }
+            
+            // Use the device with the user-provided name
+            device = namedDevice;
 
-            // 4) DeviceModel erstellen
+            // 5) DeviceModel erstellen
             var model = new DeviceModel
             {
                 DeviceId = device.DeviceId ?? "Unknown",
-                Name = device.SerialNumber ?? "Unknown Device",
+                // Use the custom name if provided, keep Serial Number separate
+                Name = !string.IsNullOrEmpty(device.CustomName) ? device.CustomName : (device.SerialNumber ?? "Unknown Device"),
                 Ssid = SsidName ?? "",
                 Ip = device.IpAddress, // Use the actual scanned IP for local devices
                 Username = authData.Username,
                 Password = authData.Password,
                 ConnectionType = ConnectionType.Local, // Explicitly set as Local type
-                SerialNumber = device.SerialNumber ?? "Unknown",
+                SerialNumber = device.SerialNumber ?? "Unknown", // Keep the real serial number separate from name
                 FirmwareVersion = version.FirmwareVersion ?? "Unknown",
                 LatestFirmware = version.LatestFirmware,
                 SoftwareVersion = version.Message ?? "Unknown",
@@ -162,14 +174,14 @@ public partial class LocalNetworkScanViewModel : ObservableObject
                 ModuleId = device.DeviceId ?? "Unknown"
             };
             
-            Debug.WriteLine($"Saving LOCAL device with IP: {model.Ip}, Connection Type: {model.ConnectionType}");
+            Debug.WriteLine($"Saving LOCAL device with name: {model.Name}, Serial: {model.SerialNumber}, IP: {model.Ip}, Connection Type: {model.ConnectionType}");
 
-            // 5) Speichern & Ergebnis anzeigen
+            // 6) Speichern & Ergebnis anzeigen
             var devices = await _deviceService.AddDeviceAndReturnUpdatedList(model);
 
             await ShowAlert(
                 "Gerät gespeichert!",
-                $"Aktuelle lokale Geräte: {string.Join(", ", devices.Select(d => d.Name))}",
+                $"Aktuelle lokale Geräte: {string.Join(", ", devices.Where(d => d.ConnectionType == ConnectionType.Local).Select(d => d.Name))}",
                 "OK"
             );
         }

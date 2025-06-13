@@ -12,11 +12,38 @@
             <Label FontAttributes="Bold" Text="Gebäudename" />
             <Entry Placeholder="Name des Gebäudes" Text="{Binding BuildingName}" />
 
-            <Label FontAttributes="Bold" Text="Stockwerke" />
-            <CollectionView ItemsSource="{Binding Floors}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Label
+                    Grid.Column="0"
+                    FontAttributes="Bold"
+                    Text="Stockwerke" />
+                <Label
+                    Grid.Column="1"
+                    FontSize="12"
+                    Text="← Zum Neuordnen länger drücken →"
+                    TextColor="Gray" />
+            </Grid>
+
+            <CollectionView
+                x:Name="FloorsCollectionView"
+                CanReorderItems="True"
+                ItemsSource="{Binding Floors}"
+                ReorderCompleted="OnReorderCompleted"
+                SelectionMode="None">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout ItemSpacing="8" Orientation="Vertical" />
+                </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame Margin="0,5" Padding="10">
+                        <Frame
+                            Margin="0,2"
+                            Padding="10"
+                            BorderColor="#E0E0E0"
+                            HasShadow="True">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -24,20 +51,34 @@
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
+                                <!--  Drag handle/indicator using a Unicode character instead of image  -->
+                                <Label
+                                    Grid.Row="0"
+                                    Grid.RowSpan="2"
+                                    Grid.Column="0"
+                                    FontSize="24"
+                                    HeightRequest="40"
+                                    HorizontalOptions="Center"
+                                    Text="≡"
+                                    TextColor="#888888"
+                                    VerticalOptions="Center"
+                                    WidthRequest="30" />
+
                                 <Entry
                                     Grid.Row="0"
-                                    Grid.Column="0"
+                                    Grid.Column="1"
                                     HorizontalOptions="FillAndExpand"
                                     Placeholder="Stockwerksname"
-                                    Text="{Binding Name}" />
+                                    Text="{Binding FloorName}" />
 
                                 <ImageButton
                                     Grid.Row="0"
-                                    Grid.Column="1"
+                                    Grid.Column="2"
                                     Margin="5"
                                     Padding="10"
                                     Aspect="AspectFill"
@@ -52,7 +93,7 @@
 
                                 <Grid
                                     Grid.Row="1"
-                                    Grid.Column="0"
+                                    Grid.Column="1"
                                     Grid.ColumnSpan="2">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
@@ -68,14 +109,12 @@
                                         Text="Bauplan Hochladen"
                                         TextColor="White"
                                         WidthRequest="180" />
-
-
                                 </Grid>
 
                                 <Label
                                     Grid.Row="2"
-                                    Grid.Column="0"
-                                    Grid.ColumnSpan="1"
+                                    Grid.Column="1"
+                                    Grid.ColumnSpan="2"
                                     FontSize="12"
                                     IsVisible="{Binding PdfPath, Converter={StaticResource StringNotEmptyConverter}}"
                                     Text="{Binding PdfPath}"

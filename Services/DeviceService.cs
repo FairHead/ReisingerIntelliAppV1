@@ -15,6 +15,8 @@ public class DeviceService
         _apiService = apiService;
     }
 
+    public IntellidriveApiService ApiService => _apiService;
+
     public async Task SaveDeviceListToSecureStore(List<DeviceModel> devices)
     {
         try

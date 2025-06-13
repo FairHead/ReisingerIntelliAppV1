@@ -1,0 +1,83 @@
+﻿<ContentView
+    x:Class="ReisingerIntelliAppV1.Views.FloorManager.PlacedDeviceControl"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:ReisingerIntelliAppV1.Converters"
+    x:Name="placedDeviceControl">
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+            <converters:DoorStatusColorConverter x:Key="DoorStatusColorConverter" />
+            <converters:DoorStatusToggleTextConverter x:Key="DoorStatusToggleTextConverter" />
+            <converters:DoorStatusMessageConverter x:Key="DoorStatusTextConverter" />
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <Frame
+        Padding="5"
+        BackgroundColor="#AA0000FF"
+        BorderColor="White"
+        CornerRadius="10"
+        HasShadow="True"
+        HorizontalOptions="Start">
+
+        <HorizontalStackLayout Spacing="5" VerticalOptions="Center">
+            <!--  Online indicator  -->
+            <BoxView
+                CornerRadius="5"
+                HeightRequest="10"
+                VerticalOptions="Center"
+                WidthRequest="10"
+                Color="{Binding IsOnline, Converter={StaticResource BoolToColorConverter}}" />
+
+            <!--  Name  -->
+            <Label
+                FontAttributes="Bold"
+                FontSize="12"
+                LineBreakMode="TailTruncation"
+                MaxLines="1"
+                Text="{Binding Name}"
+                TextColor="White"
+                WidthRequest="60" />
+
+            <!--  Config  -->
+            <Button
+                x:Name="DeviceSettingsButton"
+                Padding="0"
+                Command="{Binding Source={x:Reference placedDeviceControl}, Path=OpenSettingsCommand}"
+                CommandParameter="{Binding}"
+                FontSize="10"
+                HeightRequest="28"
+                Text="⚙"
+                WidthRequest="28" />
+
+            <!--  Door Toggle  -->
+            <Button
+                x:Name="DoorToggleOpenCloseBUtton"
+                Padding="0"
+                BackgroundColor="{Binding IsDoorOpen, Converter={StaticResource DoorStatusColorConverter}}"
+                Command="{Binding Source={x:Reference placedDeviceControl}, Path=ToggleDoorCommand}"
+                CommandParameter="{Binding}"
+                FontSize="10"
+                HeightRequest="28"
+                Text="{Binding IsDoorOpen, Converter={StaticResource DoorStatusToggleTextConverter}}"
+                TextColor="White"
+                WidthRequest="45" />
+
+
+            <!--  Delete  -->
+            <Button
+                x:Name="DeleteButton"
+                Padding="0"
+                BackgroundColor="#E53935"
+                Command="{Binding Source={x:Reference placedDeviceControl}, Path=DeleteDeviceCommand}"
+                CommandParameter="{Binding}"
+                FontSize="10"
+                HeightRequest="28"
+                Text="🗑"
+                TextColor="White"
+                WidthRequest="28" />
+        </HorizontalStackLayout>
+    </Frame>
+</ContentView>

@@ -18,6 +18,7 @@ namespace ReisingerIntelliAppV1.Model.Models
         public bool IsAlreadySaved { get; set; }
         public bool IsNotAlreadySaved => !IsAlreadySaved;
 
+        // Add custom name property to store user-defined device name
+        public string CustomName { get; set; }
     }
-
 }

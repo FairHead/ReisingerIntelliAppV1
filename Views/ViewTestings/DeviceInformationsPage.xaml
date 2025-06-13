@@ -57,19 +57,18 @@
                                     Margin="2,0,2,0"
                                     BackgroundColor="White">
                                     <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="10,10,10,10 " />
-                                        <!--  Ecken abrunden  -->
+                                        <RoundRectangle CornerRadius="10,10,10,10" />
                                     </Border.StrokeShape>
-                                    <Label
-                                        x:Name="SelectedDeviceName"
-                                        Padding="5"
+
+                                    <Entry
+                                        x:Name="DeviceNameEntry"
                                         BackgroundColor="Black"
                                         FontSize="16"
-                                        HorizontalTextAlignment="Start"
-                                        Text="{Binding SelectedDevice.Name}"
                                         TextColor="White"
-                                        VerticalTextAlignment="Center" />
-
+                                        Placeholder="Gerätename eingeben"
+                                        Text="{Binding SelectedDevice.Name}"
+                                        VerticalOptions="Center"
+                                        HorizontalTextAlignment="Start" />
                                 </Border>
                             </Grid>
 

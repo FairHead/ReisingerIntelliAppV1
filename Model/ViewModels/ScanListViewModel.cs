@@ -1,13 +1,10 @@
-﻿using CommunityToolkit.Maui.Views;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
 using ReisingerIntelliAppV1.Model.Models;
-using ReisingerIntelliAppV1.Model.ViewModels;
 using ReisingerIntelliAppV1.Services;
-using System.Collections.ObjectModel;
 using SaveDevicePopUp = ReisingerIntelliAppV1.Views.PopUp.SaveDevicePopUp;
 
-namespace ReisingerIntelliAppV1.ViewModels;
+namespace ReisingerIntelliAppV1.Model.ViewModels;
 
 public partial class ScanListViewModel : BaseViewModel
 {

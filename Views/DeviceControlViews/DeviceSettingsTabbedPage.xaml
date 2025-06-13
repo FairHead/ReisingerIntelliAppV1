@@ -4,7 +4,18 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:ReisingerIntelliAppV1.Views.DeviceControlViews"
+    Title="Device Settings"
     BarBackgroundColor="#282d30"
     SelectedTabColor="LightGray"
     UnselectedTabColor="DarkGray">
+    <TabbedPage.Resources>
+        <ResourceDictionary>
+            <!--  Style specifically for making tab bar more compact  -->
+            <Style TargetType="TabbedPage">
+                <Setter Property="BarBackgroundColor" Value="#282d30" />
+                <Setter Property="SelectedTabColor" Value="LightGray" />
+                <Setter Property="UnselectedTabColor" Value="DarkGray" />
+            </Style>
+        </ResourceDictionary>
+    </TabbedPage.Resources>
 </TabbedPage>

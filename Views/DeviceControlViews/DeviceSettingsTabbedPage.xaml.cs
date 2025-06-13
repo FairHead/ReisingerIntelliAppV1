@@ -44,7 +44,7 @@ public partial class DeviceSettingsTabbedPage : TabbedPage
         void AddTab<TPage>(string icon) where TPage : Page, IDevicePage
         {
             var page = _serviceProvider.GetRequiredService<TPage>();
-            page.Title = typeof(TPage).Name;
+            page.Title = ""; // Set an empty title to remove text labels under icons
             page.IconImageSource = icon;
             page.InitializeWith(_viewModel, _device!);
 

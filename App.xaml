@@ -9,7 +9,7 @@
         <ResourceDictionary>
             <behaviors:OctetValidationBehavior x:Key="OctetValidation"/>
             <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
-            <converters:DoorStatusTextConverter x:Key="DoorStatusTextConverter" />
+            <converters:DoorStatusMessageConverter x:Key="DoorStatusMessageConverter" />
             <converters:DoorStatusColorConverter x:Key="DoorStatusColorConverter" />
             <converters:DoorStatusToggleTextConverter x:Key="DoorStatusToggleTextConverter" />
             <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
