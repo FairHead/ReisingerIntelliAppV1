@@ -7,6 +7,7 @@ using ReisingerIntelliAppV1.Views.DeviceControlViews;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Windows.Input;
 
@@ -588,6 +589,42 @@ public async Task StartOnlineStatusUpdater()
                 "Fehler",
                 $"Die Geräteeinstellungen konnten nicht geöffnet werden: {ex.Message}",
                 "OK");
+        }
+    }
+
+    // Update position of a placed device
+    [RelayCommand]
+    public void UpdateDevicePosition(object positionData)
+    {
+        try
+        {
+            // Use reflection to access anonymous object properties
+            var type = positionData.GetType();
+            var deviceProperty = type.GetProperty("DeviceModel");
+            var xProperty = type.GetProperty("RelativeX");
+            var yProperty = type.GetProperty("RelativeY");
+
+            if (deviceProperty != null && xProperty != null && yProperty != null)
+            {
+                var device = deviceProperty.GetValue(positionData) as PlacedDeviceModel;
+                var xValue = xProperty.GetValue(positionData);
+                var yValue = yProperty.GetValue(positionData);
+
+                if (device != null && xValue is double newX && yValue is double newY)
+                {
+                    Debug.WriteLine($"[FloorPlanViewModel] Updating device position: {device.Name} to X={newX:F3}, Y={newY:F3}");
+                    
+                    device.RelativeX = newX;
+                    device.RelativeY = newY;
+
+                    // Save changes
+                    _ = SaveBuildingsAsync();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[FloorPlanViewModel] Error updating device position: {ex.Message}");
         }
     }
 
