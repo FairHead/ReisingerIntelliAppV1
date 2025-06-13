@@ -4,11 +4,11 @@ using System;
 namespace ReisingerIntelliAppV1.Model.Models
 {
     /// <summary>
-    /// Repräsentiert ein auf einem PDF-Bauplan platziertes Gerät
+    /// Reprï¿½sentiert ein auf einem PDF-Bauplan platziertes Gerï¿½t
     /// </summary>
     public partial class PlacedDeviceModel : ObservableObject
     {
-        // Referenz zum Original-Gerät
+        // Referenz zum Original-Gerï¿½t
         public DeviceModel DeviceInfo { get; set; }
 
         // Direct properties for easy access (mirror some properties from DeviceInfo)
@@ -34,16 +34,19 @@ namespace ReisingerIntelliAppV1.Model.Models
         [ObservableProperty]
         private double scale;
 
-        // ID des Gebäudes und Stockwerks, auf dem das Gerät platziert ist
+        // ID des Gebï¿½udes und Stockwerks, auf dem das Gerï¿½t platziert ist
         public int BuildingId { get; set; }
         public int FloorId { get; set; }
 
-        // Status für UI-Anzeige
+        // Status fï¿½r UI-Anzeige
         [ObservableProperty]
         private bool isDoorOpen;
 
         [ObservableProperty]
         private bool isSelected;
+
+        [ObservableProperty]
+        private bool isInMoveMode;
 
         // Konstruktoren
         public PlacedDeviceModel()

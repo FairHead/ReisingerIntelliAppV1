@@ -92,6 +92,38 @@ public partial class FloorPlanViewModel : ObservableObject
         }
     }
 
+    [RelayCommand]
+    private void ToggleMove(PlacedDeviceModel device)
+    {
+        if (device != null)
+        {
+            Debug.WriteLine($"[FloorPlanViewModel] Toggling move mode for device: {device.Name}, current state: {device.IsInMoveMode}");
+            
+            // Turn off move mode for all other devices first
+            if (SelectedFloor?.PlacedDevices != null)
+            {
+                foreach (var otherDevice in SelectedFloor.PlacedDevices.Where(d => d != device))
+                {
+                    if (otherDevice.IsInMoveMode)
+                    {
+                        otherDevice.IsInMoveMode = false;
+                        Debug.WriteLine($"[FloorPlanViewModel] Disabled move mode for: {otherDevice.Name}");
+                    }
+                }
+            }
+            
+            // Toggle move mode for the selected device
+            device.IsInMoveMode = !device.IsInMoveMode;
+            Debug.WriteLine($"[FloorPlanViewModel] Move mode for {device.Name} is now: {device.IsInMoveMode}");
+            
+            // Save the changes when exiting move mode
+            if (!device.IsInMoveMode)
+            {
+                _ = SaveBuildingsAsync();
+            }
+        }
+    }
+
     private async void AddDeviceToCenter(DeviceModel device)
     {
         if (SelectedFloor == null || device == null)

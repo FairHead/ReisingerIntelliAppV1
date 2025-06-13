@@ -19,8 +19,8 @@
         BackgroundColor="#992020A0"
         HorizontalOptions="Center"
         Shadow="True"
-        Stroke="White"
-        StrokeThickness="1">
+        Stroke="{Binding IsInMoveMode, Converter={StaticResource BoolToColorConverter}}"
+        StrokeThickness="3">
         <Border.StrokeShape>
             <RoundRectangle CornerRadius="10" />
         </Border.StrokeShape>
@@ -107,7 +107,9 @@
             <Border>
                 <Button
                     x:Name="MoveAndPlace"
-                    BackgroundColor="Transparent"
+                    BackgroundColor="{Binding IsInMoveMode, Converter={StaticResource BoolToColorConverter}}"
+                    Command="{Binding Source={x:Reference placedDeviceControl}, Path=ToggleMoveCommand}"
+                    CommandParameter="{Binding}"
                     FontSize="20"
                     Text="↔️" />
             </Border>
