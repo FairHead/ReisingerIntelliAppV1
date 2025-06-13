@@ -21,6 +21,9 @@ namespace ReisingerIntelliAppV1.Model.Models
         [ObservableProperty]
         private bool isOnline;
 
+        [ObservableProperty]
+        private bool isVisible = false;
+
         // Position auf dem Bauplan (relativ zur PDF, Werte von 0.0 bis 1.0)
         [ObservableProperty]
         private double relativeX;

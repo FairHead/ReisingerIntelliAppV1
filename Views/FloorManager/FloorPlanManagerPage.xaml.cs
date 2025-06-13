@@ -45,6 +45,8 @@ public partial class FloorPlanManagerPage : ContentPage
         _viewModel.PropertyChanged += ViewModel_PropertyChanged;
     }
 
+
+
     protected override async void OnAppearing()
     {
         base.OnAppearing();

@@ -92,7 +92,7 @@ public partial class FloorPlanViewModel : ObservableObject
         }
     }
 
-    private void AddDeviceToCenter(DeviceModel device)
+    private async void AddDeviceToCenter(DeviceModel device)
     {
         if (SelectedFloor == null || device == null)
         {
@@ -101,30 +101,57 @@ public partial class FloorPlanViewModel : ObservableObject
         }
 
         Debug.WriteLine($"[FloorPlanViewModel] AddDeviceToCenter: Adding device {device.Name} to center of floor plan");
-        
+
+        // Erstelle das PlacedDeviceModel mit anfänglich unsichtbarem Status
         var placed = new PlacedDeviceModel
         {
-            DeviceInfo = device,  // Important: Set the DeviceInfo reference
+            DeviceInfo = device,
             Name = device.Name,
             IsOnline = device.IsOnline,
             DeviceId = device.DeviceId,
-
-            // Standardmäßig in die Mitte setzen
             RelativeX = 0.5,
             RelativeY = 0.5,
-            Scale = 0.5
+            Scale = 0.1,
+            // Wichtig: Füge eine Visibility-Property hinzu
+            IsVisible = false
         };
 
         if (SelectedFloor.PlacedDevices == null)
             SelectedFloor.PlacedDevices = new ObservableCollection<PlacedDeviceModel>();
 
+        // Zuerst zum SelectedFloor hinzufügen, aber noch unsichtbar
         SelectedFloor.PlacedDevices.Add(placed);
-        Debug.WriteLine($"[FloorPlanViewModel] Device added. PlacedDevices count: {SelectedFloor.PlacedDevices.Count}");
-        
-        // Notify UI that the collection has changed
+
+        // Frage den Türstatus ab, bevor das Element sichtbar gemacht wird
+        if (device.IsOnline)
+        {
+            try
+            {
+                bool connected = await _wifiService.EnsureConnectedToSsidAsync(device.Ssid);
+                if (connected)
+                {
+                    var doorStateJson = await _apiService.GetDoorStateAsync(device);
+                    var doorState = JsonSerializer.Deserialize<DoorStateResponse>(doorStateJson);
+
+                    bool isClosed = doorState?.Content?.DOOR_STATE.Equals("Closed", StringComparison.OrdinalIgnoreCase) == true;
+                    placed.IsDoorOpen = !isClosed;
+
+                    Debug.WriteLine($"[FloorPlanViewModel] Door state retrieved: IsDoorOpen={placed.IsDoorOpen}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[FloorPlanViewModel] Error retrieving door state: {ex.Message}");
+            }
+        }
+
+        // Jetzt mache das Element sichtbar
+        placed.IsVisible = true;
+
+        // Benachrichtige die UI, dass sich die Collection geändert hat
         OnPropertyChanged(nameof(SelectedFloor));
-        
-        // Save changes
+
+        // Speichere die Änderungen
         _ = SaveBuildingsAsync();
     }
 
@@ -376,21 +403,21 @@ public partial class FloorPlanViewModel : ObservableObject
         // Update the online status immediately after loading
         await UpdateDevicesOnlineStatusAsync();
     }
+// Start online status checker
+public async Task StartOnlineStatusUpdater()
+{
+    Debug.WriteLine("[FloorPlanViewModel] StartOnlineStatusUpdater");
+    
+    // Always immediately update on start
+    await MainThread.InvokeOnMainThreadAsync(UpdateDevicesOnlineStatusAsync);
 
-    // Start online status checker
-    public void StartOnlineStatusUpdater()
-    {
-        Debug.WriteLine("[FloorPlanViewModel] StartOnlineStatusUpdater");
-        MainThread.InvokeOnMainThreadAsync(UpdateDevicesOnlineStatusAsync);
+    if (_statusUpdateTimer != null) return;
 
-        if (_statusUpdateTimer != null) return;
-
-        _statusUpdateTimer = new System.Timers.Timer(5000);
-        _statusUpdateTimer.Elapsed += async (_, _) => await MainThread.InvokeOnMainThreadAsync(UpdateDevicesOnlineStatusAsync);
-        _statusUpdateTimer.AutoReset = true;
-        _statusUpdateTimer.Start();
-    }
-
+    _statusUpdateTimer = new System.Timers.Timer(2000);
+    _statusUpdateTimer.Elapsed += async (_, _) => await MainThread.InvokeOnMainThreadAsync(UpdateDevicesOnlineStatusAsync);
+    _statusUpdateTimer.AutoReset = true;
+    _statusUpdateTimer.Start();
+}
     // Stop online status checker
     public void StopOnlineStatusUpdater()
     {

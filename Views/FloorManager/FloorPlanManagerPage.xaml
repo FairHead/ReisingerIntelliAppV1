@@ -52,11 +52,11 @@
                         <DataTemplate>
                             <floorManager:PlacedDeviceControl
                                 DeleteDeviceCommand="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.RemovePlacedDeviceCommand}"
-                                HeightRequest="60"
+                                HeightRequest="Infinity"
+                                IsVisible="{Binding IsVisible}"
                                 OpenSettingsCommand="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.OpenDeviceSettingsCommand}"
                                 Scale="{Binding Scale}"
                                 ToggleDoorCommand="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.ToggleDoorCommand}"
-                                WidthRequest="260"
                                 ZIndex="100">
                                 <AbsoluteLayout.LayoutBounds>
                                     <MultiBinding Converter="{StaticResource RelativePositionToLayoutBoundsConverter}">

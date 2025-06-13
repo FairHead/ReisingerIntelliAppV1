@@ -14,70 +14,103 @@
         </ResourceDictionary>
     </ContentView.Resources>
 
-    <Frame
-        Padding="5"
-        BackgroundColor="#AA0000FF"
-        BorderColor="White"
-        CornerRadius="10"
-        HasShadow="True"
-        HorizontalOptions="Start">
+    <!--  Hauptrahmen  -->
+    <Border
+        BackgroundColor="#992020A0"
+        HorizontalOptions="Center"
+        Shadow="True"
+        Stroke="White"
+        StrokeThickness="1">
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="10" />
+        </Border.StrokeShape>
 
-        <HorizontalStackLayout Spacing="5" VerticalOptions="Center">
-            <!--  Online indicator  -->
-            <BoxView
-                CornerRadius="5"
-                HeightRequest="10"
-                VerticalOptions="Center"
-                WidthRequest="10"
-                Color="{Binding IsOnline, Converter={StaticResource BoolToColorConverter}}" />
+        <VerticalStackLayout Spacing="0">
 
-            <!--  Name  -->
-            <Label
-                FontAttributes="Bold"
-                FontSize="12"
-                LineBreakMode="TailTruncation"
-                MaxLines="1"
-                Text="{Binding Name}"
-                TextColor="White"
-                WidthRequest="60" />
+            <!--  Kopfzeile mit abgerundeten oberen Ecken  -->
+            <Border
+                Padding="5"
+                BackgroundColor="#900000FF"
+                StrokeThickness="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10, 10, 0, 0" />
+                </Border.StrokeShape>
+                <HorizontalStackLayout
+                    HorizontalOptions="Center"
+                    Spacing="5"
+                    VerticalOptions="Center">
 
-            <!--  Config  -->
-            <Button
-                x:Name="DeviceSettingsButton"
-                Padding="0"
-                Command="{Binding Source={x:Reference placedDeviceControl}, Path=OpenSettingsCommand}"
-                CommandParameter="{Binding}"
-                FontSize="10"
-                HeightRequest="28"
-                Text="⚙"
-                WidthRequest="28" />
+                    <!--  Online indicator  -->
+                    <BoxView
+                        BackgroundColor="Transparent"
+                        CornerRadius="25"
+                        HeightRequest="20"
+                        VerticalOptions="Center"
+                        WidthRequest="20"
+                        Color="{Binding IsOnline, Converter={StaticResource BoolToColorConverter}}" />
 
-            <!--  Door Toggle  -->
-            <Button
-                x:Name="DoorToggleOpenCloseBUtton"
-                Padding="0"
-                BackgroundColor="{Binding IsDoorOpen, Converter={StaticResource DoorStatusColorConverter}}"
-                Command="{Binding Source={x:Reference placedDeviceControl}, Path=ToggleDoorCommand}"
-                CommandParameter="{Binding}"
-                FontSize="10"
-                HeightRequest="28"
-                Text="{Binding IsDoorOpen, Converter={StaticResource DoorStatusToggleTextConverter}}"
-                TextColor="White"
-                WidthRequest="45" />
+                    <!--  Name  -->
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        Text="{Binding Name}"
+                        TextColor="White"
+                        VerticalOptions="Center" />
 
+                    <!--  Config  -->
 
-            <!--  Delete  -->
-            <Button
-                x:Name="DeleteButton"
-                Padding="0"
-                BackgroundColor="#E53935"
-                Command="{Binding Source={x:Reference placedDeviceControl}, Path=DeleteDeviceCommand}"
-                CommandParameter="{Binding}"
-                FontSize="10"
-                HeightRequest="28"
-                Text="🗑"
-                TextColor="White"
-                WidthRequest="28" />
-        </HorizontalStackLayout>
-    </Frame>
+                </HorizontalStackLayout>
+            </Border>
+
+            <HorizontalStackLayout>
+                <Button
+                    x:Name="DoorToggleOpenCloseBUtton"
+                    Margin="10"
+                    BackgroundColor="{Binding IsDoorOpen, Converter={StaticResource DoorStatusColorConverter}}"
+                    BorderColor="#901A1A1A"
+                    BorderWidth="5"
+                    Command="{Binding Source={x:Reference placedDeviceControl}, Path=ToggleDoorCommand}"
+                    CommandParameter="{Binding}"
+                    CornerRadius="100"
+                    FontSize="10"
+                    HeightRequest="100"
+                    Shadow="True"
+                    Text="{Binding IsDoorOpen, Converter={StaticResource DoorStatusToggleTextConverter}}"
+                    TextColor="White"
+                    WidthRequest="100" />
+
+                <VerticalStackLayout VerticalOptions="Center">
+                    <Button
+                        x:Name="DeviceSettingsButton"
+                        Padding="0"
+                        Command="{Binding Source={x:Reference placedDeviceControl}, Path=OpenSettingsCommand}"
+                        CommandParameter="{Binding}"
+                        FontSize="10"
+                        HeightRequest="28"
+                        Text="⚙"
+                        WidthRequest="28" />
+
+                    <!--  Delete  -->
+                    <Button
+                        x:Name="DeleteButton"
+                        Padding="0"
+                        BackgroundColor="#E53935"
+                        Command="{Binding Source={x:Reference placedDeviceControl}, Path=DeleteDeviceCommand}"
+                        CommandParameter="{Binding}"
+                        FontSize="10"
+                        HeightRequest="28"
+                        Text="🗑"
+                        TextColor="White"
+                        WidthRequest="28" />
+                </VerticalStackLayout>
+            </HorizontalStackLayout>
+            <Border>
+                <Button
+                    x:Name="MoveAndPlaceV"
+                    BackgroundColor="Transparent"
+                    FontSize="20"
+                    Text="↔️" />
+            </Border>
+        </VerticalStackLayout>
+    </Border>
 </ContentView>
