@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace ReisingerIntelliAppV1.Views.FloorManager
 {
-    public partial class PlacedDeviceControl : ContentView
+    public partial class PlacedDeviceControl : ContentView, IDisposable
     {
         // Drag mode related properties
         private bool _isDragMode = false;
@@ -141,13 +141,23 @@ namespace ReisingerIntelliAppV1.Views.FloorManager
         {
             Debug.WriteLine("[PlacedDeviceControl] Move button released");
             _longPressTimer.Stop();
+            
+            // If we were in drag mode but button was released, exit drag mode
+            if (_isDragMode)
+            {
+                CompleteDragOperation();
+            }
         }
 
         private void OnLongPressTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                OnLongPressStarted();
+                // Only enter drag mode if not already in it
+                if (!_isDragMode)
+                {
+                    OnLongPressStarted();
+                }
             });
         }
 
@@ -163,8 +173,19 @@ namespace ReisingerIntelliAppV1.Views.FloorManager
                 this.GestureRecognizers.Add(_dragPanGestureRecognizer);
             }
 
-            // Visual feedback - could change background color or add border
-            this.BackgroundColor = Colors.LightBlue.WithAlpha(0.3f);
+            // Visual feedback - change background color and add some opacity
+            this.BackgroundColor = Colors.LightBlue.WithAlpha(0.5f);
+            this.Opacity = 0.8;
+            
+            // Provide haptic feedback if available
+            try
+            {
+                HapticFeedback.Default.Perform(HapticFeedbackType.LongPress);
+            }
+            catch
+            {
+                // Haptic feedback not available on this platform
+            }
         }
 
         private void OnDragPanUpdated(object sender, PanUpdatedEventArgs e)
@@ -181,15 +202,9 @@ namespace ReisingerIntelliAppV1.Views.FloorManager
                 case GestureStatus.Running:
                     Debug.WriteLine($"[PlacedDeviceControl] Dragging: TotalX={e.TotalX}, TotalY={e.TotalY}");
                     
-                    // Calculate the change in position relative to the container
-                    var deltaX = e.TotalX - _lastPanPoint.X;
-                    var deltaY = e.TotalY - _lastPanPoint.Y;
-
-                    // Update our visual position
-                    this.TranslationX += deltaX;
-                    this.TranslationY += deltaY;
-
-                    _lastPanPoint = new Point(e.TotalX, e.TotalY);
+                    // Update translation to show visual movement during drag
+                    this.TranslationX = e.TotalX;
+                    this.TranslationY = e.TotalY;
                     break;
 
                 case GestureStatus.Completed:
@@ -211,8 +226,9 @@ namespace ReisingerIntelliAppV1.Views.FloorManager
                 this.GestureRecognizers.Remove(_dragPanGestureRecognizer);
             }
 
-            // Remove visual feedback
+            // Restore visual feedback
             this.BackgroundColor = Colors.Transparent;
+            this.Opacity = 1.0;
 
             // Calculate new relative position and update the view model
             UpdateDevicePosition();
@@ -231,29 +247,39 @@ namespace ReisingerIntelliAppV1.Views.FloorManager
                 parent = parent.Parent;
             }
 
-            if (parent is AbsoluteLayout absoluteLayout)
+            if (parent is AbsoluteLayout absoluteLayout && absoluteLayout.Width > 0 && absoluteLayout.Height > 0)
             {
-                // Calculate new relative position based on current position + translation
+                // Get current layout bounds (these are in proportional coordinates 0-1)
                 var currentBounds = AbsoluteLayout.GetLayoutBounds(this);
-                var containerWidth = absoluteLayout.Width;
-                var containerHeight = absoluteLayout.Height;
+                
+                // Calculate the actual pixel position
+                var currentPixelX = currentBounds.X * absoluteLayout.Width;
+                var currentPixelY = currentBounds.Y * absoluteLayout.Height;
+                
+                // Add the translation (which is in pixels)
+                var newPixelX = currentPixelX + this.TranslationX;
+                var newPixelY = currentPixelY + this.TranslationY;
+                
+                // Convert back to relative coordinates and clamp
+                var newRelativeX = Math.Clamp(newPixelX / absoluteLayout.Width, 0, 1);
+                var newRelativeY = Math.Clamp(newPixelY / absoluteLayout.Height, 0, 1);
 
-                if (containerWidth > 0 && containerHeight > 0)
+                Debug.WriteLine($"[PlacedDeviceControl] Position update: Current=({currentBounds.X:F3},{currentBounds.Y:F3}), Translation=({this.TranslationX:F1},{this.TranslationY:F1}), New=({newRelativeX:F3},{newRelativeY:F3})");
+
+                // Update position through command if available
+                if (UpdateDevicePositionCommand?.CanExecute(null) == true)
                 {
-                    // Calculate new relative position
-                    var newX = Math.Clamp(currentBounds.X + (this.TranslationX / containerWidth), 0, 1);
-                    var newY = Math.Clamp(currentBounds.Y + (this.TranslationY / containerHeight), 0, 1);
-
-                    Debug.WriteLine($"[PlacedDeviceControl] New relative position: X={newX:F3}, Y={newY:F3}");
-
-                    // Update position through command if available
-                    if (UpdateDevicePositionCommand?.CanExecute(null) == true)
-                    {
-                        var positionData = new { DeviceModel = this.BindingContext, RelativeX = newX, RelativeY = newY };
-                        UpdateDevicePositionCommand.Execute(positionData);
-                    }
+                    var positionData = new { DeviceModel = this.BindingContext, RelativeX = newRelativeX, RelativeY = newRelativeY };
+                    UpdateDevicePositionCommand.Execute(positionData);
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            _longPressTimer?.Stop();
+            _longPressTimer?.Dispose();
+            _longPressTimer = null;
         }
     }
 }

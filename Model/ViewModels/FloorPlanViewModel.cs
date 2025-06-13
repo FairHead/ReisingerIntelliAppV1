@@ -607,10 +607,10 @@ public async Task StartOnlineStatusUpdater()
             if (deviceProperty != null && xProperty != null && yProperty != null)
             {
                 var device = deviceProperty.GetValue(positionData) as PlacedDeviceModel;
-                var newX = (double)xProperty.GetValue(positionData);
-                var newY = (double)yProperty.GetValue(positionData);
+                var xValue = xProperty.GetValue(positionData);
+                var yValue = yProperty.GetValue(positionData);
 
-                if (device != null)
+                if (device != null && xValue is double newX && yValue is double newY)
                 {
                     Debug.WriteLine($"[FloorPlanViewModel] Updating device position: {device.Name} to X={newX:F3}, Y={newY:F3}");
                     
