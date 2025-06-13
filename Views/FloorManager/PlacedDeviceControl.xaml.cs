@@ -106,9 +106,9 @@ namespace ReisingerIntelliAppV1.Views.FloorManager
             _longPressTimer.Elapsed += OnLongPressTimerElapsed;
             _longPressTimer.AutoReset = false;
 
-            // Tap gesture recognizer for MoveAndPlace button
+            // Tap gesture recognizer for MoveAndPlace button - using single tap to avoid conflicts
             _moveButtonTapGestureRecognizer = new TapGestureRecognizer();
-            _moveButtonTapGestureRecognizer.Tapped += OnMoveButtonPressed;
+            _moveButtonTapGestureRecognizer.Tapped += OnMoveButtonTapped;
 
             // Pan gesture recognizer for dragging
             _dragPanGestureRecognizer = new PanGestureRecognizer();
@@ -129,6 +129,12 @@ namespace ReisingerIntelliAppV1.Views.FloorManager
                     Debug.WriteLine("[PlacedDeviceControl] Gesture recognizers added to MoveAndPlace button");
                 }
             };
+        }
+
+        private void OnMoveButtonTapped(object sender, TappedEventArgs e)
+        {
+            // Handle tap separately from press/release - this prevents other gestures from interfering
+            Debug.WriteLine("[PlacedDeviceControl] Move button tapped");
         }
 
         private void OnMoveButtonPressed(object sender, EventArgs e)

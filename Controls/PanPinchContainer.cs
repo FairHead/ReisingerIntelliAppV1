@@ -115,6 +115,25 @@ namespace ReisingerIntelliAppV1.Controls
                 }
             }
 
+            // Check for PlacedDeviceControl in drag mode - treat as interactive
+            if (element is ReisingerIntelliAppV1.Views.FloorManager.PlacedDeviceControl deviceControl)
+            {
+                if (deviceControl.IsDragMode)
+                {
+                    return true;
+                }
+                
+                // Also check if the tap is on the control itself
+                if (element is VisualElement ve)
+                {
+                    var bounds = GetElementBounds(ve);
+                    if (bounds.Contains(point))
+                    {
+                        return true;
+                    }
+                }
+            }
+
             if (element is Layout layout)
             {
                 foreach (var child in layout.Children)
