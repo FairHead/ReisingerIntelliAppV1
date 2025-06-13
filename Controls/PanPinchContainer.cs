@@ -31,6 +31,16 @@ namespace ReisingerIntelliAppV1.Controls
         private Point? _lastTouchPoint;
         private bool _interactionWithControlDetected = false;
 
+        // Property to check if any child device is in drag mode
+        private bool IsAnyDeviceInDragMode
+        {
+            get
+            {
+                if (Content == null) return false;
+                return FindDraggingDevice(Content);
+            }
+        }
+
         public PanPinchContainer()
         {
             _panGestureRecognizer = new PanGestureRecognizer();
@@ -66,6 +76,29 @@ namespace ReisingerIntelliAppV1.Controls
                 return false;
 
             return FindInteractiveElementAt(Content, point.Value);
+        }
+
+        private bool FindDraggingDevice(Element element)
+        {
+            // Check if this element is a PlacedDeviceControl in drag mode
+            if (element is ReisingerIntelliAppV1.Views.FloorManager.PlacedDeviceControl deviceControl)
+            {
+                return deviceControl.IsDragMode;
+            }
+
+            // Recursively check children
+            if (element is Layout layout)
+            {
+                foreach (var child in layout.Children)
+                {
+                    if (child is Element childElement && FindDraggingDevice(childElement))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         private bool FindInteractiveElementAt(Element element, Point point)
@@ -241,6 +274,12 @@ namespace ReisingerIntelliAppV1.Controls
                 return;
             }
 
+            // Check if any device is in drag mode
+            if (IsAnyDeviceInDragMode)
+            {
+                return;
+            }
+
             if (Content.Scale <= 1)
             {
                 return;
@@ -261,7 +300,7 @@ namespace ReisingerIntelliAppV1.Controls
             }
             else if (e.StatusType == GestureStatus.Running)
             {
-                if (_interactionWithControlDetected)
+                if (_interactionWithControlDetected || IsAnyDeviceInDragMode)
                 {
                     return;
                 }
@@ -288,7 +327,7 @@ namespace ReisingerIntelliAppV1.Controls
         {
             if (e.Status == GestureStatus.Started)
             {
-                if (_interactionWithControlDetected)
+                if (_interactionWithControlDetected || IsAnyDeviceInDragMode)
                 {
                     return;
                 }
@@ -306,7 +345,7 @@ namespace ReisingerIntelliAppV1.Controls
 
             if (e.Status == GestureStatus.Running)
             {
-                if (_interactionWithControlDetected)
+                if (_interactionWithControlDetected || IsAnyDeviceInDragMode)
                 {
                     return;
                 }
