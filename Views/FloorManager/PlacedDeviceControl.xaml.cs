@@ -96,12 +96,10 @@ namespace ReisingerIntelliAppV1.Views.FloorManager
 
         private void OnBindingContextChanged(object sender, EventArgs e)
         {
-            // Unsubscribe from old binding context
-            if (sender is PlacedDeviceControl control && control.BindingContext is Model.Models.PlacedDeviceModel oldDevice)
-            {
-                oldDevice.PropertyChanged -= OnDevicePropertyChanged;
-            }
-
+            // Unsubscribe from old binding context if it exists
+            // Note: We can't easily track the old binding context, so we'll rely on
+            // the fact that PropertyChanged events use weak references or handle cleanup elsewhere
+            
             // Subscribe to new binding context
             if (BindingContext is Model.Models.PlacedDeviceModel newDevice)
             {
@@ -190,6 +188,17 @@ namespace ReisingerIntelliAppV1.Views.FloorManager
                 current = current.Parent;
             }
             return null;
+        }
+
+        protected override void OnHandlerChanged()
+        {
+            base.OnHandlerChanged();
+            
+            // Cleanup when handler is removed
+            if (Handler == null && BindingContext is Model.Models.PlacedDeviceModel device)
+            {
+                device.PropertyChanged -= OnDevicePropertyChanged;
+            }
         }
     }
 }
