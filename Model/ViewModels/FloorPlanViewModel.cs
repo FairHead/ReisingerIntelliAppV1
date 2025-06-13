@@ -356,6 +356,7 @@ public partial class FloorPlanViewModel : ObservableObject
         }
     }
 
+
     public async Task LoadDevicesAsync()
     {
         Debug.WriteLine("[FloorPlanViewModel] LoadDevicesAsync called");
