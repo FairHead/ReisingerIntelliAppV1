@@ -106,7 +106,7 @@
             </HorizontalStackLayout>
             <Border>
                 <Button
-                    x:Name="MoveAndPlaceV"
+                    x:Name="MoveAndPlace"
                     BackgroundColor="Transparent"
                     FontSize="20"
                     Text="↔️" />
