@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Maui.Views;
+﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Extensions;
+using CommunityToolkit.Maui.Views;
 using ReisingerIntelliAppV1.Model.Models;
 using ReisingerIntelliAppV1.Model.ViewModels;
 using ReisingerIntelliAppV1.Services;
@@ -108,7 +110,10 @@ public partial class ScanListPage : ContentPage
                         var popup = await _scanListViewModel.PrepareSavePopupAsync(network, authData);
 
                         if (popup != null)
-                            await this.ShowPopupAsync(popup);
+                            await this.ShowPopupAsync(popup, new PopupOptions
+                            {
+                                CanBeDismissedByTappingOutsideOfPopup = true
+                            });
                         else
                             await DisplayAlert("Fehlgeschlagen", "Authentifizierung ungültig.", "OK");
                     }

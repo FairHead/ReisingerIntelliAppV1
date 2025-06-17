@@ -5,7 +5,6 @@ namespace ReisingerIntelliAppV1.Views.PopUp;
 
 public partial class KeyInputPopup : Popup
 {
-    // Ensure these fields are explicitly defined to avoid ambiguity  
     public KeyInputPopup()
     {
         InitializeComponent();
@@ -19,7 +18,7 @@ public partial class KeyInputPopup : Popup
         if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
         {
             // Optional: Feedback anzeigen  
-            this.Close(null);
+            //Close(null);
             return;
         }
 
@@ -29,11 +28,11 @@ public partial class KeyInputPopup : Popup
             Password = password
         };
 
-        this.Close(authData);
+       // Close(authData);
     }
 
     private void OnCancelClicked(object sender, EventArgs e)
     {
-        this.Close(null);
+      //  Close(null);
     }
 }

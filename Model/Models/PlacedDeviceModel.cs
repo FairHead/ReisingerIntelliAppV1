@@ -45,6 +45,8 @@ namespace ReisingerIntelliAppV1.Model.Models
         [ObservableProperty]
         private bool isSelected;
 
+
+
         // Konstruktoren
         public PlacedDeviceModel()
         {

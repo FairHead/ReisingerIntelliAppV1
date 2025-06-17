@@ -23,12 +23,15 @@ public static class MauiProgram
 
         builder
             .UseMauiApp(sp => new App(sp)) // nur diese Zeile!
-            .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
+        builder.UseMauiCommunityToolkit(options =>
+        {
+            options.SetShouldSuppressExceptionsInBehaviors(false);
+        });
 
         // Services
         builder.Services.AddHttpClient("IntellidriveAPI", client =>

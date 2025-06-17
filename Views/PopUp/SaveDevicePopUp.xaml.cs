@@ -17,7 +17,7 @@ public partial class SaveDevicePopUp : Popup
     private void OnCancelClicked(object? sender, EventArgs e)
     {
         // Popup schließen
-        this.Close();
+        //Close();
     }
     private async void OnSaveClicked(object? sender, EventArgs e)
     {
@@ -52,7 +52,7 @@ public partial class SaveDevicePopUp : Popup
             }
 
             await SaveDeviceAndShowSuccessMessage(deviceModel);
-            this.Close(); // Popup schließen
+            //Close(); // Popup schließen
         }
         catch (Exception ex)
         {

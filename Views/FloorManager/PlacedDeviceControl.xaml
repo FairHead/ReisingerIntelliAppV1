@@ -2,6 +2,7 @@
     x:Class="ReisingerIntelliAppV1.Views.FloorManager.PlacedDeviceControl"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:converters="clr-namespace:ReisingerIntelliAppV1.Converters"
     x:Name="placedDeviceControl">
 
@@ -14,7 +15,18 @@
         </ResourceDictionary>
     </ContentView.Resources>
 
-    <!--  Hauptrahmen  -->
+    <ContentView.GestureRecognizers>
+        <PanGestureRecognizer PanUpdated="OnPanUpdated" />
+    </ContentView.GestureRecognizers>
+
+    <ContentView.Behaviors>
+        <toolkit:TouchBehavior
+            LongPressCommand="{Binding StartDragCommand}" />
+    </ContentView.Behaviors>
+
+
+
+    <!-- Hauptcontainer -->
     <Border
         BackgroundColor="#992020A0"
         HorizontalOptions="Center"
@@ -27,41 +39,26 @@
 
         <VerticalStackLayout Spacing="0">
 
-            <!--  Kopfzeile mit abgerundeten oberen Ecken  -->
-            <Border
-                Padding="5"
-                BackgroundColor="#900000FF"
-                StrokeThickness="0">
+            <!-- Header -->
+            <Border Padding="5" BackgroundColor="#900000FF" StrokeThickness="0">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="10, 10, 0, 0" />
                 </Border.StrokeShape>
-                <HorizontalStackLayout
-                    HorizontalOptions="Center"
-                    Spacing="5"
-                    VerticalOptions="Center">
-
-                    <!--  Online indicator  -->
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="5" VerticalOptions="Center">
                     <BoxView
-                        BackgroundColor="Transparent"
                         CornerRadius="25"
                         HeightRequest="20"
-                        VerticalOptions="Center"
                         WidthRequest="20"
                         Color="{Binding IsOnline, Converter={StaticResource BoolToColorConverter}}" />
-
-                    <!--  Name  -->
                     <Label
                         FontAttributes="Bold"
                         FontSize="20"
                         Text="{Binding Name}"
-                        TextColor="White"
-                        VerticalOptions="Center" />
-
-                    <!--  Config  -->
-
+                        TextColor="White" />
                 </HorizontalStackLayout>
             </Border>
 
+            <!-- Buttons -->
             <HorizontalStackLayout>
                 <Button
                     x:Name="DoorToggleOpenCloseBUtton"
@@ -74,7 +71,6 @@
                     CornerRadius="100"
                     FontSize="10"
                     HeightRequest="100"
-                    Shadow="True"
                     Text="{Binding IsDoorOpen, Converter={StaticResource DoorStatusToggleTextConverter}}"
                     TextColor="White"
                     WidthRequest="100" />
@@ -82,7 +78,6 @@
                 <VerticalStackLayout VerticalOptions="Center">
                     <Button
                         x:Name="DeviceSettingsButton"
-                        Padding="0"
                         Command="{Binding Source={x:Reference placedDeviceControl}, Path=OpenSettingsCommand}"
                         CommandParameter="{Binding}"
                         FontSize="10"
@@ -90,10 +85,8 @@
                         Text="⚙"
                         WidthRequest="28" />
 
-                    <!--  Delete  -->
                     <Button
                         x:Name="DeleteButton"
-                        Padding="0"
                         BackgroundColor="#E53935"
                         Command="{Binding Source={x:Reference placedDeviceControl}, Path=DeleteDeviceCommand}"
                         CommandParameter="{Binding}"
@@ -104,13 +97,7 @@
                         WidthRequest="28" />
                 </VerticalStackLayout>
             </HorizontalStackLayout>
-            <Border>
-                <Button
-                    x:Name="MoveAndPlace"
-                    BackgroundColor="Transparent"
-                    FontSize="20"
-                    Text="↔️" />
-            </Border>
+
         </VerticalStackLayout>
     </Border>
 </ContentView>

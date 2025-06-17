@@ -48,11 +48,11 @@ public partial class LocalDeviceNamePopup : Popup
         
         Debug.WriteLine($"Device named as: {deviceName}");
         
-        this.Close(updatedDevice);
+        //Close(updatedDevice);
     }
 
     private void OnCancelClicked(object sender, EventArgs e)
     {
-        this.Close(null);
+        //Close(null);
     }
 }

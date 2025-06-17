@@ -1,75 +1,134 @@
-using Microsoft.Maui.Controls;
+Ôªøusing CommunityToolkit.Maui.Behaviors;
+using ReisingerIntelliAppV1.Model.Models;
 using System.Diagnostics;
 using System.Windows.Input;
+using ReisingerIntelliAppV1.Model.ViewModels;
 
-namespace ReisingerIntelliAppV1.Views.FloorManager
+namespace ReisingerIntelliAppV1.Views.FloorManager;
+
+public partial class PlacedDeviceControl : ContentView
 {
-    public partial class PlacedDeviceControl : ContentView
+    private bool isDragging = false;
+    private double startX, startY;
+    private double panStartX, panStartY;
+
+    public PlacedDeviceControl()
     {
-        public static readonly BindableProperty OpenSettingsCommandProperty =
-                    BindableProperty.Create(nameof(OpenSettingsCommand), typeof(ICommand), typeof(PlacedDeviceControl));
+        InitializeComponent();
+    }
 
-        public static readonly BindableProperty DeleteDeviceCommandProperty =
-            BindableProperty.Create(nameof(DeleteDeviceCommand), typeof(ICommand), typeof(PlacedDeviceControl),
-                propertyChanged: OnDeleteDeviceCommandChanged);
+    // Public property to expose drag status
+    public bool IsDragMode => isDragging;
 
-        public static readonly BindableProperty ToggleDoorCommandProperty =
-            BindableProperty.Create(nameof(ToggleDoorCommand), typeof(ICommand), typeof(PlacedDeviceControl));
+    // üîπ Bindbare Properties (f√ºr Commands von au√üen)
+    public static readonly BindableProperty OpenSettingsCommandProperty =
+        BindableProperty.Create(nameof(OpenSettingsCommand), typeof(ICommand), typeof(PlacedDeviceControl));
 
-        private static void OnDeleteDeviceCommandChanged(BindableObject bindable, object oldValue, object newValue)
+    public static readonly BindableProperty DeleteDeviceCommandProperty =
+        BindableProperty.Create(nameof(DeleteDeviceCommand), typeof(ICommand), typeof(PlacedDeviceControl));
+
+    public static readonly BindableProperty ToggleDoorCommandProperty =
+        BindableProperty.Create(nameof(ToggleDoorCommand), typeof(ICommand), typeof(PlacedDeviceControl));
+
+
+    public ICommand OpenSettingsCommand
+    {
+        get => (ICommand)GetValue(OpenSettingsCommandProperty);
+        set => SetValue(OpenSettingsCommandProperty, value);
+    }
+
+    public ICommand DeleteDeviceCommand
+    {
+        get => (ICommand)GetValue(DeleteDeviceCommandProperty);
+        set => SetValue(DeleteDeviceCommandProperty, value);
+    }
+
+    public ICommand ToggleDoorCommand
+    {
+        get => (ICommand)GetValue(ToggleDoorCommandProperty);
+        set => SetValue(ToggleDoorCommandProperty, value);
+    }
+
+    // Aktiviert Drag (von LongPress)
+    public ICommand StartDragCommand => new Command(() =>
+    {
+        isDragging = true;
+        this.ScaleTo(1.1, 100); // Visuelles Feedback
+        Debug.WriteLine("[PlacedDeviceControl] Drag aktiviert (LongPress)");
+    });
+
+    private void OnDragStarting(object sender, DragStartingEventArgs e)
+    {
+        if (BindingContext is PlacedDeviceModel device)
         {
-            Debug.WriteLine($"[PlacedDeviceControl] DeleteDeviceCommand changed: {oldValue} -> {newValue}");
+            e.Data.Properties["DeviceId"] = device.DeviceId;
         }
+    }
 
-        public ICommand OpenSettingsCommand
+    private async void OnPanUpdated(object sender, PanUpdatedEventArgs e)
+    {
+        if (!isDragging) return;
+
+        switch (e.StatusType)
         {
-            get => (ICommand)GetValue(OpenSettingsCommandProperty);
-            set => SetValue(OpenSettingsCommandProperty, value);
-        }
+            case GestureStatus.Started:
+                startX = TranslationX;
+                startY = TranslationY;
+                panStartX = e.TotalX;
+                panStartY = e.TotalY;
+                break;
 
-        public ICommand DeleteDeviceCommand
-        {
-            get
-            {
-                var cmd = (ICommand)GetValue(DeleteDeviceCommandProperty);
-                Debug.WriteLine($"[PlacedDeviceControl] GetValue DeleteDeviceCommand: {cmd}");
-                return cmd;
-            }
-            set
-            {
-                Debug.WriteLine($"[PlacedDeviceControl] SetValue DeleteDeviceCommand: {value}");
-                SetValue(DeleteDeviceCommandProperty, value);
-            }
-        }
+            case GestureStatus.Running:
+                TranslationX = startX + (e.TotalX - panStartX);
+                TranslationY = startY + (e.TotalY - panStartY);
+                break;
 
-        public ICommand ToggleDoorCommand
-        {
-            get => (ICommand)GetValue(ToggleDoorCommandProperty);
-            set => SetValue(ToggleDoorCommandProperty, value);
-        }
-
-        public PlacedDeviceControl()
-        {
-            InitializeComponent();
-
-            // Nach der Initialisierung pr¸fen, ob das DeleteButton-Element existiert
-            this.Loaded += (s, e) =>
-            {
-                Debug.WriteLine("[PlacedDeviceControl] Control loaded");
-                // Nach einer kurzen Verzˆgerung pr¸fen, damit alles initialisiert ist
-                Dispatcher.DispatchAsync(() =>
+            case GestureStatus.Completed:
+                if (BindingContext is PlacedDeviceModel placedDevice)
                 {
-                    var deleteButton = this.FindByName<Button>("DeleteButton");
-                    if (deleteButton != null)
+                    var parent = this.Parent as VisualElement;
+                    if (parent == null) return;
+
+                    var absX = this.X + this.TranslationX;
+                    var absY = this.Y + this.TranslationY;
+
+                    placedDevice.RelativeX = absX / parent.Width;
+                    placedDevice.RelativeY = absY / parent.Height;
+
+                    this.TranslationX = 0;
+                    this.TranslationY = 0;
+
+                    // Speicher√§nderung
+                    if (Application.Current.MainPage is Shell shell &&
+                        shell.CurrentPage is FloorPlanManagerPage page &&
+                        page.BindingContext is FloorPlanViewModel vm)
                     {
-                        Debug.WriteLine("[PlacedDeviceControl] Delete button found");
+                        await vm.SaveBuildingsAsync();
                     }
-                    else
-                    {
-                        Debug.WriteLine("[PlacedDeviceControl] Delete button NOT found - check XAML element name");
-                    }
-                });
-            };
+                }
+
+                isDragging = false;
+                this.ScaleTo(1.0, 100);
+                break;
+            case GestureStatus.Canceled:
+                isDragging = false;
+                this.ScaleTo(1.0, 100);
+                UpdateModelPosition();
+                break;
         }
+    }
+
+    private void UpdateModelPosition()
+    {
+        if (BindingContext is not PlacedDeviceModel model || Parent is not VisualElement parent)
+            return;
+
+        double centerX = this.X + this.Width / 2;
+        double centerY = this.Y + this.Height / 2;
+
+        model.RelativeX = centerX / parent.Width;
+        model.RelativeY = centerY / parent.Height;
+
+        Debug.WriteLine($"Neue Position: X={model.RelativeX:F2}, Y={model.RelativeY:F2}");
     }
 }

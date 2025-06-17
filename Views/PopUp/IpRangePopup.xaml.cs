@@ -1,11 +1,11 @@
-using System;
+ï»¿using System;
 using System.Linq;
 using Microsoft.Maui.Controls;
 using CommunityToolkit.Maui.Views;
 
 namespace ReisingerIntelliAppV1.Views.PopUp
 {
-    // Ergebnis-Typ, der an den Aufrufer zurückgegeben wird
+    // Ergebnis-Typ, der an den Aufrufer zurÃ¼ckgegeben wird
     public class IpRangePopupResult
     {
         public string StartIp { get; set; }
@@ -32,7 +32,7 @@ namespace ReisingerIntelliAppV1.Views.PopUp
                 !TryParseOctet(E4.Text, out var e4))
             {
                 await Application.Current.MainPage.DisplayAlert(
-                    "Ungültige Eingabe",
+                    "UngÃ¼ltige Eingabe",
                     "Bitte geben Sie in jedem Feld eine Zahl zwischen 0 und 255 ein.",
                     "OK");
                 return;
@@ -55,22 +55,23 @@ namespace ReisingerIntelliAppV1.Views.PopUp
                 return;
             }
 
-            // Alles validiert ? Popup schließen und Ergebnis zurückgeben
-            Close(new IpRangePopupResult
-            {
-                StartIp = startIp,
-                EndIp = endIp
-            });
+            // Alles validiert ? Popup schlieÃŸen und Ergebnis zurÃ¼ckgeben
+            //CloseAsync(new IpRangePopupResult
+            //{
+            //    StartIp = startIp,
+            //    EndIp = endIp
+            //});
         }
 
-        private void OnCancelClicked(object sender, EventArgs e)
+        async void OnCancelClicked(object sender, EventArgs e)
         {
-            Close(null);
+            var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+            await CloseAsync(cts.Token);
         }
 
         /// <summary>
-        /// Versucht, den Text als Byte (0–255) zu parsen.
-        /// Liefert false, wenn null/leer oder außerhalb des Bereichs.
+        /// Versucht, den Text als Byte (0â€“255) zu parsen.
+        /// Liefert false, wenn null/leer oder auÃŸerhalb des Bereichs.
         /// </summary>
         private bool TryParseOctet(string text, out byte value)
         {

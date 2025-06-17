@@ -41,44 +41,61 @@
             </VerticalStackLayout>
         </Grid>
 
-        <controls:PanPinchContainer x:Name="ZoomContainer" IsVisible="{Binding IsFloorPlanAvailable}">
+        <controls:PanPinchContainer x:Name="ZoomContainer" IsVisible="{Binding IsFloorPlanAvailable}" InputTransparent="False">
             <Grid>
-                <!--  Das PDF als Bild  -->
+                <!-- Das PDF als Bild -->
                 <Image Aspect="AspectFit" Source="{Binding FloorPlanImageSource}" />
 
-                <!--  Changed InputTransparent to false so devices can receive input  -->
-                <AbsoluteLayout BindableLayout.ItemsSource="{Binding SelectedFloor.PlacedDevices}" InputTransparent="False">
+                <!-- Drag-and-Drop Aktivierung -->
+                <AbsoluteLayout
+                    x:Name="DeviceCanvas"
+                    InputTransparent="False"
+                    BindableLayout.ItemsSource="{Binding SelectedFloor.PlacedDevices}">
+
+
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
                             <floorManager:PlacedDeviceControl
-                                DeleteDeviceCommand="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.RemovePlacedDeviceCommand}"
-                                HeightRequest="Infinity"
-                                IsVisible="{Binding IsVisible}"
-                                OpenSettingsCommand="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.OpenDeviceSettingsCommand}"
-                                Scale="{Binding Scale}"
-                                ToggleDoorCommand="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.ToggleDoorCommand}"
-                                ZIndex="100">
+                        DeleteDeviceCommand="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.RemovePlacedDeviceCommand}"
+                        HeightRequest="Infinity"
+                        IsVisible="{Binding IsVisible}"
+                        OpenSettingsCommand="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.OpenDeviceSettingsCommand}"
+                        Scale="{Binding Scale}"
+                        ToggleDoorCommand="{Binding Source={x:Reference FloorManagerPage}, Path=BindingContext.ToggleDoorCommand}"
+                        ZIndex="100">
+
+                                <!-- Positionierung relativ im Layout -->
                                 <AbsoluteLayout.LayoutBounds>
                                     <MultiBinding Converter="{StaticResource RelativePositionToLayoutBoundsConverter}">
                                         <Binding Path="RelativeX" />
                                         <Binding Path="RelativeY" />
                                     </MultiBinding>
                                 </AbsoluteLayout.LayoutBounds>
-                                <AbsoluteLayout.LayoutFlags>PositionProportional</AbsoluteLayout.LayoutFlags>
+
+
                             </floorManager:PlacedDeviceControl>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </AbsoluteLayout>
-
             </Grid>
         </controls:PanPinchContainer>
-
+       
+        <!--  Overlay Grid zum Erkennen von Taps außerhalb der Dropdowns  -->
+        <Grid
+            x:Name="OverlayGrid"
+            BackgroundColor="Transparent"
+            InputTransparent="True"
+            ZIndex="500">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnPageTapped" />
+            </Grid.GestureRecognizers>
+        </Grid>
 
         <!--  Ebene 1: Menüleiste  -->
         <Grid
             Padding="10"
             VerticalOptions="Start"
-            ZIndex="1">
+            ZIndex="1000">
             <Grid.Background>
                 <LinearGradientBrush EndPoint="0,1">
                     <GradientStop Offset="0.0" Color="#80000000" />
@@ -117,11 +134,13 @@
                     Grid.Row="1"
                     BackgroundColor="#80000000"
                     HeightRequest="200"
+                    InputTransparent="False"
                     IsVisible="{Binding IsBuildingDropdownVisible}"
-                    ZIndex="10">
-                    <ScrollView>
+                    ZIndex="2000">
+                    <ScrollView InputTransparent="False">
                         <CollectionView
                             x:Name="BuildingsCollection"
+                            InputTransparent="False"
                             ItemsSource="{Binding Buildings}"
                             SelectionChanged="OnBuildingSelected"
                             SelectionMode="Single">
@@ -185,11 +204,13 @@
                     Grid.Row="1"
                     BackgroundColor="#80000000"
                     HeightRequest="200"
+                    InputTransparent="False"
                     IsVisible="{Binding IsFloorDropdownVisible}"
-                    ZIndex="10">
-                    <ScrollView>
+                    ZIndex="2000">
+                    <ScrollView InputTransparent="False">
                         <CollectionView
                             x:Name="FloorsCollection"
+                            InputTransparent="False"
                             ItemsSource="{Binding Floors}"
                             SelectionChanged="OnFloorSelected"
                             SelectionMode="Single">
@@ -253,11 +274,13 @@
                     Grid.Row="1"
                     BackgroundColor="#80000000"
                     HeightRequest="200"
+                    InputTransparent="False"
                     IsVisible="{Binding IsSavedDevicesDropdownVisible}"
-                    ZIndex="10">
-                    <ScrollView>
+                    ZIndex="2000">
+                    <ScrollView InputTransparent="False">
                         <CollectionView
                             x:Name="SavedDevicesCollection"
+                            InputTransparent="False"
                             ItemsSource="{Binding SavedDevices}"
                             SelectionMode="Single">
                             <CollectionView.ItemTemplate>
@@ -325,11 +348,13 @@
                     Grid.Row="1"
                     BackgroundColor="#80000000"
                     HeightRequest="Infinity"
+                    InputTransparent="False"
                     IsVisible="{Binding IsLocalDevicesDropdownVisible}"
-                    ZIndex="10">
-                    <ScrollView>
+                    ZIndex="2000">
+                    <ScrollView InputTransparent="False">
                         <CollectionView
                             x:Name="LocalDevicesCollection"
+                            InputTransparent="False"
                             ItemsSource="{Binding LocalDevices}"
                             SelectionMode="Single">
                             <CollectionView.ItemTemplate>
@@ -376,7 +401,7 @@
         </Grid>
 
         <!--  Ebene 2: Add-Button  -->
-        <AbsoluteLayout ZIndex="1">
+        <AbsoluteLayout ZIndex="1000">
             <Button
                 Margin="0,0,0,10"
                 AbsoluteLayout.LayoutBounds="0.5,1,AutoSize,AutoSize"
@@ -390,15 +415,5 @@
                 TextColor="White"
                 WidthRequest="80" />
         </AbsoluteLayout>
-
-        <!--  Overlay Grid zum Erkennen von Taps außerhalb der Dropdowns  -->
-        <Grid
-            x:Name="OverlayGrid"
-            BackgroundColor="Transparent"
-            InputTransparent="True">
-            <Grid.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnPageTapped" />
-            </Grid.GestureRecognizers>
-        </Grid>
     </Grid>
 </ContentPage>
