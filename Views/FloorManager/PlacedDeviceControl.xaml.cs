@@ -89,11 +89,14 @@ public partial class PlacedDeviceControl : ContentView
                     var parent = this.Parent as VisualElement;
                     if (parent == null) return;
 
-                    var absX = this.X + this.TranslationX;
-                    var absY = this.Y + this.TranslationY;
+                    // Calculate center position for more accurate placement
+                    var centerX = this.X + this.TranslationX + this.Width / 2;
+                    var centerY = this.Y + this.TranslationY + this.Height / 2;
 
-                    placedDevice.RelativeX = absX / parent.Width;
-                    placedDevice.RelativeY = absY / parent.Height;
+                    placedDevice.RelativeX = centerX / parent.Width;
+                    placedDevice.RelativeY = centerY / parent.Height;
+
+                    Debug.WriteLine($"[PlacedDeviceControl] Drag completed - New position: X={placedDevice.RelativeX:F2}, Y={placedDevice.RelativeY:F2}");
 
                     this.TranslationX = 0;
                     this.TranslationY = 0;

@@ -21,7 +21,8 @@
 
     <ContentView.Behaviors>
         <toolkit:TouchBehavior
-            LongPressCommand="{Binding StartDragCommand}" />
+            LongPressedCommand="{Binding Source={x:Reference placedDeviceControl}, Path=StartDragCommand}"
+            LongPressDuration="500" />
     </ContentView.Behaviors>
 
 
