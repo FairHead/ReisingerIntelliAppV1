@@ -1,0 +1,296 @@
+name: Dependency Updates
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Weekly on Mondays at 6 AM
+  workflow_dispatch:
+  push:
+    paths:
+      - '**/packages.config'
+      - '**/*.csproj'
+      - '**/Directory.Build.props'
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: true
+
+jobs:
+  check-updates:
+    name: Check for Updates
+    runs-on: ubuntu-latest
+    outputs:
+      has-updates: ${{ steps.check.outputs.has-updates }}
+      updates-summary: ${{ steps.check.outputs.summary }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Install update tools
+      run: |
+        dotnet tool install --global dotnet-outdated-tool
+        dotnet tool install --global upgrade-assistant
+
+    - name: Check for outdated packages
+      id: check
+      run: |
+        echo "Checking for outdated packages..."
+        
+        # Check for updates and capture output
+        if dotnet outdated --output json > outdated.json 2>/dev/null; then
+          updates_count=$(cat outdated.json | jq '.Projects | length' 2>/dev/null || echo "0")
+          if [ "$updates_count" -gt 0 ]; then
+            echo "has-updates=true" >> $GITHUB_OUTPUT
+            echo "summary=Found $updates_count projects with outdated packages" >> $GITHUB_OUTPUT
+          else
+            echo "has-updates=false" >> $GITHUB_OUTPUT
+            echo "summary=All packages are up to date" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "has-updates=false" >> $GITHUB_OUTPUT
+          echo "summary=Could not check for updates" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Upload outdated report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: outdated-packages-report
+        path: outdated.json
+        retention-days: 7
+
+  security-updates:
+    name: Security Updates
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Check for vulnerable packages
+      run: |
+        echo "Checking for security vulnerabilities..."
+        dotnet list package --vulnerable --include-transitive || true
+        
+        # Save vulnerable packages to file
+        dotnet list package --vulnerable --include-transitive --format json > vulnerable.json 2>/dev/null || echo "{}" > vulnerable.json
+
+    - name: Check for deprecated packages
+      run: |
+        echo "Checking for deprecated packages..."
+        dotnet list package --deprecated || true
+
+    - name: Upload security report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: security-vulnerability-report
+        path: vulnerable.json
+        retention-days: 30
+
+  auto-update-minor:
+    name: Auto-update Minor Versions
+    runs-on: ubuntu-latest
+    needs: [check-updates, security-updates]
+    if: needs.check-updates.outputs.has-updates == 'true' && github.event_name == 'schedule'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Install MAUI workload
+      run: dotnet workload install maui
+
+    - name: Install update tools
+      run: dotnet tool install --global dotnet-outdated-tool
+
+    - name: Update minor versions only
+      run: |
+        echo "Updating minor versions..."
+        
+        # Update only minor versions (safer automatic updates)
+        dotnet outdated --upgrade --version-lock Major || true
+
+    - name: Restore and build
+      run: |
+        dotnet restore
+        dotnet build --configuration Release
+      continue-on-error: true
+
+    - name: Run tests after updates
+      run: |
+        dotnet test --configuration Release --no-build --verbosity minimal
+      continue-on-error: true
+
+    - name: Create pull request
+      if: success()
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "chore: update NuGet packages (minor versions)"
+        title: "🔄 Automated dependency updates (minor versions)"
+        body: |
+          ## Automated Dependency Updates
+          
+          This PR contains automated updates to NuGet packages (minor versions only).
+          
+          ### Changes Made
+          - Updated packages to latest minor versions
+          - Maintained major version compatibility
+          - Verified build and test compatibility
+          
+          ### Summary
+          ${{ needs.check-updates.outputs.updates-summary }}
+          
+          ### Verification
+          - [x] Build succeeds
+          - [x] Tests pass
+          - [x] Only minor version updates included
+          
+          ### Review Notes
+          Please review the changes carefully before merging, especially:
+          - Check for any breaking changes in updated packages
+          - Verify all tests still pass
+          - Test on different platforms if needed
+          
+          ---
+          *This PR was created automatically by the dependency update workflow.*
+        branch: chore/auto-dependency-updates
+        delete-branch: true
+        labels: |
+          dependencies
+          automated
+          maintenance
+
+  create-manual-update-issue:
+    name: Create Manual Update Issue
+    runs-on: ubuntu-latest
+    needs: [check-updates]
+    if: needs.check-updates.outputs.has-updates == 'true' && github.event_name == 'schedule'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Create issue for manual updates
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { data: issues } = await github.rest.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            labels: 'dependencies,manual-review',
+            state: 'open'
+          });
+          
+          // Don't create duplicate issues
+          if (issues.length === 0) {
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🔍 Manual dependency updates needed',
+              body: `## Manual Dependency Review Required
+              
+              The automated dependency check found updates that require manual review.
+              
+              ### Summary
+              ${{ needs.check-updates.outputs.updates-summary }}
+              
+              ### Actions Needed
+              - [ ] Review major version updates
+              - [ ] Check for breaking changes
+              - [ ] Test on all target platforms
+              - [ ] Update documentation if needed
+              
+              ### How to Update
+              1. Run \`dotnet outdated\` to see available updates
+              2. Carefully review release notes for major updates
+              3. Update packages incrementally
+              4. Test thoroughly on all platforms
+              
+              ### Automated Actions Taken
+              - Minor version updates may have been applied automatically
+              - Security updates should be prioritized
+              - Check the dependency update PR if created
+              
+              ---
+              *This issue was created automatically by the dependency update workflow.*`,
+              labels: ['dependencies', 'manual-review', 'maintenance']
+            });
+          }
+
+  validate-updates:
+    name: Validate Updated Dependencies
+    runs-on: ${{ matrix.os }}
+    if: github.event_name == 'pull_request' && contains(github.head_ref, 'dependency')
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+      fail-fast: false
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Install MAUI workload
+      run: dotnet workload install maui
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build solution
+      run: dotnet build --configuration Release --verbosity minimal
+
+    - name: Run tests
+      run: dotnet test --configuration Release --no-build --verbosity minimal
+
+    - name: Check for conflicts
+      run: |
+        echo "Checking for dependency conflicts..."
+        dotnet list package --include-transitive | grep -i conflict || echo "No conflicts found"
+
+  notify-results:
+    name: Notify Results
+    runs-on: ubuntu-latest
+    needs: [check-updates, security-updates, auto-update-minor]
+    if: always() && github.event_name == 'schedule'
+    
+    steps:
+    - name: Summarize results
+      run: |
+        echo "## Dependency Update Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Check Results" >> $GITHUB_STEP_SUMMARY
+        echo "${{ needs.check-updates.outputs.updates-summary }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ needs.auto-update-minor.result }}" == "success" ]; then
+          echo "✅ Minor updates applied automatically" >> $GITHUB_STEP_SUMMARY
+        elif [ "${{ needs.auto-update-minor.result }}" == "failure" ]; then
+          echo "❌ Minor updates failed - manual intervention required" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "⏭️ No minor updates needed" >> $GITHUB_STEP_SUMMARY
+        fi

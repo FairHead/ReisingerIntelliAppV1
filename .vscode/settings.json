@@ -1,0 +1,157 @@
+{
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "editor.tabSize": 4,
+  "editor.insertSpaces": true,
+  "editor.trimAutoWhitespace": true,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  
+  // C# specific settings
+  "dotnet.server.useOmnisharp": false,
+  "dotnet.completion.showCompletionItemsFromUnimportedNamespaces": true,
+  "csharp.format.enable": true,
+  "csharp.semanticHighlighting.enabled": true,
+  "csharp.suppressDotnetInstallWarnings": true,
+  
+  // GitHub Copilot settings
+  "github.copilot.enable": {
+    "*": true,
+    "yaml": true,
+    "plaintext": true,
+    "markdown": true,
+    "csharp": true,
+    "xml": true,
+    "xaml": true
+  },
+  "github.copilot.advanced": {
+    "secret_key": "github-copilot-secret",
+    "length": 500,
+    "temperature": 0.1,
+    "top_p": 1,
+    "stop": ["\n\n"],
+    "indentationMode": {
+      "python": "spaces",
+      "javascript": "spaces", 
+      "csharp": "spaces"
+    }
+  },
+  "github.copilot.editor.enableAutoCompletions": true,
+  "github.copilot.chat.localeOverride": "en",
+  
+  // MAUI/Xamarin specific
+  "xaml.completion.enable": true,
+  "xml.completion.autoCloseTags": true,
+  "xml.format.enabled": true,
+  "xml.format.splitAttributes": true,
+  
+  // File associations
+  "files.associations": {
+    "*.xaml": "xml",
+    "*.axaml": "xml",
+    "*.csproj": "xml",
+    "*.targets": "xml",
+    "*.props": "xml"
+  },
+  
+  // Search and exclude patterns
+  "search.exclude": {
+    "**/bin": true,
+    "**/obj": true,
+    "**/packages": true,
+    "**/.git": true,
+    "**/node_modules": true,
+    "**/*.Designer.cs": true
+  },
+  "files.exclude": {
+    "**/bin": true,
+    "**/obj": true,
+    "**/.git": true
+  },
+  
+  // Debugging settings for MAUI
+  "debug.allowBreakpointsEverywhere": true,
+  "debug.openDebug": "openOnDebugBreak",
+  
+  // Terminal settings
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.defaultProfile.osx": "zsh",
+  
+  // Intellisense and completion
+  "editor.suggest.snippetsPreventQuickSuggestions": false,
+  "editor.suggest.showKeywords": true,
+  "editor.suggest.showSnippets": true,
+  "editor.parameterHints.enabled": true,
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": true,
+    "strings": true
+  },
+  
+  // Git settings
+  "git.enableSmartCommit": true,
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  
+  // Extensions behavior
+  "extensions.autoUpdate": true,
+  "extensions.autoCheckUpdates": true,
+  
+  // Copilot-specific workspace settings
+  "github.copilot.inlineSuggest.enable": true,
+  "github.copilot.completions.enable": true,
+  
+  // Project-specific Copilot context
+  "github.copilot.context": {
+    "architecture": "MAUI MVVM",
+    "framework": ".NET 8/9",
+    "platform": "Mobile Cross-Platform",
+    "patterns": ["MVVM", "Dependency Injection", "Async/Await"],
+    "conventions": {
+      "naming": "PascalCase for public, camelCase for private",
+      "async": "Always use Async suffix for async methods",
+      "services": "Use dependency injection pattern"
+    }
+  },
+  
+  // Workspace recommendations
+  "editor.rulers": [120],
+  "editor.wordWrap": "bounded",
+  "editor.wordWrapColumn": 120,
+  
+  // Code lens
+  "csharp.referencesCodeLens.enabled": true,
+  "csharp.testsCodeLens.enabled": true,
+  
+  // Auto-save
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  
+  // Bracket pair colorization
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": true,
+  
+  // Minimap
+  "editor.minimap.enabled": true,
+  "editor.minimap.maxColumn": 120,
+  
+  // Problems view
+  "problems.autoReveal": true,
+  "problems.sortOrder": "severity",
+  
+  // Telemetry (adjust based on preferences)
+  "telemetry.telemetryLevel": "error",
+  
+  // Performance optimizations
+  "files.watcherExclude": {
+    "**/bin/**": true,
+    "**/obj/**": true,
+    "**/packages/**": true,
+    "**/.git/**": true
+  }
+}

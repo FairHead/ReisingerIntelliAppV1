@@ -1,0 +1,114 @@
+# Set default behavior to automatically normalize line endings
+* text=auto
+
+# Set default behavior for C# files
+*.cs text=auto diff=csharp
+
+# Force batch scripts to always use CRLF line endings so that if a repo is accessed
+# in Unix via a file share from Windows, the scripts will work.
+*.{cmd,[cC][mM][dD]} text eol=crlf
+*.{bat,[bB][aA][tT]} text eol=crlf
+
+# Force bash scripts to always use LF line endings so that if a repo is accessed
+# in Windows via a file share from Linux, the scripts will work.
+*.sh text eol=lf
+
+# Image files are treated as binary
+*.{jpg,jpeg,png,gif,ico,svg} binary
+*.{bmp,tiff,tif,webp} binary
+
+# Audio/Video files are treated as binary
+*.{mp3,mp4,wav,avi,mov,wmv,flv} binary
+
+# Document files
+*.{pdf,doc,docx,xls,xlsx,ppt,pptx} binary
+
+# Archive files
+*.{zip,rar,7z,tar,gz,bz2} binary
+
+# Executable files
+*.{exe,dll,so,dylib} binary
+*.{app,deb,rpm,dmg,pkg,msi} binary
+
+# .NET specific files
+*.{resx,resw} text
+*.{csproj,vbproj,fsproj,vcxproj} text
+*.{sln,slnx} text eol=crlf
+*.{props,targets} text
+
+# Visual Studio files
+*.{suo,user,userosscache,sln.docstates} binary
+*.{cache,vsidx,vspscc,vssscc} binary
+
+# MAUI/Xamarin specific
+*.{xaml,axml,axaml} text
+*.{plist,entitlements} text
+*.{storyboard,xib} text
+
+# Config files
+*.{config,json,xml,yml,yaml} text
+*.{gitignore,gitattributes,editorconfig} text
+
+# Markdown files
+*.{md,markdown,rst} text
+
+# License files
+LICENSE* text
+COPYING* text
+
+# Scripts
+*.{ps1,psm1,psd1} text eol=crlf
+*.{sh,bash,zsh,fish} text eol=lf
+
+# Android specific
+*.{aar,ap_,apk,aab} binary
+*.{dex,jar,class} binary
+
+# iOS specific
+*.{ipa,mobileprovision,p12,cer,crt,key} binary
+*.{xcarchive,xcframework} binary
+
+# Windows specific
+*.{appx,appxbundle,msix,msixbundle} binary
+
+# Database files
+*.{db,sqlite,sqlite3,db3,mdb,accdb} binary
+
+# Font files
+*.{ttf,otf,woff,woff2,eot} binary
+
+# Certificate files
+*.{p7b,p7c,p7r,p7s,crt,cer,der,key,pem,pfx} binary
+
+# Package files
+*.{nupkg,nuspec} binary
+*.{npm,gem,egg} binary
+
+# Log files (treat as text but don't normalize line endings)
+*.log text eol=lf
+
+# Linguist overrides for better language detection
+*.Designer.cs linguist-generated=true
+*.xaml.cs linguist-generated=true
+**/obj/** linguist-generated=true
+**/bin/** linguist-generated=true
+**/.vs/** linguist-generated=true
+
+# MAUI project specific generated files
+**/Platforms/Android/Resources/** linguist-generated=true
+**/Platforms/iOS/Info.plist linguist-generated=true
+**/Platforms/MacCatalyst/Info.plist linguist-generated=true
+**/Platforms/Windows/Package.appxmanifest linguist-generated=true
+
+# Mark certain files as documentation
+README* linguist-documentation
+CHANGELOG* linguist-documentation
+CONTRIBUTING* linguist-documentation
+SECURITY* linguist-documentation
+docs/** linguist-documentation
+
+# Git LFS (Large File Storage) patterns
+# Uncomment and modify as needed for large files
+# *.psd filter=lfs diff=lfs merge=lfs -text
+# *.zip filter=lfs diff=lfs merge=lfs -text
+# *.mp4 filter=lfs diff=lfs merge=lfs -text
