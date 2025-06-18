@@ -54,6 +54,7 @@ public partial class PlacedDeviceControl : ContentView
     {
         isDragging = true;
         this.ScaleTo(1.2, 150); // Visuelles Feedback - mehr prominent
+        LogCoordinateInfo("Long Press Activated");
         Debug.WriteLine("[PlacedDeviceControl] Drag aktiviert (LongPress)");
     });
 
@@ -76,6 +77,7 @@ public partial class PlacedDeviceControl : ContentView
                 startY = TranslationY;
                 panStartX = e.TotalX;
                 panStartY = e.TotalY;
+                LogCoordinateInfo("Drag Started");
                 break;
 
             case GestureStatus.Running:
@@ -92,23 +94,27 @@ public partial class PlacedDeviceControl : ContentView
                     // 🔧 Get current zoom scale from PanPinchContainer
                     var zoomScale = GetContainerScale();
 
-                    // When the content is scaled, the pan gestures work in scaled coordinates
-                    // but the final position needs to be in unscaled coordinates for AbsoluteLayout
-                    var scaledX = this.X + this.TranslationX;
-                    var scaledY = this.Y + this.TranslationY;
+                    // Calculate the drag movement in scaled coordinates
+                    var dragDeltaX = this.TranslationX;
+                    var dragDeltaY = this.TranslationY;
 
-                    // Convert back to unscaled coordinates
-                    var unscaledX = scaledX / zoomScale;
-                    var unscaledY = scaledY / zoomScale;
+                    // Convert drag movement to original coordinate space
+                    var originalDeltaX = dragDeltaX / zoomScale;
+                    var originalDeltaY = dragDeltaY / zoomScale;
 
-                    // Calculate relative position based on the unscaled parent size
-                    var unscaledParentWidth = parent.Width / zoomScale;
-                    var unscaledParentHeight = parent.Height / zoomScale;
+                    // Get current position in original coordinate space
+                    var currentOriginalX = placedDevice.RelativeX * parent.Width;
+                    var currentOriginalY = placedDevice.RelativeY * parent.Height;
 
-                    placedDevice.RelativeX = unscaledX / unscaledParentWidth;
-                    placedDevice.RelativeY = unscaledY / unscaledParentHeight;
+                    // Apply the movement
+                    var newOriginalX = currentOriginalX + originalDeltaX;
+                    var newOriginalY = currentOriginalY + originalDeltaY;
 
-                    Debug.WriteLine($"[Drag Completed] Zoom: {zoomScale:F2}, ScaledPos: ({scaledX:F1}, {scaledY:F1}), UnscaledPos: ({unscaledX:F1}, {unscaledY:F1}), UnscaledParent: ({unscaledParentWidth:F1}, {unscaledParentHeight:F1}), Relative: ({placedDevice.RelativeX:F2}, {placedDevice.RelativeY:F2})");
+                    // Convert back to relative coordinates
+                    placedDevice.RelativeX = Math.Clamp(newOriginalX / parent.Width, 0.0, 1.0);
+                    placedDevice.RelativeY = Math.Clamp(newOriginalY / parent.Height, 0.0, 1.0);
+
+                    Debug.WriteLine($"[Drag Completed] Zoom: {zoomScale:F2}, DragDelta: ({dragDeltaX:F1}, {dragDeltaY:F1}), OriginalDelta: ({originalDeltaX:F1}, {originalDeltaY:F1}), NewPos: ({newOriginalX:F1}, {newOriginalY:F1}), NewRelative: ({placedDevice.RelativeX:F2}, {placedDevice.RelativeY:F2})");
 
                     this.TranslationX = 0;
                     this.TranslationY = 0;
@@ -151,6 +157,18 @@ public partial class PlacedDeviceControl : ContentView
         return 1.0; // Default scale if no container found
     }
 
+    /// <summary>
+    /// Debug helper to log current coordinate information
+    /// </summary>
+    private void LogCoordinateInfo(string context)
+    {
+        if (BindingContext is PlacedDeviceModel model && Parent is VisualElement parent)
+        {
+            var zoomScale = GetContainerScale();
+            Debug.WriteLine($"[{context}] Device: {model.Name}, Zoom: {zoomScale:F2}, X: {this.X:F1}, Y: {this.Y:F1}, TransX: {this.TranslationX:F1}, TransY: {this.TranslationY:F1}, RelX: {model.RelativeX:F2}, RelY: {model.RelativeY:F2}, ParentSize: {parent.Width:F1}x{parent.Height:F1}");
+        }
+    }
+
     private void UpdateModelPosition()
     {
         if (BindingContext is not PlacedDeviceModel model || Parent is not VisualElement parent)
@@ -164,6 +182,6 @@ public partial class PlacedDeviceControl : ContentView
         model.RelativeX = centerX / parent.Width;
         model.RelativeY = centerY / parent.Height;
 
-        Debug.WriteLine($"[UpdateModelPosition] Zoom: {zoomScale:F2}, CenterX: {centerX:F1}, CenterY: {centerY:F1}, RelX: {model.RelativeX:F2}, RelY: {model.RelativeY:F2}");
+        Debug.WriteLine($"[UpdateModelPosition] Zoom: {zoomScale:F2}, Center: ({centerX:F1}, {centerY:F1}), Parent: ({parent.Width:F1}, {parent.Height:F1}), NewRelative: ({model.RelativeX:F2}, {model.RelativeY:F2})");
     }
 }
