@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/FairHead/ReisingerIntelliAppV1/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 📖 Documentation
+    url: https://github.com/FairHead/ReisingerIntelliAppV1/blob/main/README.md
+    about: Read the project documentation
+  - name: 🛡️ Security Issue
+    url: https://github.com/FairHead/ReisingerIntelliAppV1/blob/main/SECURITY.md
+    about: Report security vulnerabilities privately
+  - name: 🤖 Copilot Support
+    url: https://docs.github.com/en/copilot
+    about: Get help with GitHub Copilot

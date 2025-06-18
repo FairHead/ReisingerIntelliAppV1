@@ -1,0 +1,61 @@
+{
+  "recommendations": [
+    // Essential C# and .NET extensions
+    "ms-dotnettools.csharp",
+    "ms-dotnettools.csdevkit",
+    "ms-dotnettools.vscode-dotnet-runtime",
+    
+    // GitHub Copilot extensions
+    "github.copilot",
+    "github.copilot-chat",
+    
+    // MAUI and mobile development
+    "ms-dotnettools.dotnet-maui",
+    "redhat.vscode-xml",
+    "dotjoshjohnson.xml",
+    
+    // Code quality and formatting
+    "editorconfig.editorconfig",
+    "streetsidesoftware.code-spell-checker",
+    "ms-vscode.vscode-json",
+    
+    // Git and version control
+    "eamodio.gitlens",
+    "github.vscode-pull-request-github",
+    "github.vscode-github-actions",
+    
+    // Testing and debugging
+    "ms-vscode.test-adapter-converter",
+    "formulahendry.dotnet-test-explorer",
+    
+    // Documentation and markdown
+    "yzhang.markdown-all-in-one",
+    "davidanson.vscode-markdownlint",
+    
+    // Productivity
+    "ms-vscode.powershell",
+    "ms-vscode.vscode-todo-highlight",
+    "gruntfuggly.todo-tree",
+    
+    // UI and theming (optional)
+    "pkief.material-icon-theme",
+    "github.github-vscode-theme",
+    
+    // Security
+    "snyk-security.snyk-vulnerability-scanner",
+    
+    // Database (for SQLite support)
+    "alexcvzz.vscode-sqlite",
+    
+    // REST API testing
+    "humao.rest-client",
+    
+    // YAML support (for GitHub Actions)
+    "redhat.vscode-yaml"
+  ],
+  "unwantedRecommendations": [
+    // Extensions that might conflict or are not needed
+    "ms-vscode.vscode-typescript-next",
+    "bradlc.vscode-tailwindcss"
+  ]
+}

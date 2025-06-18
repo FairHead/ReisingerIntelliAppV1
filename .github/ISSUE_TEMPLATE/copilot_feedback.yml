@@ -1,0 +1,199 @@
+name: 🤖 Copilot Feedback
+description: Provide feedback about GitHub Copilot usage in the Reisinger IntelliApp project
+title: "[COPILOT] "
+labels: ["copilot", "feedback"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Help us improve our GitHub Copilot integration and usage! Share your experiences, suggestions, and feedback.
+
+  - type: dropdown
+    id: feedback_type
+    attributes:
+      label: Feedback Type
+      description: What type of Copilot feedback are you providing?
+      options:
+        - Suggestion Quality
+        - Code Generation
+        - Documentation
+        - Configuration
+        - Workflow Integration
+        - Performance
+        - Bug Report
+        - Feature Request
+        - General Feedback
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Describe the context in which you were using Copilot.
+      placeholder: |
+        I was working on:
+        - File/component: ...
+        - Task: ...
+        - Language/framework: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: experience
+    attributes:
+      label: Copilot Experience
+      description: Describe your experience with Copilot in this context.
+      placeholder: |
+        What happened:
+        - Copilot suggested: ...
+        - The suggestion was: ...
+        - I expected: ...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: suggestion_quality
+    attributes:
+      label: Suggestion Quality
+      description: How would you rate the quality of Copilot's suggestions?
+      options:
+        - Excellent - Suggestions were spot-on
+        - Good - Mostly helpful with minor adjustments needed
+        - Fair - Partially helpful but needed significant changes
+        - Poor - Suggestions were not helpful
+        - Not applicable
+    validations:
+      required: true
+
+  - type: dropdown
+    id: context_awareness
+    attributes:
+      label: Context Awareness
+      description: How well did Copilot understand the project context?
+      options:
+        - Excellent - Understood project patterns and conventions
+        - Good - Mostly understood context
+        - Fair - Some understanding but missed key details
+        - Poor - Little to no context understanding
+        - Not applicable
+
+  - type: textarea
+    id: specific_suggestions
+    attributes:
+      label: Specific Suggestions/Issues
+      description: Share specific Copilot suggestions or issues you encountered.
+      placeholder: |
+        Example suggestions or code:
+        ```csharp
+        // Copilot suggested:
+        
+        // What I expected:
+        
+        ```
+
+  - type: dropdown
+    id: feature_area
+    attributes:
+      label: Feature Area
+      description: Which area of the application were you working on?
+      multiple: true
+      options:
+        - Device API Integration
+        - User Interface (XAML)
+        - MVVM ViewModels
+        - Services Layer
+        - Data Models
+        - Platform-specific Code
+        - Testing
+        - Configuration
+        - Documentation
+        - Build/CI
+        - Other
+
+  - type: textarea
+    id: improvements
+    attributes:
+      label: Suggested Improvements
+      description: How could we improve Copilot's effectiveness in this project?
+      placeholder: |
+        To improve Copilot suggestions:
+        - Better documentation in: ...
+        - More examples of: ...
+        - Improved code comments for: ...
+        - Configuration changes: ...
+
+  - type: checkboxes
+    id: copilot_features
+    attributes:
+      label: Copilot Features Used
+      description: Which Copilot features were you using?
+      options:
+        - label: Code completion/suggestions
+        - label: Copilot Chat
+        - label: Comment-to-code generation
+        - label: Code explanation
+        - label: Test generation
+        - label: Documentation generation
+        - label: Refactoring suggestions
+
+  - type: textarea
+    id: repository_context
+    attributes:
+      label: Repository Context Effectiveness
+      description: How well does the current repository structure help Copilot understand the project?
+      placeholder: |
+        Repository context effectiveness:
+        - File organization: ...
+        - Naming conventions: ...
+        - Documentation: ...
+        - Code patterns: ...
+
+  - type: dropdown
+    id: recommendation
+    attributes:
+      label: Would You Recommend
+      description: Would you recommend using Copilot for similar tasks in this project?
+      options:
+        - Definitely - Very helpful
+        - Probably - Mostly helpful
+        - Maybe - Mixed results
+        - Probably not - More trouble than help
+        - Definitely not - Not helpful
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional_feedback
+    attributes:
+      label: Additional Feedback
+      description: Any other feedback or suggestions for improving our Copilot integration?
+      placeholder: |
+        Additional thoughts:
+        - Team workflow improvements: ...
+        - Configuration suggestions: ...
+        - Training needs: ...
+        - Other observations: ...
+
+  - type: checkboxes
+    id: follow_up
+    attributes:
+      label: Follow-up Actions
+      description: What follow-up actions would be helpful?
+      options:
+        - label: Update project documentation
+        - label: Improve code comments/examples
+        - label: Adjust Copilot configuration
+        - label: Create training materials
+        - label: Schedule team discussion
+        - label: No follow-up needed
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this feedback, you agree to follow our code of conduct.
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

@@ -1,0 +1,159 @@
+name: 📋 Task
+description: General task or development work item for the Reisinger IntelliApp project
+title: "[TASK] "
+labels: ["task", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for general development tasks, maintenance work, or project management items.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Task Description
+      description: A clear and concise description of the task.
+      placeholder: Describe what needs to be done...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Task Type
+      description: What type of task is this?
+      options:
+        - Development
+        - Bug Fix
+        - Refactoring
+        - Documentation
+        - Testing
+        - Infrastructure
+        - Performance
+        - Security
+        - Maintenance
+        - Research
+        - Design
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: What's the priority of this task?
+      options:
+        - Low
+        - Medium
+        - High
+        - Critical
+    validations:
+      required: true
+
+  - type: dropdown
+    id: complexity
+    attributes:
+      label: Estimated Complexity
+      description: How complex do you estimate this task to be?
+      options:
+        - Simple (1-2 hours)
+        - Medium (Half day)
+        - Complex (1-2 days)
+        - Large (3+ days)
+        - Epic (1+ weeks)
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Define what constitutes completion of this task.
+      placeholder: |
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+        - [ ] Criterion 3
+      render: markdown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform(s) Affected
+      description: Which platform(s) does this task affect?
+      multiple: true
+      options:
+        - Android
+        - iOS
+        - Windows
+        - macOS
+        - All platforms
+        - Infrastructure/CI
+        - Documentation only
+
+  - type: textarea
+    id: technical_details
+    attributes:
+      label: Technical Details
+      description: Any technical details, constraints, or implementation notes.
+      placeholder: |
+        Technical considerations:
+        - Implementation approach: ...
+        - Dependencies: ...
+        - Constraints: ...
+
+  - type: textarea
+    id: resources
+    attributes:
+      label: Resources & References
+      description: Links to relevant documentation, designs, or related issues.
+      placeholder: |
+        - Related issues: #123, #456
+        - Documentation: [link]
+        - Design files: [link]
+        - References: [link]
+
+  - type: checkboxes
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Does this task depend on other work?
+      options:
+        - label: This task has dependencies on other issues/tasks
+        - label: This task blocks other work
+        - label: This task requires coordination with team members
+
+  - type: checkboxes
+    id: copilot_related
+    attributes:
+      label: Copilot Integration
+      description: Is this task related to GitHub Copilot?
+      options:
+        - label: This task involves GitHub Copilot configuration
+        - label: This task will improve Copilot suggestions
+        - label: This task requires Copilot-specific testing
+        - label: This task involves Copilot documentation
+
+  - type: textarea
+    id: testing_notes
+    attributes:
+      label: Testing Notes
+      description: How should this task be tested?
+      placeholder: |
+        Testing approach:
+        - Unit tests: ...
+        - Integration tests: ...
+        - Manual testing: ...
+        - Platform-specific testing: ...
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our code of conduct.
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
