@@ -1,0 +1,119 @@
+version: 2
+updates:
+  # .NET NuGet packages
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "FairHead"
+    assignees:
+      - "FairHead"
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps-dev"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "automated"
+    milestone: 
+    target-branch: "develop"
+    
+    # Security updates have higher priority
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+    
+    # Group updates for easier review
+    groups:
+      maui-core:
+        patterns:
+          - "Microsoft.Maui.*"
+          - "Microsoft.Extensions.*"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      community-toolkit:
+        patterns:
+          - "CommunityToolkit.*"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      testing-tools:
+        patterns:
+          - "Microsoft.NET.Test.*"
+          - "xunit*"
+          - "Moq*"
+          - "FluentAssertions*"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      analyzers:
+        patterns:
+          - "StyleCop.*"
+          - "Microsoft.CodeAnalysis.*"
+          - "SonarAnalyzer.*"
+        update-types:
+          - "minor"
+          - "patch"
+    
+    # Version constraints to prevent breaking changes
+    ignore:
+      # Major version updates require manual review
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+      
+      # Specific packages to ignore (if needed)
+      # - dependency-name: "package-name"
+      #   versions: ["1.0.0"]
+
+  # GitHub Actions updates
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "07:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "FairHead"
+    assignees:
+      - "FairHead"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    labels:
+      - "github-actions"
+      - "ci/cd"
+      - "automated"
+    
+    # Group actions updates
+    groups:
+      setup-actions:
+        patterns:
+          - "actions/setup-*"
+          - "actions/checkout"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      build-actions:
+        patterns:
+          - "actions/upload-*"
+          - "actions/download-*"
+          - "actions/cache*"
+        update-types:
+          - "minor"
+          - "patch"
+
+# Enable security updates for all ecosystems
+# Dependabot will automatically create PRs for security vulnerabilities
+# regardless of the schedule above

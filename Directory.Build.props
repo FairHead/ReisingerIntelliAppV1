@@ -1,0 +1,146 @@
+<!-- This file contains MSBuild properties that are applied to all projects in the solution -->
+<Project>
+
+  <!-- Common properties for all projects -->
+  <PropertyGroup>
+    <!-- Language and framework settings -->
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <WarningsNotAsErrors />
+    
+    <!-- Performance and optimization -->
+    <Optimize>true</Optimize>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    
+    <!-- Assembly metadata -->
+    <Company>Reisinger IntelliApp</Company>
+    <Product>Reisinger IntelliApp V1</Product>
+    <Copyright>Copyright © 2024 Reisinger IntelliApp</Copyright>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <InformationalVersion>1.0.0</InformationalVersion>
+    
+    <!-- Repository and project metadata -->
+    <RepositoryUrl>https://github.com/FairHead/ReisingerIntelliAppV1</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/FairHead/ReisingerIntelliAppV1</PackageProjectUrl>
+    
+    <!-- Code analysis and quality -->
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)CodeAnalysis.ruleset</CodeAnalysisRuleSet>
+    <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    
+    <!-- Documentation -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn> <!-- Missing XML comment for publicly visible type or member -->
+    
+    <!-- Source control and deterministic builds -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <!-- MAUI specific properties -->
+  <PropertyGroup Condition="'$(UseMaui)' == 'true'">
+    <!-- Mobile app specific settings -->
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationId>com.reisinger.intelliapp</ApplicationId>
+    <ApplicationTitle>Reisinger IntelliApp</ApplicationTitle>
+    
+    <!-- Platform support -->
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">15.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+    
+    <!-- Performance optimizations for mobile -->
+    <PublishTrimmed>true</PublishTrimmed>
+    <AndroidEnableProfiledAot>true</AndroidEnableProfiledAot>
+    <RunAOTCompilation>true</RunAOTCompilation>
+  </PropertyGroup>
+
+  <!-- Development and debugging -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <Optimize>false</Optimize>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+  </PropertyGroup>
+
+  <!-- GitHub Copilot optimization settings -->
+  <PropertyGroup Label="Copilot Optimization">
+    <!-- Enable detailed intellisense for better Copilot suggestions -->
+    <ProvideCommandLineArgs>true</ProvideCommandLineArgs>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    
+    <!-- Enable nullable reference types for better type inference -->
+    <Nullable>enable</Nullable>
+    
+    <!-- Enable latest language features -->
+    <LangVersion>latest</LangVersion>
+    
+    <!-- Better error reporting for Copilot context -->
+    <ReportAnalyzer>true</ReportAnalyzer>
+  </PropertyGroup>
+
+  <!-- Common package references for all projects -->
+  <ItemGroup>
+    <!-- Source generators and analyzers that help with Copilot -->
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+    
+    <!-- Code analysis packages -->
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="All" />
+  </ItemGroup>
+
+  <!-- MAUI specific package references -->
+  <ItemGroup Condition="'$(UseMaui)' == 'true'">
+    <PackageReference Include="CommunityToolkit.Maui" Version="12.0.0" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+  </ItemGroup>
+
+  <!-- Global assembly attributes -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>$(AssemblyName).Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <!-- Code analysis rules -->
+  <PropertyGroup>
+    <!-- Suppress specific warnings globally -->
+    <NoWarn>$(NoWarn);CS1591;CA1014;CA2007</NoWarn>
+    
+    <!-- CS1591: Missing XML comment for publicly visible type or member -->
+    <!-- CA1014: Mark assemblies with CLSCompliant -->
+    <!-- CA2007: Consider calling ConfigureAwait on the awaited task (mobile apps don't need this) -->
+  </PropertyGroup>
+
+  <!-- File globbing patterns for Copilot context -->
+  <ItemGroup>
+    <!-- Include additional files that help Copilot understand the project -->
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory).editorconfig" />
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)CodeAnalysis.ruleset" Condition="Exists('$(MSBuildThisFileDirectory)CodeAnalysis.ruleset')" />
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Condition="Exists('$(MSBuildThisFileDirectory)stylecop.json')" />
+  </ItemGroup>
+
+  <!-- Import custom targets if they exist -->
+  <Import Project="$(MSBuildThisFileDirectory)Custom.targets" Condition="Exists('$(MSBuildThisFileDirectory)Custom.targets')" />
+
+</Project>
