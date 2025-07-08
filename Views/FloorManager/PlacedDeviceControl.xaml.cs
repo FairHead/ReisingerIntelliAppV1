@@ -3,14 +3,16 @@ using ReisingerIntelliAppV1.Model.Models;
 using System.Diagnostics;
 using System.Windows.Input;
 using ReisingerIntelliAppV1.Model.ViewModels;
+using System.ComponentModel;
 
 namespace ReisingerIntelliAppV1.Views.FloorManager;
 
-public partial class PlacedDeviceControl : ContentView
+public partial class PlacedDeviceControl : ContentView, INotifyPropertyChanged
 {
     private bool isDragging = false;
-    private double startX, startY;
-    private double panStartX, panStartY;
+    private bool isPositioningMode = false;
+    private double initialTouchOffsetX, initialTouchOffsetY;
+    private PlacedDeviceModel initialDeviceModel;
 
     public PlacedDeviceControl()
     {
@@ -18,7 +20,18 @@ public partial class PlacedDeviceControl : ContentView
     }
 
     // Public property to expose drag status
-    public bool IsDragMode => isDragging;
+    public bool IsDragMode => isDragging && isPositioningMode;
+
+    // Public property to expose positioning mode status
+    public bool IsPositioningMode 
+    { 
+        get => isPositioningMode; 
+        private set 
+        { 
+            isPositioningMode = value; 
+            OnPropertyChanged(); 
+        } 
+    }
 
     // 🔹 Bindbare Properties (für Commands von außen)
     public static readonly BindableProperty OpenSettingsCommandProperty =
@@ -49,13 +62,70 @@ public partial class PlacedDeviceControl : ContentView
         set => SetValue(ToggleDoorCommandProperty, value);
     }
 
-    // Aktiviert Drag (von LongPress)
+    // Toggle positioning mode command
+    public ICommand TogglePositioningMode => new Command(() =>
+    {
+        // Validate that the layout is ready before allowing positioning mode
+        var parent = FindParentAbsoluteLayout();
+        if (parent == null)
+        {
+            Debug.WriteLine("[PlacedDeviceControl] ❌ Cannot enter positioning mode: Parent AbsoluteLayout not found");
+            return;
+        }
+
+        if (parent.Width <= 0 || parent.Height <= 0 || 
+            double.IsNaN(parent.Width) || double.IsNaN(parent.Height) ||
+            double.IsInfinity(parent.Width) || double.IsInfinity(parent.Height))
+        {
+            Debug.WriteLine($"[PlacedDeviceControl] ❌ Cannot enter positioning mode: Invalid parent dimensions - Width={parent.Width}, Height={parent.Height}");
+            return;
+        }
+
+        IsPositioningMode = !IsPositioningMode;
+        if (IsPositioningMode)
+        {
+            isDragging = true;
+            Debug.WriteLine("[PlacedDeviceControl] ✅ Positioning mode activated");
+        }
+        else
+        {
+            isDragging = false;
+            Debug.WriteLine("[PlacedDeviceControl] ✅ Positioning mode deactivated");
+        }
+        OnPropertyChanged(nameof(IsDragMode)); // Notify PanPinchContainer about drag mode change
+    });
+
+    // Aktiviert Drag (von LongPress) - keep backward compatibility
     public ICommand StartDragCommand => new Command(() =>
     {
+        // Validate that the layout is ready before allowing positioning mode
+        var parent = FindParentAbsoluteLayout();
+        if (parent == null)
+        {
+            Debug.WriteLine("[PlacedDeviceControl] ❌ Cannot start drag: Parent AbsoluteLayout not found");
+            return;
+        }
+
+        if (parent.Width <= 0 || parent.Height <= 0 || 
+            double.IsNaN(parent.Width) || double.IsNaN(parent.Height) ||
+            double.IsInfinity(parent.Width) || double.IsInfinity(parent.Height))
+        {
+            Debug.WriteLine($"[PlacedDeviceControl] ❌ Cannot start drag: Invalid parent dimensions - Width={parent.Width}, Height={parent.Height}");
+            return;
+        }
+
+        IsPositioningMode = true;
         isDragging = true;
-        this.ScaleTo(1.1, 100); // Visuelles Feedback
-        Debug.WriteLine("[PlacedDeviceControl] Drag aktiviert (LongPress)");
+        OnPropertyChanged(nameof(IsDragMode)); // Notify PanPinchContainer about drag mode change
+        Debug.WriteLine("[PlacedDeviceControl] ✅ Drag activated (LongPress)");
     });
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected virtual void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 
     private void OnDragStarting(object sender, DragStartingEventArgs e)
     {
@@ -67,68 +137,160 @@ public partial class PlacedDeviceControl : ContentView
 
     private async void OnPanUpdated(object sender, PanUpdatedEventArgs e)
     {
-        if (!isDragging) return;
+        if (!isDragging || !isPositioningMode) return;
 
         switch (e.StatusType)
         {
             case GestureStatus.Started:
-                startX = TranslationX;
-                startY = TranslationY;
-                panStartX = e.TotalX;
-                panStartY = e.TotalY;
+                if (BindingContext is PlacedDeviceModel placedDevice)
+                {
+                    // Find the parent AbsoluteLayout (DeviceCanvas)
+                    var parent = FindParentAbsoluteLayout();
+                    if (parent == null)
+                    {
+                        Debug.WriteLine("[PlacedDeviceControl] ❌ Pan started: Cannot find parent AbsoluteLayout");
+                        ResetPositioningMode();
+                        return;
+                    }
+
+                    // Validate parent dimensions
+                    if (parent.Width <= 0 || parent.Height <= 0 || 
+                        double.IsNaN(parent.Width) || double.IsNaN(parent.Height) ||
+                        double.IsInfinity(parent.Width) || double.IsInfinity(parent.Height))
+                    {
+                        Debug.WriteLine($"[PlacedDeviceControl] ❌ Pan started: Invalid parent dimensions - Width={parent.Width}, Height={parent.Height}");
+                        ResetPositioningMode();
+                        return;
+                    }
+
+                    // Store the initial device model to restore if needed
+                    initialDeviceModel = new PlacedDeviceModel
+                    {
+                        RelativeX = placedDevice.RelativeX,
+                        RelativeY = placedDevice.RelativeY
+                    };
+
+                    // Calculate the current absolute position of the control center
+                    var currentAbsX = placedDevice.RelativeX * parent.Width;
+                    var currentAbsY = placedDevice.RelativeY * parent.Height;
+
+                    // Calculate offset from gesture start point to control center
+                    // The gesture coordinates are relative to the control, so we need to account for 
+                    // where the user touched on the control relative to its center
+                    initialTouchOffsetX = currentAbsX - e.TotalX;
+                    initialTouchOffsetY = currentAbsY - e.TotalY;
+
+                    Debug.WriteLine($"[PlacedDeviceControl] ✅ Pan started - Current abs pos: ({currentAbsX:F1}, {currentAbsY:F1}), Touch offset: ({initialTouchOffsetX:F1}, {initialTouchOffsetY:F1})");
+                }
                 break;
 
             case GestureStatus.Running:
-                TranslationX = startX + (e.TotalX - panStartX);
-                TranslationY = startY + (e.TotalY - panStartY);
+                if (BindingContext is PlacedDeviceModel placedDevice)
+                {
+                    var parent = FindParentAbsoluteLayout();
+                    if (parent == null) return;
+
+                    // Calculate new absolute position by adding gesture coordinates to initial offset
+                    var newAbsX = e.TotalX + initialTouchOffsetX;
+                    var newAbsY = e.TotalY + initialTouchOffsetY;
+
+                    // Validate calculated absolute positions
+                    if (double.IsNaN(newAbsX) || double.IsNaN(newAbsY) || 
+                        double.IsInfinity(newAbsX) || double.IsInfinity(newAbsY))
+                    {
+                        Debug.WriteLine($"[PlacedDeviceControl] ❌ Pan running: Invalid absolute position - X={newAbsX}, Y={newAbsY}");
+                        return;
+                    }
+
+                    // Convert to relative coordinates
+                    var newRelativeX = newAbsX / parent.Width;
+                    var newRelativeY = newAbsY / parent.Height;
+
+                    // Validate and clamp relative positions
+                    if (double.IsNaN(newRelativeX) || double.IsInfinity(newRelativeX))
+                    {
+                        Debug.WriteLine($"[PlacedDeviceControl] ❌ Pan running: Invalid relativeX calculation - {newRelativeX}");
+                        return;
+                    }
+                    if (double.IsNaN(newRelativeY) || double.IsInfinity(newRelativeY))
+                    {
+                        Debug.WriteLine($"[PlacedDeviceControl] ❌ Pan running: Invalid relativeY calculation - {newRelativeY}");
+                        return;
+                    }
+
+                    // Clamp to valid range [0.0, 1.0]
+                    newRelativeX = Math.Clamp(newRelativeX, 0.0, 1.0);
+                    newRelativeY = Math.Clamp(newRelativeY, 0.0, 1.0);
+
+                    // Update device position directly - this will trigger the converter to reposition the control
+                    placedDevice.RelativeX = newRelativeX;
+                    placedDevice.RelativeY = newRelativeY;
+                }
                 break;
 
             case GestureStatus.Completed:
                 if (BindingContext is PlacedDeviceModel placedDevice)
                 {
-                    var parent = this.Parent as VisualElement;
-                    if (parent == null) return;
+                    Debug.WriteLine($"[PlacedDeviceControl] ✅ Pan completed - Final position: X={placedDevice.RelativeX:F3}, Y={placedDevice.RelativeY:F3}");
 
-                    var absX = this.X + this.TranslationX;
-                    var absY = this.Y + this.TranslationY;
-
-                    placedDevice.RelativeX = absX / parent.Width;
-                    placedDevice.RelativeY = absY / parent.Height;
-
-                    this.TranslationX = 0;
-                    this.TranslationY = 0;
-
-                    // Speicheränderung
-                    if (Application.Current.MainPage is Shell shell &&
-                        shell.CurrentPage is FloorPlanManagerPage page &&
-                        page.BindingContext is FloorPlanViewModel vm)
+                    // Save changes
+                    try
                     {
-                        await vm.SaveBuildingsAsync();
+                        if (Application.Current.MainPage is Shell shell &&
+                            shell.CurrentPage is FloorPlanManagerPage page &&
+                            page.BindingContext is FloorPlanViewModel vm)
+                        {
+                            await vm.SaveBuildingsAsync();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"[PlacedDeviceControl] ❌ Error saving changes: {ex.Message}");
                     }
                 }
 
-                isDragging = false;
-                this.ScaleTo(1.0, 100);
+                // Exit positioning mode after successful drag
+                ResetPositioningMode();
+                Debug.WriteLine("[PlacedDeviceControl] Pan completed, exiting positioning mode");
                 break;
+
             case GestureStatus.Canceled:
-                isDragging = false;
-                this.ScaleTo(1.0, 100);
-                UpdateModelPosition();
+                // Restore original position on cancel
+                if (BindingContext is PlacedDeviceModel placedDevice && initialDeviceModel != null)
+                {
+                    placedDevice.RelativeX = initialDeviceModel.RelativeX;
+                    placedDevice.RelativeY = initialDeviceModel.RelativeY;
+                    Debug.WriteLine("[PlacedDeviceControl] Pan canceled, position restored");
+                }
+                ResetPositioningMode();
                 break;
         }
     }
 
-    private void UpdateModelPosition()
+    /// <summary>
+    /// Resets positioning mode and notifies container about drag state change
+    /// </summary>
+    private void ResetPositioningMode()
     {
-        if (BindingContext is not PlacedDeviceModel model || Parent is not VisualElement parent)
-            return;
+        IsPositioningMode = false;
+        isDragging = false;
+        OnPropertyChanged(nameof(IsDragMode)); // Notify PanPinchContainer about drag mode change
+    }
 
-        double centerX = this.X + this.Width / 2;
-        double centerY = this.Y + this.Height / 2;
-
-        model.RelativeX = centerX / parent.Width;
-        model.RelativeY = centerY / parent.Height;
-
-        Debug.WriteLine($"Neue Position: X={model.RelativeX:F2}, Y={model.RelativeY:F2}");
+    /// <summary>
+    /// Finds the parent AbsoluteLayout (DeviceCanvas) for coordinate calculations
+    /// </summary>
+    private AbsoluteLayout FindParentAbsoluteLayout()
+    {
+        var current = this.Parent;
+        while (current != null)
+        {
+            if (current is AbsoluteLayout absoluteLayout)
+            {
+                return absoluteLayout;
+            }
+            current = current.Parent;
+        }
+        return null;
     }
 }
