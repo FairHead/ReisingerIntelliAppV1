@@ -9,6 +9,7 @@
     <ContentView.Resources>
         <ResourceDictionary>
             <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+            <converters:PositioningModeColorConverter x:Key="PositioningModeColorConverter" />
             <converters:DoorStatusColorConverter x:Key="DoorStatusColorConverter" />
             <converters:DoorStatusToggleTextConverter x:Key="DoorStatusToggleTextConverter" />
             <converters:DoorStatusMessageConverter x:Key="DoorStatusTextConverter" />
@@ -28,6 +29,7 @@
 
     <!-- Hauptcontainer -->
     <Border
+        x:Name="MainBorder"
         BackgroundColor="#992020A0"
         HorizontalOptions="Center"
         Shadow="True"
@@ -36,6 +38,12 @@
         <Border.StrokeShape>
             <RoundRectangle CornerRadius="10" />
         </Border.StrokeShape>
+        <Border.Triggers>
+            <DataTrigger TargetType="Border" Binding="{Binding Source={x:Reference placedDeviceControl}, Path=IsPositioningMode}" Value="True">
+                <Setter Property="BackgroundColor" Value="#99808080" />
+                <Setter Property="Scale" Value="1.05" />
+            </DataTrigger>
+        </Border.Triggers>
 
         <VerticalStackLayout Spacing="0">
 
@@ -76,6 +84,17 @@
                     WidthRequest="100" />
 
                 <VerticalStackLayout VerticalOptions="Center">
+                    <Button
+                        x:Name="PositioningButton"
+                        BackgroundColor="{Binding Source={x:Reference placedDeviceControl}, Path=IsPositioningMode, 
+                                          Converter={StaticResource PositioningModeColorConverter}}"
+                        Command="{Binding Source={x:Reference placedDeviceControl}, Path=TogglePositioningMode}"
+                        FontSize="10"
+                        HeightRequest="28"
+                        Text="📍"
+                        TextColor="White"
+                        WidthRequest="28" />
+
                     <Button
                         x:Name="DeviceSettingsButton"
                         Command="{Binding Source={x:Reference placedDeviceControl}, Path=OpenSettingsCommand}"

@@ -3,12 +3,14 @@ using ReisingerIntelliAppV1.Model.Models;
 using System.Diagnostics;
 using System.Windows.Input;
 using ReisingerIntelliAppV1.Model.ViewModels;
+using System.ComponentModel;
 
 namespace ReisingerIntelliAppV1.Views.FloorManager;
 
-public partial class PlacedDeviceControl : ContentView
+public partial class PlacedDeviceControl : ContentView, INotifyPropertyChanged
 {
     private bool isDragging = false;
+    private bool isPositioningMode = false;
     private double startX, startY;
     private double panStartX, panStartY;
 
@@ -18,7 +20,18 @@ public partial class PlacedDeviceControl : ContentView
     }
 
     // Public property to expose drag status
-    public bool IsDragMode => isDragging;
+    public bool IsDragMode => isDragging && isPositioningMode;
+
+    // Public property to expose positioning mode status
+    public bool IsPositioningMode 
+    { 
+        get => isPositioningMode; 
+        private set 
+        { 
+            isPositioningMode = value; 
+            OnPropertyChanged(); 
+        } 
+    }
 
     // 🔹 Bindbare Properties (für Commands von außen)
     public static readonly BindableProperty OpenSettingsCommandProperty =
@@ -49,13 +62,38 @@ public partial class PlacedDeviceControl : ContentView
         set => SetValue(ToggleDoorCommandProperty, value);
     }
 
-    // Aktiviert Drag (von LongPress)
+    // Toggle positioning mode command
+    public ICommand TogglePositioningMode => new Command(() =>
+    {
+        IsPositioningMode = !IsPositioningMode;
+        if (IsPositioningMode)
+        {
+            isDragging = true;
+            Debug.WriteLine("[PlacedDeviceControl] Positioning mode activated");
+        }
+        else
+        {
+            isDragging = false;
+            Debug.WriteLine("[PlacedDeviceControl] Positioning mode deactivated");
+        }
+        OnPropertyChanged(nameof(IsDragMode)); // Notify PanPinchContainer about drag mode change
+    });
+
+    // Aktiviert Drag (von LongPress) - keep backward compatibility
     public ICommand StartDragCommand => new Command(() =>
     {
+        IsPositioningMode = true;
         isDragging = true;
-        this.ScaleTo(1.1, 100); // Visuelles Feedback
+        OnPropertyChanged(nameof(IsDragMode)); // Notify PanPinchContainer about drag mode change
         Debug.WriteLine("[PlacedDeviceControl] Drag aktiviert (LongPress)");
     });
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected virtual void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 
     private void OnDragStarting(object sender, DragStartingEventArgs e)
     {
@@ -67,7 +105,7 @@ public partial class PlacedDeviceControl : ContentView
 
     private async void OnPanUpdated(object sender, PanUpdatedEventArgs e)
     {
-        if (!isDragging) return;
+        if (!isDragging || !isPositioningMode) return;
 
         switch (e.StatusType)
         {
@@ -76,6 +114,7 @@ public partial class PlacedDeviceControl : ContentView
                 startY = TranslationY;
                 panStartX = e.TotalX;
                 panStartY = e.TotalY;
+                Debug.WriteLine("[PlacedDeviceControl] Pan started");
                 break;
 
             case GestureStatus.Running:
@@ -98,7 +137,9 @@ public partial class PlacedDeviceControl : ContentView
                     this.TranslationX = 0;
                     this.TranslationY = 0;
 
-                    // Speicheränderung
+                    Debug.WriteLine($"[PlacedDeviceControl] Device moved to relative position: X={placedDevice.RelativeX:F3}, Y={placedDevice.RelativeY:F3}");
+
+                    // Save changes
                     if (Application.Current.MainPage is Shell shell &&
                         shell.CurrentPage is FloorPlanManagerPage page &&
                         page.BindingContext is FloorPlanViewModel vm)
@@ -107,13 +148,19 @@ public partial class PlacedDeviceControl : ContentView
                     }
                 }
 
+                // Exit positioning mode after successful drag
+                IsPositioningMode = false;
                 isDragging = false;
-                this.ScaleTo(1.0, 100);
+                OnPropertyChanged(nameof(IsDragMode)); // Notify PanPinchContainer about drag mode change
+                Debug.WriteLine("[PlacedDeviceControl] Pan completed, exiting positioning mode");
                 break;
             case GestureStatus.Canceled:
+                // Reset positioning mode on cancel
+                IsPositioningMode = false;
                 isDragging = false;
-                this.ScaleTo(1.0, 100);
+                OnPropertyChanged(nameof(IsDragMode)); // Notify PanPinchContainer about drag mode change
                 UpdateModelPosition();
+                Debug.WriteLine("[PlacedDeviceControl] Pan canceled");
                 break;
         }
     }
